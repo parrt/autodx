@@ -1,0 +1,19 @@
+digraph G {
+    nodesep=0.3;
+    ranksep=0.2;
+    margin=0.1;
+    node [shape=circle; penwidth="0.5", width=.1, height=.1];
+    edge [arrowsize=0.7];
+
+    root [label="+"]
+    t1 [label="*"]
+    t2 [label=<sin(x2)>]
+    t3 [label="x1"]
+    t4 [label=<<br/>x<sup>1</sup>>]
+    t5 [label=<x<sup>2</sup>>]
+    root -> t1;
+    root -> t2;
+    t1 -> t3;
+    t1 -> t4;
+    t2 -> t5;
+}
