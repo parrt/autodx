@@ -6,4 +6,3 @@ Test math: $x^2$.
 $$
 \frac{\partial Q}{\partial t}
 $$
-
