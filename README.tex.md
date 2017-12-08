@@ -6,3 +6,5 @@ Test math: $x^2$.
 $$
 \frac{\partial Q}{\partial t}
 $$
+
+or $\dv{f}{t_i}$.
