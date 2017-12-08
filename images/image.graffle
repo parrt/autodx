@@ -1022,7 +1022,7 @@
 			<key>AllowConnections</key>
 			<string>NO</string>
 			<key>Bounds</key>
-			<string>{{84.916659037272183, 55.663323275921577}, {14, 20}}</string>
+			<string>{{77.333338878976392, 48.500000000000007}, {14, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -1076,7 +1076,7 @@
 			<key>AllowConnections</key>
 			<string>NO</string>
 			<key>Bounds</key>
-			<string>{{82.5, 48.329995028851037}, {14, 25}}</string>
+			<string>{{74.916679841704209, 41.166671752929467}, {14, 25}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -1130,7 +1130,7 @@
 			<key>AllowConnections</key>
 			<string>NO</string>
 			<key>Bounds</key>
-			<string>{{108.74999714891081, 80.166661580404693}, {14, 20}}</string>
+			<string>{{89.916657595101853, 65.119295587123034}, {14, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -1202,7 +1202,7 @@
 			<key>AllowConnections</key>
 			<string>NO</string>
 			<key>Bounds</key>
-			<string>{{106.33333811163862, 72.833333333334153}, {14, 25}}</string>
+			<string>{{87.49999855782967, 57.785967340052494}, {14, 25}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -1618,7 +1618,7 @@
 			<key>AllowConnections</key>
 			<string>NO</string>
 			<key>Bounds</key>
-			<string>{{56.997770347729919, 78.668896318936731}, {14, 20}}</string>
+			<string>{{64.011010105057707, 65.119293547618682}, {14, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -1731,7 +1731,7 @@
 			<key>AllowConnections</key>
 			<string>NO</string>
 			<key>Bounds</key>
-			<string>{{54.914444643791072, 71.002234738533076}, {14, 25}}</string>
+			<string>{{61.927684401118853, 57.452631967215034}, {14, 25}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -2262,7 +2262,7 @@
 			<key>AllowConnections</key>
 			<string>NO</string>
 			<key>Bounds</key>
-			<string>{{67.574411507057022, 49.666666445934162}, {14, 25}}</string>
+			<string>{{127.0903005979841, 34.450389955002763}, {14, 25}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -2387,7 +2387,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2017-12-08 00:34:34 +0000</string>
+	<string>2017-12-08 00:36:21 +0000</string>
 	<key>Modifier</key>
 	<string>Terence Parr</string>
 	<key>NotesVisible</key>
@@ -2482,7 +2482,7 @@
 		<key>SidebarWidth</key>
 		<integer>120</integer>
 		<key>VisibleRegion</key>
-		<string>{{0, 24.91638788039425}, {187.62541746176072, 240.13377849829627}}</string>
+		<string>{{0, 25.25083603986263}, {187.62541746176072, 240.13377849829624}}</string>
 		<key>Zoom</key>
 		<real>2.9900000095367432</real>
 		<key>ZoomValues</key>
