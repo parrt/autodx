@@ -5,7 +5,7 @@ Test math: <img alt="$x^2$" src="https://rawgit.com/parrt/auto-diff-edu/master/i
 
 <p align="center"><img alt="$$&#10;\frac{\partial Q}{\partial t}&#10;$$" src="https://rawgit.com/parrt/auto-diff-edu/master/images/908698c62d11a24eeb11e200128f6df2.svg?invert_in_darkmode" align=middle width="22.635855pt" height="33.812129999999996pt"/></p>
 
-or <img alt="$\dv{f}{t_i}$" src="https://rawgit.com/parrt/auto-diff-edu/master/images/c86e9e129cfe3f7839d8f9b4319ebdc6.svg?invert_in_darkmode" align=middle width="17.43357pt" height="30.648420000000016pt"/> or <img alt="$\frac{\partial Q}{\partial t}$" src="https://rawgit.com/parrt/auto-diff-edu/master/images/31fcef5ad89935bf7afdd77634d19492.svg?invert_in_darkmode" align=middle width="18.08037pt" height="30.648420000000016pt"/>.
+or <img alt="$\pdv{f}{t_i}$" src="https://rawgit.com/parrt/auto-diff-edu/master/images/a1b874849f8b8aa121b207dbe8bdf3e7.svg?invert_in_darkmode" align=middle width="17.901014999999997pt" height="30.648420000000016pt"/> or <img alt="$\frac{\partial Q}{\partial t}$" src="https://rawgit.com/parrt/auto-diff-edu/master/images/31fcef5ad89935bf7afdd77634d19492.svg?invert_in_darkmode" align=middle width="18.08037pt" height="30.648420000000016pt"/>.
 
 ## Notes
 

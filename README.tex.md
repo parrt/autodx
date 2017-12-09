@@ -7,7 +7,7 @@ $$
 \frac{\partial Q}{\partial t}
 $$
 
-or $\dv{f}{t_i}$ or $\frac{\partial Q}{\partial t}$.
+or $\pdv{f}{t_i}$ or $\frac{\partial Q}{\partial t}$.
 
 ## Notes
 
