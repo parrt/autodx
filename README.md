@@ -9,6 +9,10 @@ or <img alt="$\dv{f}{t_i}$" src="https://rawgit.com/parrt/auto-diff-edu/master/i
 
 ## Notes
 
+Build README.md from README.tex.md via:
+
 ```bash
-python -m readme2tex --username parrt --project auto-diff-edu --rerender --svgdir images --usepackage physics --output README.md README.tex.md
+python -m readme2tex --username parrt --project auto-diff-edu \
+  --rerender --svgdir images --usepackage physics \
+  --output README.md README.tex.md
 ```
