@@ -4,10 +4,12 @@ Simple automatic differentiation via operator overloading for educational purpos
 Test math: $x^2$.
 
 $$
-\frac{\partial Q}{\partial t}
+\frac{\partial f}{\partial t_i}
 $$
 
 or $\pdv{f}{t_i}$ or $\frac{\partial Q}{\partial t}$.
+
+partial deriv op: $\pderivative{x}$.
 
 ## Notes
 
