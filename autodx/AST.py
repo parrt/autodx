@@ -57,3 +57,4 @@ if __name__ == '__main__':
     x2 = Value(3.6)
     f = x1 + x2
     print(f.value())
+    print(f.partial())
