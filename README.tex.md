@@ -7,9 +7,11 @@ $$
 \frac{\partial Q}{\partial t}
 $$
 
-or $\dv{f}{t_i}$ or $\pdv{Q}{t}$.
+or $\dv{f}{t_i}$ or $\frac{\partial Q}{\partial t}$.
 
 ## Notes
+
+Build README.md from README.tex.md via:
 
 ```bash
 python -m readme2tex --username parrt --project auto-diff-edu --rerender --svgdir images --usepackage physics --output README.md README.tex.md
