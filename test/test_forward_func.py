@@ -10,3 +10,10 @@ def f(x): return x*x * 5 + 1
 x = Value(3)
 y = f(x)
 print(y)
+
+def f2(x1,x2): return x1*x2
+
+x1 = Value(3)
+x2 = Value(4)
+y = f2(x1,x2)
+print(y)
