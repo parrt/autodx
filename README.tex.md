@@ -9,7 +9,7 @@ $$
 
 or $\pdv{f}{t_i}$ or $\frac{\partial Q}{\partial t}$.
 
-partial deriv op: $\pderivative{x}$.
+partial deriv op: $\pdv{x}$ or $x_i$.
 
 ## Notes
 
