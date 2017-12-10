@@ -13,6 +13,7 @@ print(y)
 
 def f2(x1,x2): return x1*x2
 
+print(gradient(f2, 3, 4)) # x1*1 + x2*1
 x1 = Value(3)
 x2 = Value(4)
 y = f2(x1,x2)
