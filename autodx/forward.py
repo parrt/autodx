@@ -48,7 +48,7 @@ class Variable:
         return str(self)
 
 
-class Value(Variable):
+class Value(Variable): # todo: consider removing and using as stepping stone for AST
     "A Value is the value of a subexpression result (temporary variable)"
     def __init__(self, x, dx=None):
         super().__init__(x,dx)
