@@ -18,3 +18,14 @@ y = sin(x)
 print(y,'=',y.value())
 print('d/dx',y,'=',y.partial(x))
 
+
+x1 = Variable(1.5)
+x2 = Variable(np.pi / 4.0)
+
+y = x1*x2 + sin(x1)
+print()
+print(y,'=',y.value())
+# gradient symbolically is [cos(x1)+x2, x1]
+print('d/dx1',y,'=',y.partial(x1))
+print('d/dx2',y,'=',y.partial(x2))
+print("Expecting", [np.cos(x1.value())+x2.value(), x1.value()])
