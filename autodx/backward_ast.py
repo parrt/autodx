@@ -5,8 +5,15 @@ class Variable:
     def __init__(self, x : numbers.Number):
         self.x = x
 
-    def value(self) -> numbers.Number:
+    def forward(self) -> numbers.Number:
+        """
+        Compute and return value of expression tree; squirrel away subexpression values
+        as self.x in each subtree root.
+        """
         return self.x
+
+    def backward(self) -> None:
+        pass
 
     def partial(self,wrt : 'Variable') -> numbers.Number:
         return 1 if self==wrt else 0
@@ -82,8 +89,9 @@ class Add(BinaryOp):
     def __init__(self, left, right):
         super().__init__(left, '+', right)
 
-    def value(self):
-        return self.left.value() + self.right.value()
+    def forward(self):
+        self.x = self.left.forward() + self.right.forward()
+        return self.x
 
     def partial(self,wrt : 'Variable') -> numbers.Number:
         return self.left.partial(wrt) + self.right.partial(wrt)
@@ -93,8 +101,9 @@ class Sub(BinaryOp):
     def __init__(self, left, right):
         super().__init__(left, '-', right)
 
-    def value(self):
-        return self.left.value() - self.right.value()
+    def forward(self):
+        self.x = self.left.forward() - self.right.forward()
+        return self.x
 
     def partial(self,wrt : 'Variable') -> numbers.Number:
         return self.left.partial(wrt) - self.right.partial(wrt)
@@ -104,35 +113,38 @@ class Mul(BinaryOp):
     def __init__(self, left, right):
         super().__init__(left, '*', right)
 
-    def value(self):
-        return self.left.value() * self.right.value()
+    def forward(self):
+        self.x = self.left.forward() * self.right.forward()
+        return self.x
 
     def partial(self,wrt : 'Variable') -> numbers.Number:
-        return self.left.value() * self.right.partial(wrt) + \
-               self.right.value() * self.left.partial(wrt)
+        return self.left.forward() * self.right.partial(wrt) + \
+               self.right.forward() * self.left.partial(wrt)
 
 
 class Div(BinaryOp):
     def __init__(self, left, right):
         super().__init__(left, '/', right)
 
-    def value(self):
-        return self.left.value() / self.right.value()
+    def forward(self):
+        self.x = self.left.forward() / self.right.forward()
+        return self.x
 
     def partial(self,wrt : 'Variable') -> numbers.Number:
-        return self.left.value() / self.right.partial(wrt) + \
-               self.right.value() / self.left.partial(wrt)
+        return self.left.forward() / self.right.partial(wrt) + \
+               self.right.forward() / self.left.partial(wrt)
 
 
 class Sin(UnaryOp):
     def __init__(self, opnd):
         super().__init__('sin', opnd)
 
-    def value(self):
-        return np.sin(self.opnd.value())
+    def forward(self):
+        self.x = np.sin(self.opnd.forward())
+        return self.x
 
     def partial(self,wrt : 'Variable') -> numbers.Number:
-        return np.cos(self.opnd.value()) * self.opnd.partial(wrt)
+        return np.cos(self.opnd.forward()) * self.opnd.partial(wrt)
 
 
 def sin(x:Variable) -> Sin:
