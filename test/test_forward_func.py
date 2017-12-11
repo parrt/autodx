@@ -7,7 +7,7 @@ def Cost(X,y):
 
 def f(x): return 5 *x*x  + 1
 
-x = Value(3)
+x = Variable(3)
 y = f(x)
 print(y)
 
@@ -19,7 +19,7 @@ print(dX)
 
 # manually
 
-y1 = f2(Value(3,1),Value(4,0)) # partial wrt to x1
-y2 = f2(Value(3,0),Value(4,1)) # partial wrt to x2
+y1 = f2(Variable(3,1),Variable(4,0)) # partial wrt to x1
+y2 = f2(Variable(3,0),Variable(4,1)) # partial wrt to x2
 dX = [y1.dx, y2.dx]
 print(dX)

@@ -1,6 +1,6 @@
 import numbers
 
-class Value:
+class Variable:
     def __init__(self, x, dx=None):
         self.x = x
         self.dx = dx if dx is not None else 1
@@ -31,7 +31,7 @@ class Value:
         return Value(self.x * other.x, self.dx * other.x + self.x * other.dx)
 
     def __rmul__(self, other):
-        "Allows 5 * Value(3) to invoke overloaded * operator"
+        "Allows 5 * Variable(3) to invoke overloaded * operator"
         return self.__mul__(other)
 
     def __truediv__(self, other):
@@ -48,15 +48,21 @@ class Value:
         return str(self)
 
 
+class Value(Variable):
+    "A Value is the value of a subexpression result (temporary variable)"
+    def __init__(self, x, dx=None):
+        super().__init__(x,dx)
+
+
 def gradient(f,*X):
     """
-    Compute gradient of f at location specified with vector X. Values in X
+    Compute gradient of f at location specified with vector X. Variables in X
     must be in same order as args of f so we can call it with f(*X).
     """
     dX = []
     for i in range(len(X)):
-        # Make a vector of Value(X_i, [0 ... 1 ... 0]) with 1 in ith position
-        X_ = [Value(x,dx=1 if i==j else 0) for j,x in enumerate(X)]
+        # Make a vector of Variable(X_i, [0 ... 1 ... 0]) with 1 in ith position
+        X_ = [Variable(x,dx=1 if i==j else 0) for j,x in enumerate(X)]
         result = f(*X_)
         dX.append(result.dx)
     return dX
