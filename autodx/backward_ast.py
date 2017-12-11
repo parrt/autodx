@@ -4,6 +4,7 @@ import numbers
 class Variable:
     def __init__(self, x : numbers.Number):
         self.x = x
+        self.parent = None
 
     def forward(self) -> numbers.Number:
         """
@@ -62,6 +63,8 @@ class Variable:
 
 class BinaryOp(Variable):
     def __init__(self, left : Variable, op: str, right : Variable):
+        left.parent = self
+        right.parent = self
         self.left = left
         self.op = op
         self.right = right
@@ -75,6 +78,7 @@ class BinaryOp(Variable):
 
 class UnaryOp(Variable):
     def __init__(self, op : str, opnd : Variable):
+        opnd.parent = self
         self.opnd = opnd
         self.op = op
 
