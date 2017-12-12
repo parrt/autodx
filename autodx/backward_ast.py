@@ -1,8 +1,13 @@
 import numpy as np
 import numbers
 
+VAR_COUNT = -1
+
 class Variable:
     def __init__(self, x : numbers.Number = None):
+        global VAR_COUNT
+        self.vi = VAR_COUNT
+        VAR_COUNT += 1
         if x is None:
             x = 0
         self.x = x
@@ -66,8 +71,8 @@ class Variable:
 
     def __str__(self):
         if isinstance(self.x, int):
-            return f'Var({self.x})'
-        return f'Var({self.x:.4f})'
+            return f'v{self.vi}({self.x})'
+        return f'v{self.vi}({self.x:.4f})'
 
     def __repr__(self):
         return str(self)
@@ -91,7 +96,7 @@ class BinaryOp(Variable):
         self.right.backward()
 
     def __str__(self):
-        return f"({self.left} {self.op} {self.right})"
+        return f"v{self.vi}:({self.left} {self.op} {self.right})"
 
     def __repr__(self):
         return str(self)
@@ -112,7 +117,7 @@ class UnaryOp(Variable):
         self.opnd.backward()
 
     def __str__(self):
-        return f"{self.op}({self.opnd})"
+        return f"v{self.vi}:{self.op}({self.opnd})"
 
     def __repr__(self):
         return str(self)
@@ -127,7 +132,9 @@ class Add(BinaryOp):
         return self.x
 
     def partial(self,wrt : 'Variable') -> numbers.Number:
-        return self.left.partial(wrt) + self.right.partial(wrt)
+        p = 1
+        print(f"partial dv{self.vi}/dv{wrt.vi} {wrt} of {self} = {p}")
+        return p
 
 
 class Sub(BinaryOp):
@@ -139,7 +146,12 @@ class Sub(BinaryOp):
         return self.x
 
     def partial(self,wrt : 'Variable') -> numbers.Number:
-        return self.left.partial(wrt) - self.right.partial(wrt)
+        if self.left == wrt:
+            p = 1
+        else:
+            p = -1
+        print(f"partial dv{self.vi}/dv{wrt.vi} of {self} = {p}")
+        return p
 
 
 class Mul(BinaryOp):
@@ -151,8 +163,12 @@ class Mul(BinaryOp):
         return self.x
 
     def partial(self,wrt : 'Variable') -> numbers.Number:
-        return self.left.forward() * self.right.partial(wrt) + \
-               self.right.forward() * self.left.partial(wrt)
+        if self.left == wrt:
+            p = self.right.forward()
+        else:
+            p = self.left.forward()
+        print(f"partial dv{self.vi}/dv{wrt.vi} of {self} = {p}")
+        return p
 
 
 class Div(BinaryOp):
@@ -164,9 +180,12 @@ class Div(BinaryOp):
         return self.x
 
     def partial(self,wrt : 'Variable') -> numbers.Number:
-        return self.left.forward() / self.right.partial(wrt) + \
-               self.right.forward() / self.left.partial(wrt)
-
+        if self.left == wrt:
+            p = 1 / self.right.forward()
+        else:
+            p = - self.left.forward() * (1 / self.right.forward()**2)
+        print(f"partial dv{self.vi}/dv{wrt.vi} of {self} = {p}")
+        return p
 
 class Sin(UnaryOp):
     def __init__(self, opnd):
@@ -177,8 +196,31 @@ class Sin(UnaryOp):
         return self.x
 
     def partial(self,wrt : 'Variable') -> numbers.Number:
-        return np.cos(self.opnd.forward()) * self.opnd.partial(wrt)
+        if self.opnd == wrt:
+            p = np.cos(self.opnd.forward())
+        else:
+            p = 0
+        print(f"partial dv{self.vi}/dv{wrt.vi} of {self} = {p}")
+        return p
+
+
+class Ln(UnaryOp):
+    def __init__(self, opnd):
+        super().__init__('ln', opnd)
+
+    def forward(self):
+        self.x = np.log(self.opnd.forward())
+        return self.x
+
+    def partial(self,wrt : 'Variable') -> numbers.Number:
+        p = 1 / self.opnd.forward() if self.opnd == wrt else 0
+        print(f"partial wrt {wrt} of {self} = {p}")
+        return p
 
 
 def sin(x:Variable) -> Sin:
     return Sin(x)
+
+
+def ln(x : Variable) -> Ln:
+    return Ln(x)
