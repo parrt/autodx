@@ -2,19 +2,31 @@ import numpy as np
 import numbers
 
 class Variable:
-    def __init__(self, x : numbers.Number):
+    def __init__(self, x : numbers.Number = None):
+        if x is None:
+            x = 0
         self.x = x
+        self.adjoint = 0
         self.parent = None
 
     def forward(self) -> numbers.Number:
         """
         Compute and return value of expression tree; squirrel away subexpression values
         as self.x in each subtree root.
+
+        This specific method is used to compute the value of a leaf node.
         """
         return self.x
 
+    # def backward(self, parent_adjoint : numbers.Number = 1) -> None:
     def backward(self) -> None:
-        pass
+        if self.parent is None:
+            # Root node dy/dy is 1
+            self.adjoint = 1
+        else:
+            # actual variable leaf nodes must accumulate all contributions
+            # of this var up the tree. Sum all dy/dx_i computed backwards.
+            self.adjoint += self.parent.adjoint * self.parent.partial(self)
 
     def partial(self,wrt : 'Variable') -> numbers.Number:
         return 1 if self==wrt else 0
@@ -63,11 +75,20 @@ class Variable:
 
 class BinaryOp(Variable):
     def __init__(self, left : Variable, op: str, right : Variable):
+        super().__init__()
         left.parent = self
         right.parent = self
         self.left = left
         self.op = op
         self.right = right
+
+    def backward(self) -> None:
+        if self.parent is None:
+            self.adjoint = 1
+        else:
+            self.adjoint = self.parent.adjoint * self.parent.partial(self) # don't need to accum subexpr adjoints (they are unique)
+        self.left.backward()
+        self.right.backward()
 
     def __str__(self):
         return f"({self.left} {self.op} {self.right})"
@@ -78,9 +99,17 @@ class BinaryOp(Variable):
 
 class UnaryOp(Variable):
     def __init__(self, op : str, opnd : Variable):
+        super().__init__()
         opnd.parent = self
         self.opnd = opnd
         self.op = op
+
+    def backward(self) -> None:
+        if self.parent is None:
+            self.adjoint = 1
+        else:
+            self.adjoint = self.parent.adjoint * self.parent.partial(self) # don't need to accum subexpr adjoints (they are unique)
+        self.opnd.backward()
 
     def __str__(self):
         return f"{self.op}({self.opnd})"
