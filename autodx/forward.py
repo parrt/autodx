@@ -1,34 +1,34 @@
 import numbers
 
-class Variable:
-    def __init__(self, x, dx=None):
+class Expr:
+    def __init__(self, x, dx=1):
         self.x = x
-        self.dx = dx if dx is not None else 1
+        self.dx = dx
 
     def value(self):
         return self.x
 
-    def partial(self):
+    def dvdx(self):
         return 0
 
     def __add__(self, other):
         if isinstance(other, numbers.Number):
-            return Value(self.x + other, self.dx)  # d/dx(x + c) = dx
-        return Value(self.x, self.dx + other.dx)
+            return Expr(self.x + other, self.dx)  # d/dx(x + c) = dx
+        return Expr(self.x, self.dx + other.dx)
 
     def __radd__(self, other): return self.__add__(other)
 
     def __sub__(self, other):
         if isinstance(other, numbers.Number):
-            return Value(self.x - other, self.dx)  # d/dx(x - c) = dx
-        return Value(self.x, self.dx - other.dx)
+            return Expr(self.x - other, self.dx)  # d/dx(x - c) = dx
+        return Expr(self.x, self.dx - other.dx)
 
     def __rsub__(self, other): return self.__sub__(other)
 
     def __mul__(self, other):
         if isinstance(other, numbers.Number):
-            return Value(self.x * other, other * self.dx) # d/dx(x * c) = c * dx
-        return Value(self.x * other.x, self.dx * other.x + self.x * other.dx)
+            return Expr(self.x * other, other * self.dx) # d/dx(x * c) = c * dx
+        return Expr(self.x * other.x, self.dx * other.x + self.x * other.dx)
 
     def __rmul__(self, other):
         "Allows 5 * Variable(3) to invoke overloaded * operator"
@@ -36,8 +36,8 @@ class Variable:
 
     def __truediv__(self, other):
         if isinstance(other, numbers.Number):
-            return Value(self.x / other.x, self.dx / other.x) # d/dx(x / c) = 1/c * dx = dx/c
-        return Value(self.x / other.x, (self.dx * other.x - self.x * other.dx)/other.x**2)
+            return Expr(self.x / other.x, self.dx / other.x) # d/dx(x / c) = 1/c * dx = dx/c
+        return Expr(self.x / other.x, (self.dx * other.x - self.x * other.dx)/other.x**2)
 
     def __rtruediv__(self, other): return self.__truediv__(other)
 
@@ -48,10 +48,10 @@ class Variable:
         return str(self)
 
 
-class Value(Variable): # todo: consider removing and using as stepping stone for AST
-    "A Value is the value of a subexpression result (temporary variable)"
-    def __init__(self, x, dx=None):
-        super().__init__(x,dx)
+# class Expr(Expr): # todo: consider removing and using as stepping stone for AST
+#     "A Expr is the value of a subexpression result (temporary variable)"
+#     def __init__(self, x, dx=None):
+#         super().__init__(x,dx)
 
 
 def gradient(f,*X):
@@ -62,7 +62,7 @@ def gradient(f,*X):
     dX = []
     for i in range(len(X)):
         # Make a vector of Variable(X_i, [0 ... 1 ... 0]) with 1 in ith position
-        X_ = [Variable(x,dx=1 if i==j else 0) for j,x in enumerate(X)]
+        X_ = [Expr(x, dx=1 if i == j else 0) for j, x in enumerate(X)]
         result = f(*X_)
         dX.append(result.dx)
     return dX

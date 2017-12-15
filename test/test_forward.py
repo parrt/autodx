@@ -7,7 +7,7 @@ def Cost(X,y):
 
 def f(x): return 5 *x*x  + 1
 
-x = Variable(3)
+x = Expr(3)
 y = f(x)
 print(y)
 
@@ -15,11 +15,37 @@ def f2(x1,x2): return x1*x2
 
 # Auto grad using forward differentiation
 dX = gradient(f2, 3, 4) # x1*1 + x2*1
+print("x1*x2 at 3, 4 =", f2(3,4))
 print(dX)
 
 # manually
 
-y1 = f2(Variable(3,1),Variable(4,0)) # partial wrt to x1
-y2 = f2(Variable(3,0),Variable(4,1)) # partial wrt to x2
+y1 = f2(Expr(3, 1), Expr(4, 0)) # partial wrt to x1
+y2 = f2(Expr(3, 0), Expr(4, 1)) # partial wrt to x2
 dX = [y1.dx, y2.dx]
-print(dX)
+print("gradient of x1*x2 at 3, 4 =",dX)
+
+# use pytorch for test results
+
+import torch
+from torch.autograd import Variable
+from torch import FloatTensor
+
+def autodx_results(f, X):
+    y = f(*X)
+    return y, gradient(f, *X)
+
+
+def pytorch_results(f, X):
+    X_ = Variable(torch.from_numpy(X), requires_grad=True)
+
+    y = f(*X_)
+
+    y.backward()
+
+    return y.data[0], X_.grad.data.numpy()
+
+y, dx = autodx_results(f2, np.array([3, 4]))
+print(y,dx)
+y, dx = pytorch_results(f2, np.array([3, 4]))
+print(y,dx)

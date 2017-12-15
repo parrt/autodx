@@ -1,19 +1,19 @@
 import numpy as np
 import numbers
 
-class Variable:
+class Expr:
     def __init__(self, x : numbers.Number):
         self.x = x
 
     def value(self) -> numbers.Number:
         return self.x
 
-    def partial(self,wrt : 'Variable') -> numbers.Number:
+    def dvdx(self, wrt : 'Expr') -> numbers.Number:
         return 1 if self==wrt else 0
 
     def __add__(self, other):
         if isinstance(other, numbers.Number):
-            other = Variable(other)
+            other = Expr(other)
         return Add(self,other)
 
     def __radd__(self, other):
@@ -21,15 +21,15 @@ class Variable:
 
     def __sub__(self, other):
         if isinstance(other, numbers.Number):
-            other = Variable(other)
+            other = Expr(other)
         return Sub(self,other)
 
     def __rsub__(self, other):
         return self.__sub__(other)
 
-    def __mul__(self, other: 'Variable') -> 'Variable':  # yuck. must put 'Variable' type in string
+    def __mul__(self, other: 'Expr') -> 'Expr':  # yuck. must put 'Variable' type in string
         if isinstance(other, numbers.Number):
-            other = Variable(other)
+            other = Expr(other)
         return Mul(self,other)
 
     def __rmul__(self, other):
@@ -38,7 +38,7 @@ class Variable:
 
     def __truediv__(self, other):
         if isinstance(other, numbers.Number):
-            other = Variable(other)
+            other = Expr(other)
         return Div(self,other)
 
     def __rtruediv__(self, other):
@@ -53,8 +53,8 @@ class Variable:
         return str(self)
 
 
-class BinaryOp(Variable):
-    def __init__(self, left : Variable, op: str, right : Variable):
+class BinaryOp(Expr):
+    def __init__(self, left : Expr, op: str, right : Expr):
         self.left = left
         self.op = op
         self.right = right
@@ -66,8 +66,8 @@ class BinaryOp(Variable):
         return str(self)
 
 
-class UnaryOp(Variable):
-    def __init__(self, op : str, opnd : Variable):
+class UnaryOp(Expr):
+    def __init__(self, op : str, opnd : Expr):
         self.opnd = opnd
         self.op = op
 
@@ -85,8 +85,8 @@ class Add(BinaryOp):
     def value(self):
         return self.left.value() + self.right.value()
 
-    def partial(self,wrt : 'Variable') -> numbers.Number:
-        return self.left.partial(wrt) + self.right.partial(wrt)
+    def dvdx(self, wrt : 'Expr') -> numbers.Number:
+        return self.left.dvdx(wrt) + self.right.dvdx(wrt)
 
 
 class Sub(BinaryOp):
@@ -96,8 +96,8 @@ class Sub(BinaryOp):
     def value(self):
         return self.left.value() - self.right.value()
 
-    def partial(self,wrt : 'Variable') -> numbers.Number:
-        return self.left.partial(wrt) - self.right.partial(wrt)
+    def dvdx(self, wrt : 'Expr') -> numbers.Number:
+        return self.left.dvdx(wrt) - self.right.dvdx(wrt)
 
 
 class Mul(BinaryOp):
@@ -107,9 +107,9 @@ class Mul(BinaryOp):
     def value(self):
         return self.left.value() * self.right.value()
 
-    def partial(self,wrt : 'Variable') -> numbers.Number:
-        return self.left.value() * self.right.partial(wrt) + \
-               self.right.value() * self.left.partial(wrt)
+    def dvdx(self, wrt : 'Expr') -> numbers.Number:
+        return self.left.value() * self.right.dvdx(wrt) + \
+               self.right.value() * self.left.dvdx(wrt)
 
 
 class Div(BinaryOp):
@@ -119,9 +119,9 @@ class Div(BinaryOp):
     def value(self):
         return self.left.value() / self.right.value()
 
-    def partial(self,wrt : 'Variable') -> numbers.Number:
-        return self.left.value() / self.right.partial(wrt) + \
-               self.right.value() / self.left.partial(wrt)
+    def dvdx(self, wrt : 'Expr') -> numbers.Number:
+        return self.left.value() / self.right.dvdx(wrt) + \
+               self.right.value() / self.left.dvdx(wrt)
 
 
 class Sin(UnaryOp):
@@ -131,9 +131,9 @@ class Sin(UnaryOp):
     def value(self):
         return np.sin(self.opnd.value())
 
-    def partial(self,wrt : 'Variable') -> numbers.Number:
-        return np.cos(self.opnd.value()) * self.opnd.partial(wrt)
+    def dvdx(self, wrt : 'Expr') -> numbers.Number:
+        return np.cos(self.opnd.value()) * self.opnd.dvdx(wrt)
 
 
-def sin(x:Variable) -> Sin:
+def sin(x:Expr) -> Sin:
     return Sin(x)
