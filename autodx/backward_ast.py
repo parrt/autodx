@@ -32,7 +32,9 @@ class Expr:
         else:
             # actual variable leaf nodes must accumulate all contributions
             # of this var from up the tree. Sum all dy/dx_i computed backwards.
-            self.adjoint += self.parent.adjoint * self.parent.dvdv(self)
+            t = self.parent.adjoint * self.parent.dvdv(self)
+            print(f"Adding {t} to v{self.vi} ({self.adjoint})")
+            self.adjoint += t
         print(f"adjoint v{self.vi} = {self.adjoint}")
 
     def dvdv(self, wrt : 'Expr') -> numbers.Number:
@@ -120,7 +122,7 @@ class BinaryOp(Operator):
         return self.left.forward_trace() + self.right.forward_trace() + [f"v{self.vi} = {self.asvar()}"]
 
     def __str__(self):
-        return f"v({self.left} {self.op} {self.right})"
+        return f"({self.left} {self.op} {self.right})"
 
     def __repr__(self):
         return str(self)
