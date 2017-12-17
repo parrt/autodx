@@ -12,8 +12,7 @@ class Expr:
         if x is None:
             x = 0
         self.x = x
-        self.adjoint = 0
-        self.parent = None
+        self.dydv = 0
 
     def forward(self) -> numbers.Number:
         """
@@ -24,18 +23,14 @@ class Expr:
         """
         return self.x
 
-    def backward(self) -> None:
+    def backward(self, dy_dvi : numbers.Number, dvi_dvj : numbers.Number) -> None:
         print(f"backward(v{self.vi} = {self.asvar()})")
-        if self.parent is None:
-            # Root node dy/dy is 1
-            self.adjoint = 1
-        else:
-            # actual variable leaf nodes must accumulate all contributions
-            # of this var from up the tree. Sum all dy/dx_i computed backwards.
-            t = self.parent.adjoint * self.parent.dvdv(self)
-            print(f"Adding {t} to v{self.vi} ({self.adjoint})")
-            self.adjoint += t
-        print(f"adjoint v{self.vi} = {self.adjoint}")
+        # actual variable leaf nodes must accumulate all contributions
+        # of this var from up the tree. Sum all dy/dx_i computed backwards.
+        t = dy_dvi * dvi_dvj
+        print(f"Adding {t} to v{self.vi} ({self.dydv})")
+        self.dydv += t
+        print(f"adjoint v{self.vi} = {self.dydv}")
 
     def dvdv(self, wrt : 'Expr') -> numbers.Number:
         return 1 if self==wrt else 0
@@ -102,21 +97,16 @@ class Operator(Expr):
 class BinaryOp(Operator):
     def __init__(self, left : Expr, op: str, right : Expr):
         super().__init__()
-        left.parent = self
-        right.parent = self
         self.left = left
         self.op = op
         self.right = right
 
-    def backward(self) -> None:
+    def backward(self, dy_dvi : numbers.Number, dvi_dvj : numbers.Number) -> None:
         print(f"backward(v{self.vi} = {self.asvar()})")
-        if self.parent is None:
-            self.adjoint = 1
-        else:
-            self.adjoint = self.parent.adjoint * self.parent.dvdv(self) # don't need to accum subexpr adjoints (they are unique)
+        self.adjoint = dy_dvi * dvi_dvj # don't need to accum subexpr adjoints (they are unique)
         print(f"adjoint v{self.vi} = {self.adjoint}")
-        self.left.backward()
-        self.right.backward()
+        self.left.backward(self.adjoint, self.dvdv(self.left))
+        self.right.backward(self.adjoint, self.dvdv(self.right))
 
     def forward_trace(self):
         return self.left.forward_trace() + self.right.forward_trace() + [f"v{self.vi} = {self.asvar()}"]
@@ -148,18 +138,14 @@ class BinaryOp(Operator):
 class UnaryOp(Operator):
     def __init__(self, op : str, opnd : Expr):
         super().__init__()
-        opnd.parent = self
         self.opnd = opnd
         self.op = op
 
-    def backward(self) -> None:
+    def backward(self, dy_dvi : numbers.Number, dvi_dvj : numbers.Number) -> None:
         print(f"backward(v{self.vi} = {self.asvar()})")
-        if self.parent is None:
-            self.adjoint = 1
-        else:
-            self.adjoint = self.parent.adjoint * self.parent.dvdv(self) # don't need to accum subexpr adjoints (they are unique)
+        self.adjoint = dy_dvi * dvi_dvj # don't need to accum subexpr adjoints (they are unique)
         print(f"adjoint v{self.vi} = {self.adjoint}")
-        self.opnd.backward()
+        self.opnd.backward(self.adjoint, self.dvdv(self.opnd))
 
     def forward_trace(self):
         return self.opnd.forward_trace() + [f"v{self.vi} = {self.asvar()}"]
@@ -251,6 +237,7 @@ class Div(BinaryOp):
             p = - self.left.forward() * (1 / self.right.forward()**2)
         self.dbg(wrt,p)
         return p
+
 
 class Sin(UnaryOp):
     def __init__(self, opnd):

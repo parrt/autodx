@@ -36,12 +36,12 @@ x1 = Expr(2)
 x2 = Expr(5)
 
 print()
-#y = ln(x1) + x1 * x2 - sin(x2)
-y = ln(x1) + x1
+y = ln(x1) + x1 * x2 - sin(x2)
+#y = ln(x1) + x1
 y.set_var_indices(0)
 for op in y.forward_trace():
     print(op)
 print("f(2,5) = ln(x1) + x1 * x2 - sin(x2) =", y.forward())
-y.backward()
-print('d/dx1',y,'=',x1.adjoint)
-print('d/dx2',y,'=',x2.adjoint)
+y.backward(1,1)
+print('d/dx1', y,'=', x1.dydv)
+print('d/dx2', y,'=', x2.dydv)
