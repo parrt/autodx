@@ -32,11 +32,15 @@ from autodx.backward_ast import *
 # print('d/dx2',y,'=',x2.adjoint)
 # print("Expecting", [np.cos(x1.forward())+x2.forward(), x1.forward()])
 
-x1 = Variable(2)
-x2 = Variable(5)
+x1 = Expr(2)
+x2 = Expr(5)
 
 print()
 y = ln(x1) + x1 * x2 - sin(x2)
+y.set_var_indices(0)
+# y = ln(x1) + x1
+for op in y.forward_trace():
+    print(op)
 print("f(2,5) = ln(x1) + x1 * x2 - sin(x2) =", y.forward())
 y.backward()
 print('d/dx1',y,'=',x1.adjoint)

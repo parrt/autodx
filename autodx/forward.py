@@ -48,12 +48,6 @@ class Expr:
         return str(self)
 
 
-# class Expr(Expr): # todo: consider removing and using as stepping stone for AST
-#     "A Expr is the value of a subexpression result (temporary variable)"
-#     def __init__(self, x, dx=None):
-#         super().__init__(x,dx)
-
-
 def gradient(f,*X):
     """
     Compute gradient of f at location specified with vector X. Variables in X

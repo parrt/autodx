@@ -7,8 +7,8 @@ def Cost(X,y):
 
 def f(x): return 5 *x*x  + 1
 
-x = Expr(3)
-y = f(x)
+X = Expr(3)
+y = f(X)
 print(y)
 
 def f2(x1,x2): return x1*x2
@@ -37,15 +37,17 @@ def autodx_results(f, X):
 
 
 def pytorch_results(f, X):
-    X_ = Variable(torch.from_numpy(X), requires_grad=True)
+    X_ = Variable(torch.from_numpy(np.array(X)), requires_grad=True)
 
     y = f(*X_)
 
     y.backward()
 
-    return y.data[0], X_.grad.data.numpy()
+    return y.data[0], X_.grad.data.numpy().tolist()
 
-y, dx = autodx_results(f2, np.array([3, 4]))
+
+X = (3, 4)
+y, dx = autodx_results(f2, X)
 print(y,dx)
-y, dx = pytorch_results(f2, np.array([3, 4]))
+y, dx = pytorch_results(f2, X)
 print(y,dx)
