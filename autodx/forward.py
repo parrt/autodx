@@ -48,7 +48,7 @@ class Expr:
         return str(self)
 
 
-def gradient(f,*X):
+def gradient(f,X):
     """
     Compute gradient of f at location specified with vector X. Variables in X
     must be in same order as args of f so we can call it with f(*X).
