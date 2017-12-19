@@ -123,8 +123,8 @@ class Div(BinaryOp):
         return self.left.value() / self.right.value()
 
     def dvdx(self, wrt : Expr) -> numbers.Number:
-        return self.left.value() / self.right.dvdx(wrt) + \
-               self.right.value() / self.left.dvdx(wrt)
+        return (self.left.dvdx(wrt) * self.right.value() - self.left.value() * self.right.dvdx(wrt)) / \
+               self.right.value()**2
 
 
 class Sin(UnaryOp):

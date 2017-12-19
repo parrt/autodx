@@ -15,16 +15,18 @@ class Expr:
     def __add__(self, other):
         if isinstance(other, numbers.Number):
             return Expr(self.x + other, self.dx)  # d/dx(x + c) = dx
-        return Expr(self.x, self.dx + other.dx)
+        return Expr(self.x + other.x, self.dx + other.dx)
 
-    def __radd__(self, other): return self.__add__(other)
+    def __radd__(self, other):
+        return Expr(other + self.x, self.dx)
 
     def __sub__(self, other):
         if isinstance(other, numbers.Number):
             return Expr(self.x - other, self.dx)  # d/dx(x - c) = dx
-        return Expr(self.x, self.dx - other.dx)
+        return Expr(self.x - other.x, self.dx - other.dx)
 
-    def __rsub__(self, other): return self.__sub__(other)
+    def __rsub__(self, other):
+        return Expr(other - self.x, self.dx)
 
     def __mul__(self, other):
         if isinstance(other, numbers.Number):
@@ -33,14 +35,15 @@ class Expr:
 
     def __rmul__(self, other):
         "Allows 5 * Variable(3) to invoke overloaded * operator"
-        return self.__mul__(other)
+        return Expr(other * self.x, other * self.dx)
 
     def __truediv__(self, other):
         if isinstance(other, numbers.Number):
-            return Expr(self.x / other.x, self.dx / other.x) # d/dx(x / c) = 1/c * dx = dx/c
+            return Expr(self.x / other, self.dx / other) # d/dx(x / c) = 1/c * dx = dx/c
         return Expr(self.x / other.x, (self.dx * other.x - self.x * other.dx)/other.x**2)
 
-    def __rtruediv__(self, other): return self.__truediv__(other)
+    def __rtruediv__(self, other):
+        return Expr(other / self.x, other / self.dx)
 
     def __str__(self):
         return f"(x={self.x}, dx={self.dx})"

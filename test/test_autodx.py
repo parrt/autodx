@@ -44,10 +44,13 @@ def autodx_eval_forward_ast(f, X):
 
 def autodx_eval_forward(f, X):
     if isinstance(X, numbers.Number):
-        y = f(X)
+        X = [X]
+    X_ = [autodx.forward.Expr(x) for x in X]
+    if isinstance(X, numbers.Number):
+        y = f(X_)
     else:
-        y = f(*X)
-    return y, autodx.forward.gradient(f, X)
+        y = f(*X_)
+    return y.x, autodx.forward.gradient(f, X)
 
 
 def autodx_eval_finite_diff(f, X):
@@ -59,25 +62,30 @@ def autodx_eval_finite_diff(f, X):
     return y, autodx.finite_diff.gradient(f, h, X)
 
 
-def autodx_vs_pytorch(autodx_funcs, pytorch_funcs, method, ranges):
+def autodx_vs_pytorch(autodx_funcs, pytorch_funcs, method, ranges, tolerance=0.00000001):
     np.random.seed(999)  # use reproducible random sequence
     NCOORDINATES = 10
     errors = 0
     for lohi in ranges:
-        for autdox_func,pytorch_func in zip(autodx_funcs, pytorch_funcs):
+        for autodx_func,pytorch_func in zip(autodx_funcs, pytorch_funcs):
             for test in range(NCOORDINATES):
-                nargs = len(signature(autdox_func).parameters)
+                nargs = len(signature(autodx_func).parameters)
                 X = list(np.random.uniform(low=lohi[0], high=lohi[1], size=nargs))
-                y1, gradient1 = method(autdox_func, X)
+                y1, gradient1 = method(autodx_func, X)
                 # print("autodx: ",y1,gradient1)
                 y2, gradient2 = pytorch_eval(pytorch_func, X)
                 # print("pytorch:",y2,gradient2)
-                if not np.isclose(y1, y2):
-                    sys.stderr.write(f"f(X) mismatch for {method.__name__} at {[float(format(x,'.5f')) for x in X]}: found {y1} but should be {y2}\n")
+                if not np.isclose(y1, y2, atol=tolerance):
+                    sys.stderr.write(f"f(X) mismatch for {autodx_func.__name__} method={method.__name__} at {[float(format(x,'.5f')) for x in X]}:\n\tfound     {y1} but\n\tshould be {y2}\n")
                     errors += 1
-                if not np.isclose(gradient1, gradient2).all():
-                    sys.stderr.write(f"Gradient mismatch for {method.__name__} at {[float(format(x,'.5f')) for x in X]}: found {gradient1} but should be {gradient2}\n")
+                if not np.isclose(gradient1,gradient2, atol=tolerance).any():
+                    sys.stderr.write(f"Gradient mismatch for {autodx_func.__name__} method={method.__name__} at {[float(format(x,'.5f')) for x in X]}:\n\tfound     {gradient1} but\n\tshould be {gradient2}\n")
                     errors += 1
+
+    if not errors:
+        print(f"Test {', '.join([f.__name__ for f in autodx_funcs])} method={method.__name__} PASSED")
+    else:
+        print(f"Test {', '.join([f.__name__ for f in autodx_funcs])} method={method.__name__} FAILED {errors}")
 
     return errors
 
@@ -85,42 +93,42 @@ def autodx_vs_pytorch(autodx_funcs, pytorch_funcs, method, ranges):
 def f(x): return 5 * x * x + 1
 def f2(x1, x2): return x1 * x2
 def f3(x1, x2): return (x1 * x2) / 5
-def f4_finite_diff(x1, x2): return 8 * np.sin(x1) - x2
-def f4_forward(x1, x2): return 8 * autodx.forward.sin(x1) - x2
-def f4_forward_ast(x1, x2): return 8 * autodx.forward_ast.sin(x1) - x2
-def f4_backward_ast(x1, x2): return 8 * autodx.backward_ast.sin(x1) - x2
 
-finite_diff_funcs = [f, f2, f3, f4_finite_diff]
-forward_funcs = [f, f2, f3, f4_forward]
-forward_ast_funcs = [f, f2, f3, f4_forward_ast]
-backward_ast_funcs = [f, f2, f3, f4_backward_ast]
+def f4_finite_diff(x1, x2)  : return 8 * np.sin(x1) - x2
+def f4_forward(x1, x2)      : return 8 * autodx.forward.sin(x1) - x2
+def f4_forward_ast(x1, x2)  : return 8 * autodx.forward_ast.sin(x1) - x2
+def f4_backward_ast(x1, x2) : return 8 * autodx.backward_ast.sin(x1) - x2
+def f4_pytorch(x1, x2)      : return 8 * torch.sin(x1) - x2
 
-pytorch_funcs = [f, f2]
+def f5_finite_diff(x1, x2)  :
+    return np.log(x1) + x1 * x2 - np.sin(x2)
+def f5_forward(x1, x2)      : return autodx.forward.ln(x1) + x1 * x2 - autodx.forward.sin(x2)
+def f5_forward_ast(x1, x2)  : return autodx.forward_ast.ln(x1) + x1 * x2 - autodx.forward_ast.sin(x2)
+def f5_backward_ast(x1, x2) : return autodx.backward_ast.ln(x1) + x1 * x2 - autodx.backward_ast.sin(x2)
+def f5_pytorch(x1, x2)      : return torch.log(x1) + x1 * x2 - torch.sin(x2)
 
-ranges = [(-5000, 5000), (-0.001, 0.001)]
+simple_funcs = [f, f2, f3]
 
-print(f"Testing {len(pytorch_funcs)} functions over ranges {ranges}")
+finite_diff_funcs = [f4_finite_diff, f5_finite_diff]
+forward_funcs = [f4_forward, f5_forward]
+forward_ast_funcs = [f4_forward_ast, f5_forward_ast]
+backward_ast_funcs = [f4_backward_ast, f5_backward_ast]
 
-errors = autodx_vs_pytorch(finite_diff_funcs, pytorch_funcs, method=autodx_eval_finite_diff, ranges=[(-5000, 5000)]) # can't handle the small and big range with same h
-if not errors:
-    print(f"Finite difference PASSED gradient test")
-else:
-    print(f"Finite difference FAILED {errors} gradient tests")
+pytorch_funcs = [f4_pytorch, f5_pytorch]
 
-errors = autodx_vs_pytorch(forward_funcs, pytorch_funcs, method=autodx_eval_forward, ranges=ranges)
-if not errors:
-    print(f"Forward PASSED gradient test across")
-else:
-    print(f"Forward FAILED {errors} gradient tests")
+simple_ranges = [(-5000, 5000), (-0.001, 0.001)]
+ranges = [(1, 5000), (0.001, 0.002)]
 
-errors = autodx_vs_pytorch(forward_ast_funcs, pytorch_funcs, method=autodx_eval_forward_ast, ranges=ranges)
-if not errors:
-    print(f"Forward AST PASSED gradient test across")
-else:
-    print(f"Forward AST FAILED {errors} gradient tests")
+print(f"Testing {len(simple_funcs)+len(pytorch_funcs)} functions in ranges {ranges}")
 
-errors = autodx_vs_pytorch(backward_ast_funcs, pytorch_funcs, method=autodx_eval_backward_ast, ranges=ranges)
-if not errors:
-    print(f"Backward PASSED gradient test across")
-else:
-    print(f"Backward FAILED {errors} gradient tests")
+autodx_vs_pytorch(simple_funcs, simple_funcs, method=autodx_eval_finite_diff, ranges=simple_ranges, tolerance=1) # can't handle the small and big range with same h
+autodx_vs_pytorch(finite_diff_funcs, pytorch_funcs, method=autodx_eval_finite_diff, ranges=ranges, tolerance=1)
+
+autodx_vs_pytorch(simple_funcs, simple_funcs, method=autodx_eval_forward, ranges=simple_ranges)
+autodx_vs_pytorch(forward_funcs, pytorch_funcs, method=autodx_eval_forward, ranges=ranges)
+
+autodx_vs_pytorch(simple_funcs, simple_funcs, method=autodx_eval_forward_ast, ranges=simple_ranges)
+autodx_vs_pytorch(forward_ast_funcs, pytorch_funcs, method=autodx_eval_forward_ast, ranges=ranges)
+
+autodx_vs_pytorch(simple_funcs, simple_funcs, method=autodx_eval_backward_ast, ranges=simple_ranges)
+autodx_vs_pytorch(backward_ast_funcs, pytorch_funcs, method=autodx_eval_backward_ast, ranges=ranges)
