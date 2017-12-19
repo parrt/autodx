@@ -1,4 +1,4 @@
-def gradient(f,h,*X):
+def gradient(f,h,X):
     """
     Compute gradient of f at location specified with vector X. Values in X
     must be in same order as args of f so we can call it with f(*X). h is
@@ -12,7 +12,7 @@ def gradient(f,h,*X):
     But, generally we need to tweak each of X_i and recompute f(X) to get
     the gradient.
     """
-    X = list(X)# flip to a list from tuple so we can modify elements
+    # X = list(X)# flip to a list from tuple so we can modify elements
     fx = f(*X) # only need this once
     dX = []
     for i in range(len(X)):

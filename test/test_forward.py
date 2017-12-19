@@ -5,7 +5,7 @@ from torch.autograd import Variable
 import numpy as np
 from inspect import signature
 
-from test.support import autodx_vs_pytorch
+from test.test_autodx import autodx_vs_pytorch
 
 # def Cost(X,y):
 #     square_error = [(X[i] - y[i])**2 for i in range(len(y))]
