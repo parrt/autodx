@@ -23,7 +23,10 @@ class Expr:
         """
         return self.x
 
-    def backward(self, dy_dvi : numbers.Number, dvi_dvj : numbers.Number) -> None:
+    def backward(self) -> None:
+        self.backward_(1,1)
+
+    def backward_(self, dy_dvi : numbers.Number, dvi_dvj : numbers.Number) -> None:
         print(f"backward(v{self.vi} = {self.asvar()})")
         # actual variable leaf nodes must accumulate all contributions
         # of this var from up the tree. Sum all dy/dx_i computed backwards.
@@ -41,7 +44,7 @@ class Expr:
         return Add(self,other)
 
     def __radd__(self, other):
-        return self.__add__(other)
+        return Add(Expr(other),self) # other comes in as left operand so we flip order
 
     def __sub__(self, other):
         if isinstance(other, numbers.Number):
@@ -49,7 +52,7 @@ class Expr:
         return Sub(self,other)
 
     def __rsub__(self, other):
-        return self.__sub__(other)
+        return Sub(Expr(other),self) # other comes in as left operand so we flip order
 
     def __mul__(self, other: 'Expr') -> 'Expr':  # yuck. must put 'Variable' type in string
         if isinstance(other, numbers.Number):
@@ -58,7 +61,7 @@ class Expr:
 
     def __rmul__(self, other):
         "Allows 5 * Variable(3) to invoke overloaded * operator"
-        return self.__mul__(other)
+        return Mul(Expr(other),self) # other comes in as left operand so we flip order
 
     def __truediv__(self, other):
         if isinstance(other, numbers.Number):
@@ -66,7 +69,7 @@ class Expr:
         return Div(self,other)
 
     def __rtruediv__(self, other):
-        return self.__truediv__(other)
+        return Div(Expr(other),self) # other comes in as left operand so we flip order
 
     def __str__(self):
         if isinstance(self.x, int):
@@ -101,12 +104,12 @@ class BinaryOp(Operator):
         self.op = op
         self.right = right
 
-    def backward(self, dy_dvi : numbers.Number, dvi_dvj : numbers.Number) -> None:
+    def backward_(self, dy_dvi : numbers.Number, dvi_dvj : numbers.Number) -> None:
         print(f"backward(v{self.vi} = {self.asvar()})")
         self.adjoint = dy_dvi * dvi_dvj # don't need to accum subexpr adjoints (they are unique)
         print(f"adjoint v{self.vi} = {self.adjoint}")
-        self.left.backward(self.adjoint, self.dvdv(self.left))
-        self.right.backward(self.adjoint, self.dvdv(self.right))
+        self.left.backward_(self.adjoint, self.dvdv(self.left))
+        self.right.backward_(self.adjoint, self.dvdv(self.right))
 
     def forward_trace(self):
         return self.left.forward_trace() + self.right.forward_trace() + [f"v{self.vi} = {self.asvar()}"]
@@ -141,11 +144,11 @@ class UnaryOp(Operator):
         self.opnd = opnd
         self.op = op
 
-    def backward(self, dy_dvi : numbers.Number, dvi_dvj : numbers.Number) -> None:
+    def backward_(self, dy_dvi : numbers.Number, dvi_dvj : numbers.Number) -> None:
         print(f"backward(v{self.vi} = {self.asvar()})")
         self.adjoint = dy_dvi * dvi_dvj # don't need to accum subexpr adjoints (they are unique)
         print(f"adjoint v{self.vi} = {self.adjoint}")
-        self.opnd.backward(self.adjoint, self.dvdv(self.opnd))
+        self.opnd.backward_(self.adjoint, self.dvdv(self.opnd))
 
     def forward_trace(self):
         return self.opnd.forward_trace() + [f"v{self.vi} = {self.asvar()}"]

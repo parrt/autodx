@@ -2,6 +2,7 @@ import sys
 
 import autodx.forward
 import autodx.forward_ast
+import autodx.backward_ast
 import autodx.finite_diff
 
 import torch
@@ -20,6 +21,17 @@ def pytorch_eval(f, X):
     y.backward()
 
     return y.data[0], X_.grad.data.numpy().tolist()
+
+
+def autodx_eval_backward_ast(f, X):
+    if isinstance(X, numbers.Number):
+        X = [X]
+    X_ = [autodx.backward_ast.Expr(x) for x in X]
+    ast = f(*X_)
+    ast.set_var_indices(0)
+    y = ast.forward()
+    ast.backward()
+    return y, [x.dydv for x in X_]
 
 
 def autodx_eval_forward_ast(f, X):
@@ -78,20 +90,26 @@ def f2(x1, x2): return x1 * x2
 funcs = [f, f2]
 print(f"Testing {len(funcs)} functions")
 
-errors = autodx_vs_pytorch(funcs, funcs, method=autodx_eval_finite)
-if not errors:
-    print(f"Finite difference PASSED gradient test")
-else:
-    print(f"Finite difference FAILED {errors} gradient tests")
+# errors = autodx_vs_pytorch(funcs, funcs, method=autodx_eval_finite)
+# if not errors:
+#     print(f"Finite difference PASSED gradient test")
+# else:
+#     print(f"Finite difference FAILED {errors} gradient tests")
+#
+# errors = autodx_vs_pytorch(funcs, funcs, method=autodx_eval_forward)
+# if not errors:
+#     print(f"Forward PASSED gradient test across")
+# else:
+#     print(f"Forward FAILED {errors} gradient tests")
+#
+# errors = autodx_vs_pytorch(funcs, funcs, method=autodx_eval_forward_ast)
+# if not errors:
+#     print(f"Forward AST PASSED gradient test across")
+# else:
+#     print(f"Forward AST FAILED {errors} gradient tests")
 
-errors = autodx_vs_pytorch(funcs, funcs, method=autodx_eval_forward)
+errors = autodx_vs_pytorch(funcs, funcs, method=autodx_eval_backward_ast)
 if not errors:
-    print(f"Forward PASSED gradient test across")
+    print(f"Backward PASSED gradient test across")
 else:
-    print(f"Forward FAILED {errors} gradient tests")
-
-errors = autodx_vs_pytorch(funcs, funcs, method=autodx_eval_forward_ast)
-if not errors:
-    print(f"Forward AST PASSED gradient test across")
-else:
-    print(f"Forward AST FAILED {errors} gradient tests")
+    print(f"Backward FAILED {errors} gradient tests")
