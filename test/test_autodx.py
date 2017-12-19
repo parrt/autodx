@@ -1,6 +1,7 @@
 import sys
 
 import autodx.forward
+import autodx.forward_ast
 import autodx.finite_diff
 
 import torch
@@ -21,6 +22,14 @@ def pytorch_eval(f, X):
     return y.data[0], X_.grad.data.numpy().tolist()
 
 
+def autodx_eval_forward_ast(f, X):
+    if isinstance(X, numbers.Number):
+        X = [X]
+    X_ = [autodx.forward_ast.Expr(x) for x in X]
+    ast = f(*X_)
+    return ast.value(), ast.gradient(X_)
+
+
 def autodx_eval_forward(f, X):
     if isinstance(X, numbers.Number):
         y = f(X)
@@ -30,7 +39,7 @@ def autodx_eval_forward(f, X):
 
 
 def autodx_eval_finite(f, X):
-    h = 0.001
+    h = 0.00001
     if isinstance(X, numbers.Number):
         y = f(X)
     else:
@@ -80,3 +89,9 @@ if not errors:
     print(f"Forward PASSED gradient test across")
 else:
     print(f"Forward FAILED {errors} gradient tests")
+
+errors = autodx_vs_pytorch(funcs, funcs, method=autodx_eval_forward_ast)
+if not errors:
+    print(f"Forward AST PASSED gradient test across")
+else:
+    print(f"Forward AST FAILED {errors} gradient tests")
