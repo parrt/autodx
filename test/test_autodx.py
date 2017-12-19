@@ -85,14 +85,15 @@ def autodx_vs_pytorch(autodx_funcs, pytorch_funcs, method, ranges):
 def f(x): return 5 * x * x + 1
 def f2(x1, x2): return x1 * x2
 def f3(x1, x2): return (x1 * x2) / 5
-def f3_forward(x1, x2): return 8 * autodx.forward.sin(x1) - x2
-def f3_forward_ast(x1, x2): return 8 * autodx.forward_ast.sin(x1) - x2
-def f3_backward_ast(x1, x2): return 8 * autodx.backward_ast.sin(x1) - x2
+def f4_finite_diff(x1, x2): return 8 * np.sin(x1) - x2
+def f4_forward(x1, x2): return 8 * autodx.forward.sin(x1) - x2
+def f4_forward_ast(x1, x2): return 8 * autodx.forward_ast.sin(x1) - x2
+def f4_backward_ast(x1, x2): return 8 * autodx.backward_ast.sin(x1) - x2
 
-finite_diff_funcs = [f, f2]
-forward_funcs = [f, f2]
-forward_ast_funcs = [f, f2]
-backward_ast_funcs = [f, f2]
+finite_diff_funcs = [f, f2, f3, f4_finite_diff]
+forward_funcs = [f, f2, f3, f4_forward]
+forward_ast_funcs = [f, f2, f3, f4_forward_ast]
+backward_ast_funcs = [f, f2, f3, f4_backward_ast]
 
 pytorch_funcs = [f, f2]
 
