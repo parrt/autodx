@@ -88,7 +88,7 @@ class Add(BinaryOp):
     def value(self):
         return self.left.value() + self.right.value()
 
-    def dvdx(self, wrt : 'Expr') -> numbers.Number:
+    def dvdx(self, wrt : Expr) -> numbers.Number:
         return self.left.dvdx(wrt) + self.right.dvdx(wrt)
 
 
@@ -99,7 +99,7 @@ class Sub(BinaryOp):
     def value(self):
         return self.left.value() - self.right.value()
 
-    def dvdx(self, wrt : 'Expr') -> numbers.Number:
+    def dvdx(self, wrt : Expr) -> numbers.Number:
         return self.left.dvdx(wrt) - self.right.dvdx(wrt)
 
 
@@ -110,7 +110,7 @@ class Mul(BinaryOp):
     def value(self):
         return self.left.value() * self.right.value()
 
-    def dvdx(self, wrt : 'Expr') -> numbers.Number:
+    def dvdx(self, wrt : Expr) -> numbers.Number:
         return self.left.value() * self.right.dvdx(wrt) + \
                self.right.value() * self.left.dvdx(wrt)
 
@@ -122,7 +122,7 @@ class Div(BinaryOp):
     def value(self):
         return self.left.value() / self.right.value()
 
-    def dvdx(self, wrt : 'Expr') -> numbers.Number:
+    def dvdx(self, wrt : Expr) -> numbers.Number:
         return self.left.value() / self.right.dvdx(wrt) + \
                self.right.value() / self.left.dvdx(wrt)
 
@@ -134,9 +134,23 @@ class Sin(UnaryOp):
     def value(self):
         return np.sin(self.opnd.value())
 
-    def dvdx(self, wrt : 'Expr') -> numbers.Number:
+    def dvdx(self, wrt : Expr) -> numbers.Number:
         return np.cos(self.opnd.value()) * self.opnd.dvdx(wrt)
+
+
+class Ln(UnaryOp):
+    def __init__(self, opnd):
+        super().__init__('ln', opnd)
+
+    def value(self):
+        return np.log(self.opnd.value())
+
+    def dvdx(self, wrt : Expr) -> numbers.Number:
+        return (1 / self.opnd.value()) * self.opnd.dvdx(wrt)
 
 
 def sin(x:Expr) -> Sin:
     return Sin(x)
+
+def ln(x:Expr) -> Ln:
+    return Ln(x)

@@ -1,4 +1,5 @@
 import numbers
+import numpy as np
 
 class Expr:
     def __init__(self, x, dx=1):
@@ -46,6 +47,14 @@ class Expr:
 
     def __repr__(self):
         return str(self)
+
+
+def sin(expr:Expr) -> Expr:
+    return Expr(np.sin(expr.x), np.cos(expr.x) * expr.dx)
+
+
+def ln(expr:Expr) -> Expr:
+    return Expr(np.log(expr.x), (1 / expr.x) * expr.dx)
 
 
 def gradient(f,X):

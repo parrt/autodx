@@ -83,34 +83,42 @@ def autodx_vs_pytorch(autodx_funcs, pytorch_funcs, method, ranges):
 
 
 def f(x): return 5 * x * x + 1
-
 def f2(x1, x2): return x1 * x2
+def f3(x1, x2): return (x1 * x2) / 5
+def f3_forward(x1, x2): return 8 * autodx.forward.sin(x1) - x2
+def f3_forward_ast(x1, x2): return 8 * autodx.forward_ast.sin(x1) - x2
+def f3_backward_ast(x1, x2): return 8 * autodx.backward_ast.sin(x1) - x2
 
-funcs = [f, f2]
+finite_diff_funcs = [f, f2]
+forward_funcs = [f, f2]
+forward_ast_funcs = [f, f2]
+backward_ast_funcs = [f, f2]
+
+pytorch_funcs = [f, f2]
 
 ranges = [(-5000, 5000), (-0.001, 0.001)]
 
-print(f"Testing {len(funcs)} functions over ranges {ranges}")
+print(f"Testing {len(pytorch_funcs)} functions over ranges {ranges}")
 
-errors = autodx_vs_pytorch(funcs, funcs, method=autodx_eval_finite_diff, ranges=ranges)
+errors = autodx_vs_pytorch(finite_diff_funcs, pytorch_funcs, method=autodx_eval_finite_diff, ranges=[(-5000, 5000)]) # can't handle the small and big range with same h
 if not errors:
     print(f"Finite difference PASSED gradient test")
 else:
     print(f"Finite difference FAILED {errors} gradient tests")
 
-errors = autodx_vs_pytorch(funcs, funcs, method=autodx_eval_forward, ranges=ranges)
+errors = autodx_vs_pytorch(forward_funcs, pytorch_funcs, method=autodx_eval_forward, ranges=ranges)
 if not errors:
     print(f"Forward PASSED gradient test across")
 else:
     print(f"Forward FAILED {errors} gradient tests")
 
-errors = autodx_vs_pytorch(funcs, funcs, method=autodx_eval_forward_ast, ranges=ranges)
+errors = autodx_vs_pytorch(forward_ast_funcs, pytorch_funcs, method=autodx_eval_forward_ast, ranges=ranges)
 if not errors:
     print(f"Forward AST PASSED gradient test across")
 else:
     print(f"Forward AST FAILED {errors} gradient tests")
 
-errors = autodx_vs_pytorch(funcs, funcs, method=autodx_eval_backward_ast, ranges=ranges)
+errors = autodx_vs_pytorch(backward_ast_funcs, pytorch_funcs, method=autodx_eval_backward_ast, ranges=ranges)
 if not errors:
     print(f"Backward PASSED gradient test across")
 else:
