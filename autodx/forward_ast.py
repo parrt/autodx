@@ -64,9 +64,9 @@ class Expr:
 
     def eqn(self) -> List[str]:
         if self.varname is not None:
-            return [f"v<sub>{self.vi}</sub>", f"{self.varname}", self.value()]
+            return [f"v<sub>{self.vi}</sub>", f"{self.varname}", round(self.value())]
         else:
-            return [f"v<sub>{self.vi}</sub>", "", self.value()]
+            return [f"v<sub>{self.vi}</sub>", "", round(self.value())]
 
     def eqndx(self, wrt : 'Expr') -> List[str]:
         result = 1 if self==wrt else 0
@@ -97,10 +97,17 @@ class BinaryOp(Expr):
         self.right = right
 
     def eqn(self):
-        op = "&times;" if self.op=='*' else self.op
+        if self.op == '*':
+            op = "&times;"
+        elif self.op == '-':
+            op = "&minus;"
+        elif self.op == '/' :
+            op = "&frasl;"
+        else:
+            op = self.op
         return [f"v<sub>{self.vi}</sub>",
                 f"v<sub>{self.left.vi}</sub> {op} v<sub>{self.right.vi}</sub>",
-                self.value()]
+                round(self.value())]
 
     def children(self):
         return [self.left, self.right]
@@ -127,9 +134,9 @@ class UnaryOp(Expr):
         self.op = op
 
     def eqn(self):
-        return [f"{self.vi}",
-                f"{self.op} v{self.opnd.vi}",
-                self.value()]
+        return [f"v<sub>{self.vi}</sub>",
+                f"{self.op}(v<sub>{self.opnd.vi}</sub>)" if self.op.isalnum() else f"{self.op} v<sub>{self.opnd.vi}</sub>",
+                round(self.value())]
 
     def children(self):
         return [self.opnd]
@@ -158,10 +165,10 @@ class Add(BinaryOp):
         return self.left.dvdx(wrt) + self.right.dvdx(wrt)
 
     def eqndx(self, wrt : 'Expr') -> List[str]:
-        return [#f"∂v<sub>{self.vi}</sub>",
+        return [
             partial_html(f"∂v<sub>{self.vi}</sub>", f"∂v<sub>{wrt.vi}</sub>"),
             f"∂v<sub>{self.left.vi}</sub> + ∂v<sub>{self.right.vi}</sub>",
-            f"{self.left.dvdx(wrt)} + {self.right.dvdx(wrt)} = {self.dvdx(wrt)}"
+            f"{round(self.left.dvdx(wrt))} + {round(self.right.dvdx(wrt))} = {round(self.dvdx(wrt))}"
         ]
 
 
@@ -178,8 +185,8 @@ class Sub(BinaryOp):
     def eqndx(self, wrt : 'Expr') -> List[str]:
         return [#f"∂v<sub>{self.vi}</sub>",
             partial_html(f"∂v<sub>{self.vi}</sub>", f"∂v<sub>{wrt.vi}</sub>"),
-            f"∂v<sub>{self.left.vi}</sub> - ∂v<sub>{self.right.vi}</sub>",
-            self.dvdx(wrt)
+            f"∂v<sub>{self.left.vi}</sub> &minus; ∂v<sub>{self.right.vi}</sub>",
+            round(self.dvdx(wrt))
         ]
 
 
@@ -198,7 +205,7 @@ class Mul(BinaryOp):
         return [
             partial_html(f"∂v<sub>{self.vi}</sub>", f"∂v<sub>{wrt.vi}</sub>"),
             f"v<sub>{self.left.vi}</sub> &times; ∂v<sub>{self.right.vi}</sub> + v<sub>{self.right.vi}</sub> &times; ∂v<sub>{self.left.vi}</sub>",
-            f"{self.left.value() * self.right.dvdx(wrt)} + {self.right.value() * self.left.dvdx(wrt)} = {self.dvdx(wrt)}"]
+            f"{round(self.left.value() * self.right.dvdx(wrt))} + {round(self.right.value() * self.left.dvdx(wrt))} = {round(self.dvdx(wrt))}"]
 
 
 class Div(BinaryOp):
@@ -212,6 +219,13 @@ class Div(BinaryOp):
         return (self.left.dvdx(wrt) * self.right.value() - self.left.value() * self.right.dvdx(wrt)) / \
                self.right.value()**2
 
+    def eqndx(self, wrt : 'Expr') -> List[str]:
+        return [
+            partial_html(f"∂v<sub>{self.vi}</sub>", f"∂v<sub>{wrt.vi}</sub>"),
+            partial_html(f"v<sub>{self.right.vi}</sub> &times; ∂v<sub>{self.left.vi}</sub> &minus; v<sub>{self.left.vi}</sub> &times; ∂v<sub>{self.right.vi}</sub>", f"v<sub>{self.right.vi}</sub><sup>2</sup>"),
+            partial_html(f"{round(self.right.value())} &times; {round(self.left.dvdx(wrt))} &minus; {round(self.left.value())} &times; {round(self.right.dvdx(wrt))}", f"{round(self.right.value())}<sup>2</sup>"),
+            f"{round(self.left.value() * self.right.dvdx(wrt))} + {round(self.right.value() * self.left.dvdx(wrt))} = {round(self.dvdx(wrt))}"]
+
 
 class Sin(UnaryOp):
     def __init__(self, opnd):
@@ -223,6 +237,12 @@ class Sin(UnaryOp):
     def dvdx(self, wrt : Expr) -> numbers.Number:
         return np.cos(self.opnd.value()) * self.opnd.dvdx(wrt)
 
+    def eqndx(self, wrt : 'Expr') -> List[str]:
+        return [
+            partial_html(f"∂v<sub>{self.vi}</sub>", f"∂v<sub>{wrt.vi}</sub>"),
+            f"cos(v<sub>{self.opnd.vi}</sub>) &times; ∂v<sub>{self.opnd.vi}</sub>",
+            f"cos({round(self.opnd.value())}) &times; {round(self.opnd.dvdx(wrt))} = {round(self.dvdx(wrt))}"]
+
 
 class Ln(UnaryOp):
     def __init__(self, opnd):
@@ -233,6 +253,12 @@ class Ln(UnaryOp):
 
     def dvdx(self, wrt : Expr) -> numbers.Number:
         return (1 / self.opnd.value()) * self.opnd.dvdx(wrt)
+
+    def eqndx(self, wrt : 'Expr') -> List[str]:
+        return [
+            partial_html(f"∂v<sub>{self.vi}</sub>", f"∂v<sub>{wrt.vi}</sub>"),
+            f"(1 &frasl; v<sub>{self.opnd.vi}</sub>) &times; ∂v<sub>{self.opnd.vi}</sub>",
+            f"(1 &frasl; {round(self.opnd.value())}) &times; {round(self.opnd.dvdx(wrt))} = {round(self.dvdx(wrt))}"]
 
 
 def sin(x:Expr) -> Sin:
@@ -299,17 +325,18 @@ def nodehtml(t : Expr, wrt : Expr) -> str:
         <tr><td>{eqn[0]}</td><td> = </td><td align="left">{eqn[1]}</td><td> = </td><td align="left">{eqn[2]}</td></tr>
         """)
 
-    eqndx = t.eqndx(wrt)
-    if len(eqndx)==1:
-        rows.append(f"""
-        <tr><td>{eqndx[0]}</td><td></td><td></td><td>=</td><td></td></tr>
-        """)
-    else:
-        rows.append(f"""
-        <tr><td>{eqndx[0]}</td><td> = </td><td align="left">{eqndx[1]}</td><td>=</td><td align="left">{eqndx[2]}</td></tr>
-        """)
+    if wrt is not None:
+        eqndx = t.eqndx(wrt)
+        if len(eqndx)==1:
+            rows.append(f"""
+            <tr><td>{eqndx[0]}</td><td></td><td></td><td>=</td><td></td></tr>
+            """)
+        else:
+            rows.append(f"""
+            <tr><td>{eqndx[0]}</td><td> = </td><td align="left">{eqndx[1]}</td><td>=</td><td align="left">{eqndx[2]}</td></tr>
+            """)
 
-    return f"""<table BORDER="0" CELLPADDING="0" CELLBORDER="0" CELLSPACING="0">
+    return f"""<table BORDER="0" CELLPADDING="0" CELLBORDER="0" CELLSPACING="1">
     {''.join(rows)}
     </table>
     """
@@ -322,10 +349,18 @@ def partial_html(top : str, bottom : str):
     """
 
 
+def round(x):
+    if isinstance(x, int):
+        return x
+    if np.isclose(x, 0.0):
+        return 0
+    return float(f"{x:.4f}")
+
+
 if __name__ == '__main__':
     x1 = Expr(3, "x<sub>1</sub>")
     x2 = Expr(4, "x<sub>2</sub>")
-    y = x1 + x2 * x1
-    g = astviz(y, x1)
+    y = x1 - x2 / ln(x1)
+    g = astviz(y, x2)
     print(g.source)
     g.view()
