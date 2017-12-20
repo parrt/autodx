@@ -298,25 +298,41 @@ def ln(x:Expr) -> Ln:
     return Ln(x)
 
 
-def nodes(t : Expr) -> List[Expr]:
+def nonleaves(t : Expr) -> List[Expr]:
     """Return preorder list of nodes from ast t"""
-    all = []
+    the_nonleaves = []
     work = [t]
     while len(work)>0:
         node = work.pop(0)
-        all.append(node)
-        work += node.children()
-    return list(all)
+        if len(node.children())>0:
+            the_nonleaves.append(node)
+            work += node.children()
+    return the_nonleaves
+
+
+def leaves(t : Expr) -> List[Expr]:
+    """Return preorder list of nodes from ast t"""
+    the_leaves = []
+    work = [t]
+    while len(work)>0:
+        node = work.pop(0)
+        if len(node.children())==0:
+            the_leaves.append(node)
+        else:
+            work += node.children()
+    return the_leaves
 
 
 def astviz(t : Expr, wrt : Expr) -> graphviz.Source:
     "I had to do $ brew install graphviz --with-pango to get the cairo support for <sub>"
     t.set_var_indices(0)
-    all = nodes(t)
+    the_leaves = leaves(t)
+    the_nonleaves = nonleaves(t)
+    consts = [n for n in the_leaves if isinstance(n,Const)]
+    inputs = [n for n in the_leaves if not n in consts]
     connections = []
-    for node in all:
+    for node in the_leaves + the_nonleaves:
         connections += [connviz(node, kid) for kid in node.children()]
-    nl = "\n"
     nltab = "\n\t"
     s = f"""
     digraph G {{
@@ -324,7 +340,12 @@ def astviz(t : Expr, wrt : Expr) -> graphviz.Source:
         ranksep=.3;
         rankdir=TD;
         node [penwidth="0.5", shape=box, width=.1, height=.1];
-        {nltab.join([nodeviz(node,wrt) for node in all])}
+        {nltab.join([nodeviz(node,wrt) for node in the_nonleaves])}
+        {nltab.join([nodeviz(node,wrt) for node in consts])}
+        subgraph cluster_inputs {{
+            style=invis
+            {nltab.join([nodeviz(node,wrt) for node in inputs])}
+        }}
         {nltab.join(connections)}
     }}
     """
@@ -393,7 +414,7 @@ def round(x):
 if __name__ == '__main__':
     x1 = Expr(3, "x<sub>1</sub>")
     x2 = Expr(4, "x<sub>2</sub>")
-    y = 4 * x1 - x2 / ln(x1)
+    y = 4 * (x1 - x2) / ln(x1)
     g = astviz(y, x2)
     print(g.source)
     g.view()
