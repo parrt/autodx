@@ -193,7 +193,7 @@ class Add(BinaryOp):
 
     def eqndx(self, wrt : 'Expr') -> List[str]:
         return [
-            partial_html(f"∂v<sub>{self.vi}</sub>", f"∂v<sub>{wrt.vi}</sub>"),
+            partial_html(f"∂v<sub>{self.vi}</sub>", f"∂{wrt.varname}"),
             f"∂v<sub>{self.left.vi}</sub> + ∂v<sub>{self.right.vi}</sub>",
             f"{round(self.left.dvdx(wrt))} + {round(self.right.dvdx(wrt))} = {round(self.dvdx(wrt))}"
         ]
@@ -211,7 +211,7 @@ class Sub(BinaryOp):
 
     def eqndx(self, wrt : 'Expr') -> List[str]:
         return [#f"∂v<sub>{self.vi}</sub>",
-            partial_html(f"∂v<sub>{self.vi}</sub>", f"∂v<sub>{wrt.vi}</sub>"),
+            partial_html(f"∂v<sub>{self.vi}</sub>", f"∂{wrt.varname}"),
             f"∂v<sub>{self.left.vi}</sub> &minus; ∂v<sub>{self.right.vi}</sub>",
             f"{round(self.left.dvdx(wrt))} &minus; {round(self.right.dvdx(wrt))} = {round(self.dvdx(wrt))}"
         ]
@@ -230,7 +230,7 @@ class Mul(BinaryOp):
 
     def eqndx(self, wrt : 'Expr') -> List[str]:
         return [
-            partial_html(f"∂v<sub>{self.vi}</sub>", f"∂v<sub>{wrt.vi}</sub>"),
+            partial_html(f"∂v<sub>{self.vi}</sub>", f"∂{wrt.varname}"),
             f"v<sub>{self.left.vi}</sub> &times; ∂v<sub>{self.right.vi}</sub> + v<sub>{self.right.vi}</sub> &times; ∂v<sub>{self.left.vi}</sub>",
             f"{round(self.left.value() * self.right.dvdx(wrt))} + {round(self.right.value() * self.left.dvdx(wrt))} = {round(self.dvdx(wrt))}"]
 
@@ -248,7 +248,7 @@ class Div(BinaryOp):
 
     def eqndx(self, wrt : 'Expr') -> List[str]:
         return [
-            partial_html(f"∂v<sub>{self.vi}</sub>", f"∂v<sub>{wrt.vi}</sub>"),
+            partial_html(f"∂v<sub>{self.vi}</sub>", f"∂{wrt.varname}"),
             partial_html(f"v<sub>{self.right.vi}</sub> &times; ∂v<sub>{self.left.vi}</sub> &minus; v<sub>{self.left.vi}</sub> &times; ∂v<sub>{self.right.vi}</sub>", f"v<sub>{self.right.vi}</sub><sup>2</sup>"),
             '<table BORDER="0" CELLPADDING="0" CELLBORDER="0" CELLSPACING="1"><tr><td>'+
             partial_html(f"{round(self.right.value())} &times; {round(self.left.dvdx(wrt))} &minus; {round(self.left.value())} &times; {round(self.right.dvdx(wrt))}", f"{round(self.right.value())}<sup>2</sup>")+
@@ -268,7 +268,7 @@ class Sin(UnaryOp):
 
     def eqndx(self, wrt : 'Expr') -> List[str]:
         return [
-            partial_html(f"∂v<sub>{self.vi}</sub>", f"∂v<sub>{wrt.vi}</sub>"),
+            partial_html(f"∂v<sub>{self.vi}</sub>", f"∂{wrt.varname}"),
             f"cos(v<sub>{self.opnd.vi}</sub>) &times; ∂v<sub>{self.opnd.vi}</sub>",
             f"cos({round(self.opnd.value())}) &times; {round(self.opnd.dvdx(wrt))} = {round(self.dvdx(wrt))}"]
 
@@ -285,7 +285,7 @@ class Ln(UnaryOp):
 
     def eqndx(self, wrt : 'Expr') -> List[str]:
         return [
-            partial_html(f"∂v<sub>{self.vi}</sub>", f"∂v<sub>{wrt.vi}</sub>"),
+            partial_html(f"∂v<sub>{self.vi}</sub>", f"∂{wrt.varname}"),
             f"(1 &frasl; v<sub>{self.opnd.vi}</sub>) &times; ∂v<sub>{self.opnd.vi}</sub>",
             f"(1 &frasl; {round(self.opnd.value())}) &times; {round(self.opnd.dvdx(wrt))} = {round(self.dvdx(wrt))}"]
 
@@ -298,16 +298,20 @@ def ln(x:Expr) -> Ln:
     return Ln(x)
 
 
-def nonleaves(t : Expr) -> List[Expr]:
+def nonleaves(t : Expr) -> (List[Expr], List[List[Expr]]):
     """Return preorder list of nodes from ast t"""
     the_nonleaves = []
+    clusters = []
     work = [t]
     while len(work)>0:
         node = work.pop(0)
         if len(node.children())>0:
             the_nonleaves.append(node)
             work += node.children()
-    return the_nonleaves
+            nonvarleaf_kids = [n for n in node.children() if n.varname is None and not isinstance(n,Const)]
+            if len(nonvarleaf_kids)>1:
+                clusters += [nonvarleaf_kids] # track nonleaf children groups so we can make clusters
+    return the_nonleaves, clusters
 
 
 def leaves(t : Expr) -> List[Expr]:
@@ -327,13 +331,20 @@ def astviz(t : Expr, wrt : Expr) -> graphviz.Source:
     "I had to do $ brew install graphviz --with-pango to get the cairo support for <sub>"
     t.set_var_indices(0)
     the_leaves = leaves(t)
-    the_nonleaves = nonleaves(t)
+    the_nonleaves, clusters = nonleaves(t)
     consts = [n for n in the_leaves if isinstance(n,Const)]
     inputs = [n for n in the_leaves if not n in consts]
     connections = []
     for node in the_leaves + the_nonleaves:
         connections += [connviz(node, kid) for kid in node.children()]
+    opnd_clusters = ""
     nltab = "\n\t"
+    for i,cluster in enumerate(clusters):
+        opnd_clusters += f"""
+            subgraph cluster_opnds{i} {{
+            style=invis
+            {nltab.join([nodeviz(node,wrt) for node in cluster])}
+        }}\n"""
     s = f"""
     digraph G {{
         nodesep=.1;
@@ -342,6 +353,7 @@ def astviz(t : Expr, wrt : Expr) -> graphviz.Source:
         node [penwidth="0.5", shape=box, width=.1, height=.1];
         {nltab.join([nodeviz(node,wrt) for node in the_nonleaves])}
         {nltab.join([nodeviz(node,wrt) for node in consts])}
+        {opnd_clusters}
         subgraph cluster_inputs {{
             style=invis
             {nltab.join([nodeviz(node,wrt) for node in inputs])}
@@ -353,7 +365,8 @@ def astviz(t : Expr, wrt : Expr) -> graphviz.Source:
     return graphviz.Source(s)
 
 def nodeviz(t : Expr, wrt : Expr) -> str:
-    return f'v{t.vi} [color="#444443", margin="0.02", fontcolor="#444443", fontname="Times-Italic", style=filled, fillcolor="{YELLOW}", label=<{nodehtml(t,wrt)}>];'
+    color = GREEN if t.varname is not None else YELLOW
+    return f'v{t.vi} [color="#444443", margin="0.02", fontcolor="#444443", fontname="Times-Italic", style=filled, fillcolor="{color}", label=<{nodehtml(t,wrt)}>];'
 
 
 def connviz(t : Expr, kid : Expr) -> str:
@@ -412,9 +425,9 @@ def round(x):
 
 
 if __name__ == '__main__':
-    x1 = Expr(3, "x<sub>1</sub>")
-    x2 = Expr(4, "x<sub>2</sub>")
-    y = 4 * (x1 - x2) / ln(x1)
-    g = astviz(y, x2)
+    x1 = Expr(2, "x<sub>1</sub>")
+    x2 = Expr(5, "x<sub>2</sub>")
+    y = ln(x1) + x1 * x2 - sin(x2)
+    g = astviz(y, x1)
     print(g.source)
     g.view()
