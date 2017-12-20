@@ -74,10 +74,6 @@ class Expr:
             return [partial_html(f"∂v<sub>{self.vi}</sub>", f"∂{wrt.varname}"),
                     partial_html(f"∂{self.varname}", f"∂{wrt.varname}"),
                     result]
-        if wrt.varname is not None and self.varname is None: # must be constant
-            return [partial_html(f"∂v<sub>{self.vi}</sub>", f"∂{wrt.varname}"),
-                    "",
-                    result]
         else:
             return [partial_html(f"∂v<sub>{self.vi}</sub>", f"∂v<sub>{wrt.vi}</sub>"), "", result]
 
@@ -291,10 +287,14 @@ class Ln(UnaryOp):
 
 
 def sin(x:Expr) -> Sin:
+    if isinstance(x, numbers.Number):
+        return Sin(Const(x))
     return Sin(x)
 
 
 def ln(x:Expr) -> Ln:
+    if isinstance(x, numbers.Number):
+        return Ln(Const(x))
     return Ln(x)
 
 
@@ -308,7 +308,7 @@ def nonleaves(t : Expr) -> (List[Expr], List[List[Expr]]):
         if len(node.children())>0:
             the_nonleaves.append(node)
             work += node.children()
-            nonvarleaf_kids = [n for n in node.children() if n.varname is None and not isinstance(n,Const)]
+            nonvarleaf_kids = [n for n in node.children() if n.varname is None]
             if len(nonvarleaf_kids)>1:
                 clusters += [nonvarleaf_kids] # track nonleaf children groups so we can make clusters
     return the_nonleaves, clusters
@@ -332,32 +332,44 @@ def astviz(t : Expr, wrt : Expr) -> graphviz.Source:
     t.set_var_indices(0)
     the_leaves = leaves(t)
     the_nonleaves, clusters = nonleaves(t)
+    cluster_nodes = [item for cluster in clusters for item in cluster]
+
     consts = [n for n in the_leaves if isinstance(n,Const)]
     inputs = [n for n in the_leaves if not n in consts]
     connections = []
     for node in the_leaves + the_nonleaves:
         connections += [connviz(node, kid) for kid in node.children()]
+
     opnd_clusters = ""
+    the_nonleaves = [n for n in the_nonleaves if n not in cluster_nodes]
     nltab = "\n\t"
+    # note: rank=same with edges crap is to force order of operands to be same as order given in dot file (subgraphs mess up order)
+    # but we need subgraphs to put operands at same tree level.
     for i,cluster in enumerate(clusters):
         opnd_clusters += f"""
             subgraph cluster_opnds{i} {{
-            style=invis
+            style=invis; {{rank=same; {'->'.join([f'v{n.vi}' for n in cluster])} [style=invis]}}
             {nltab.join([nodeviz(node,wrt) for node in cluster])}
         }}\n"""
     s = f"""
+
     digraph G {{
         nodesep=.1;
         ranksep=.3;
         rankdir=TD;
         node [penwidth="0.5", shape=box, width=.1, height=.1];
+        // OPERATORS
         {nltab.join([nodeviz(node,wrt) for node in the_nonleaves])}
-        {nltab.join([nodeviz(node,wrt) for node in consts])}
+        // CONSTANTS (not operand of binary op)
+        {nltab.join([nodeviz(node,wrt) for node in [n for n in consts if n not in cluster_nodes]])}
+        // OPERAND CLUSTERS
         {opnd_clusters}
+        // INPUTS (leaves)
         subgraph cluster_inputs {{
             style=invis
             {nltab.join([nodeviz(node,wrt) for node in inputs])}
         }}
+        // EDGES
         {nltab.join(connections)}
     }}
     """
@@ -427,7 +439,7 @@ def round(x):
 if __name__ == '__main__':
     x1 = Expr(2, "x<sub>1</sub>")
     x2 = Expr(5, "x<sub>2</sub>")
-    y = ln(x1) + x1 * x2 - sin(x2)
+    y = ln(x1) + x1 * x2 - sin(x2) + sin(99)
     g = astviz(y, x1)
     print(g.source)
     g.view()
