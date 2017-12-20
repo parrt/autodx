@@ -1,13 +1,8 @@
 import numpy as np
 import numbers
 
-VAR_COUNT = -1
-
 class Expr:
     def __init__(self, x : numbers.Number = None):
-        # global VAR_COUNT
-        # self.vi = VAR_COUNT
-        # VAR_COUNT += 1
         self.vi = -1
         if x is None:
             x = 0
