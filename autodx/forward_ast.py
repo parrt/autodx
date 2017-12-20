@@ -22,36 +22,36 @@ class Expr:
 
     def __add__(self, other):
         if isinstance(other, numbers.Number):
-            other = Expr(other)
+            other = Const(other)
         return Add(self,other)
 
     def __radd__(self, other):
-        return Add(Expr(other),self) # other comes in as left operand so we flip order
+        return Add(Const(other),self) # other comes in as left operand so we flip order
 
     def __sub__(self, other):
         if isinstance(other, numbers.Number):
-            other = Expr(other)
+            other = Const(other)
         return Sub(self,other)
 
     def __rsub__(self, other):
-        return Sub(Expr(other),self) # other comes in as left operand so we flip order
+        return Sub(Const(other),self) # other comes in as left operand so we flip order
 
     def __mul__(self, other: 'Expr') -> 'Expr':  # yuck. must put 'Variable' type in string
         if isinstance(other, numbers.Number):
-            other = Expr(other)
+            other = Const(other)
         return Mul(self,other)
 
     def __rmul__(self, other):
         "Allows 5 * Variable(3) to invoke overloaded * operator"
-        return Mul(Expr(other),self) # other comes in as left operand so we flip order
+        return Mul(Const(other),self) # other comes in as left operand so we flip order
 
     def __truediv__(self, other):
         if isinstance(other, numbers.Number):
-            other = Expr(other)
+            other = Const(other)
         return Div(self,other)
 
     def __rtruediv__(self, other):
-        return Div(Expr(other),self) # other comes in as left operand so we flip order
+        return Div(Const(other),self) # other comes in as left operand so we flip order
 
     def gradient(self, X):
         return [self.dvdx(x) for x in X]
@@ -70,9 +70,13 @@ class Expr:
 
     def eqndx(self, wrt : 'Expr') -> List[str]:
         result = 1 if self==wrt else 0
-        if wrt.varname is not None:
+        if wrt.varname is not None and self.varname is not None:
             return [partial_html(f"∂v<sub>{self.vi}</sub>", f"∂{wrt.varname}"),
                     partial_html(f"∂{self.varname}", f"∂{wrt.varname}"),
+                    result]
+        if wrt.varname is not None and self.varname is None: # must be constant
+            return [partial_html(f"∂v<sub>{self.vi}</sub>", f"∂{wrt.varname}"),
+                    "",
                     result]
         else:
             return [partial_html(f"∂v<sub>{self.vi}</sub>", f"∂v<sub>{wrt.vi}</sub>"), "", result]
@@ -87,6 +91,29 @@ class Expr:
 
     def __repr__(self):
         return str(self)
+
+
+class Const(Expr):
+    def __init__(self, v : numbers.Number):
+        self.x = v
+        self.vi = -1
+        self.varname = None
+
+    def __str__(self):
+        if isinstance(self.x, int):
+            return f'{self.x}'
+        else:
+            return f'{round(self.x)}'
+
+    def eqn(self) -> List[str]:
+        return [f"v<sub>{self.vi}</sub>", "", round(self.value())]
+
+    def eqndx(self, wrt : 'Expr') -> List[str]:
+        result = 1 if self==wrt else 0
+        if wrt.varname is not None:
+            return [partial_html(f"∂v<sub>{self.vi}</sub>", f"∂{wrt.varname}"), "", result]
+        else:
+            return [partial_html(f"∂v<sub>{self.vi}</sub>", f"∂v<sub>{wrt.vi}</sub>"), "", result]
 
 
 class BinaryOp(Expr):
@@ -186,7 +213,7 @@ class Sub(BinaryOp):
         return [#f"∂v<sub>{self.vi}</sub>",
             partial_html(f"∂v<sub>{self.vi}</sub>", f"∂v<sub>{wrt.vi}</sub>"),
             f"∂v<sub>{self.left.vi}</sub> &minus; ∂v<sub>{self.right.vi}</sub>",
-            round(self.dvdx(wrt))
+            f"{round(self.left.dvdx(wrt))} &minus; {round(self.right.dvdx(wrt))} = {round(self.dvdx(wrt))}"
         ]
 
 
@@ -223,7 +250,9 @@ class Div(BinaryOp):
         return [
             partial_html(f"∂v<sub>{self.vi}</sub>", f"∂v<sub>{wrt.vi}</sub>"),
             partial_html(f"v<sub>{self.right.vi}</sub> &times; ∂v<sub>{self.left.vi}</sub> &minus; v<sub>{self.left.vi}</sub> &times; ∂v<sub>{self.right.vi}</sub>", f"v<sub>{self.right.vi}</sub><sup>2</sup>"),
-            partial_html(f"{round(self.right.value())} &times; {round(self.left.dvdx(wrt))} &minus; {round(self.left.value())} &times; {round(self.right.dvdx(wrt))}", f"{round(self.right.value())}<sup>2</sup>"),
+            '<table BORDER="0" CELLPADDING="0" CELLBORDER="0" CELLSPACING="1"><tr><td>'+
+            partial_html(f"{round(self.right.value())} &times; {round(self.left.dvdx(wrt))} &minus; {round(self.left.value())} &times; {round(self.right.dvdx(wrt))}", f"{round(self.right.value())}<sup>2</sup>")+
+            f"</td><td> = {round(self.dvdx(wrt))}</td></tr></table>",
             f"{round(self.left.value() * self.right.dvdx(wrt))} + {round(self.right.value() * self.left.dvdx(wrt))} = {round(self.dvdx(wrt))}"]
 
 
@@ -311,30 +340,34 @@ def connviz(t : Expr, kid : Expr) -> str:
 
 
 def nodehtml(t : Expr, wrt : Expr) -> str:
-    # partial = f'∂v<sub>{t.vi}</sub>/∂v<sub>{wrt.vi}</sub>'
-#        <tr><td>{partial}&nbsp;</td><td>=</td><td></td></tr>
-
-    eqn = t.eqn()
     rows = []
-    if len(eqn)==1:
-        rows.append(f"""
-        <tr><td>{eqn[0]}</td><td> = </td><td align="left">{eqn[2]}</td><td> = </td><td align="left">{eqn[2]}</td></tr>
-        """)
+    eqn = t.eqn()
+    if isinstance(t, Const):
+        rows.append(f"""<tr><td>{eqn[0]}</td><td> = </td><td align="left">{eqn[2]}</td></tr>""")
+        if wrt is not None:
+            eqndx = t.eqndx(wrt)
+            rows.append(
+                f"""<tr><td>{eqndx[0]}</td><td> = </td><td align="left">{eqndx[2]}</td></tr>""")
     else:
-        rows.append(f"""
-        <tr><td>{eqn[0]}</td><td> = </td><td align="left">{eqn[1]}</td><td> = </td><td align="left">{eqn[2]}</td></tr>
-        """)
-
-    if wrt is not None:
-        eqndx = t.eqndx(wrt)
-        if len(eqndx)==1:
+        if len(eqn)==1:
             rows.append(f"""
-            <tr><td>{eqndx[0]}</td><td></td><td></td><td>=</td><td></td></tr>
+            <tr><td>{eqn[0]}</td><td> = </td><td align="left">{eqn[1]}</td><td> = </td><td align="left">{eqn[2]}</td></tr>
             """)
         else:
             rows.append(f"""
-            <tr><td>{eqndx[0]}</td><td> = </td><td align="left">{eqndx[1]}</td><td>=</td><td align="left">{eqndx[2]}</td></tr>
+            <tr><td>{eqn[0]}</td><td> = </td><td align="left">{eqn[1]}</td><td> = </td><td align="left">{eqn[2]}</td></tr>
             """)
+
+        if wrt is not None:
+            eqndx = t.eqndx(wrt)
+            if len(eqndx)==1:
+                rows.append(f"""
+                <tr><td>{eqndx[0]}</td><td></td><td></td><td>=</td><td></td></tr>
+                """)
+            else:
+                rows.append(f"""
+                <tr><td>{eqndx[0]}</td><td> = </td><td align="left">{eqndx[1]}</td><td>=</td><td align="left">{eqndx[2]}</td></tr>
+                """)
 
     return f"""<table BORDER="0" CELLPADDING="0" CELLBORDER="0" CELLSPACING="1">
     {''.join(rows)}
@@ -360,7 +393,7 @@ def round(x):
 if __name__ == '__main__':
     x1 = Expr(3, "x<sub>1</sub>")
     x2 = Expr(4, "x<sub>2</sub>")
-    y = x1 - x2 / ln(x1)
+    y = 4 * x1 - x2 / ln(x1)
     g = astviz(y, x2)
     print(g.source)
     g.view()
