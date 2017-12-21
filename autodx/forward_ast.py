@@ -14,12 +14,6 @@ class Expr:
         self.vi = -1
         self.varname = varname
 
-    def value(self) -> numbers.Number:
-        return self.x
-
-    def dvdx(self, wrt : 'Expr') -> numbers.Number:
-        return 1 if self==wrt else 0
-
     def __add__(self, other):
         if isinstance(other, numbers.Number):
             other = Const(other)
@@ -53,25 +47,14 @@ class Expr:
     def __rtruediv__(self, other):
         return Div(Const(other),self) # other comes in as left operand so we flip order
 
+    def value(self) -> numbers.Number:
+        return self.x
+
+    def dvdx(self, wrt : 'Expr') -> numbers.Number:
+        return 1 if self==wrt else 0
+
     def gradient(self, X):
         return [self.dvdx(x) for x in X]
-
-    def set_var_indices(self, first_index : int = 0):
-        the_leaves = leaves(self)
-        inputs = [n for n in the_leaves if isinstance(n, Var)]
-        i = first_index
-        for leaf in inputs:
-            leaf.vi = i
-            i += 1
-
-        self.set_var_indices_(i)
-        return 0
-
-    def set_var_indices_(self, vi : int):
-        if self.vi<0:
-            self.vi = vi
-            return self.vi + 1
-        return vi
 
     def children(self):
         return []
@@ -114,14 +97,6 @@ class BinaryOp(Expr):
     def children(self):
         return [self.left, self.right]
 
-    def set_var_indices_(self, vi : int = 0) -> int:
-        if self.vi<0:
-            vi = self.left.set_var_indices_(vi)
-            vi = self.right.set_var_indices_(vi)
-            self.vi = vi
-            return self.vi + 1
-        return vi
-
     def __str__(self):
         return f"({self.left} {self.op} {self.right})"
 
@@ -137,12 +112,6 @@ class UnaryOp(Expr):
 
     def children(self):
         return [self.opnd]
-
-    def set_var_indices_(self, vi : int = 0) -> int:
-        if self.vi<0:
-            self.vi = self.opnd.set_var_indices_(vi)
-            return self.vi + 1
-        return vi
 
     def __str__(self):
         return f"{self.op}({self.opnd})"
@@ -243,3 +212,31 @@ def leaves(t : Expr) -> List[Expr]:
         else:
             work += node.children()
     return the_leaves
+
+
+def set_var_indices(t : Expr, first_index : int = 0) -> None:
+    the_leaves = leaves(t)
+    inputs = [n for n in the_leaves if isinstance(n, Var)]
+    i = first_index
+    for leaf in inputs:
+        leaf.vi = i
+        i += 1
+
+    set_var_indices_(t,i)
+
+
+def set_var_indices_(t : Expr, vi : int) -> int:
+    if t.vi >= 0:
+        return vi
+    if isinstance(t, Var) or isinstance(t, Const):
+        t.vi = vi
+        return t.vi + 1
+    elif isinstance(t, BinaryOp):
+        vi = set_var_indices_(t.left,vi)
+        vi = set_var_indices_(t.right,vi)
+        t.vi = vi
+        return t.vi + 1
+    elif isinstance(t, UnaryOp):
+        t.vi = set_var_indices_(t.opnd,vi)
+        return t.vi + 1
+    return vi

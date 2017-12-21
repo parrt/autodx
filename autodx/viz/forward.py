@@ -150,7 +150,7 @@ def nonleaves(t : Expr) -> (List[Expr], List[List[Expr]]):
 
 def astviz(t : Expr, wrt : Expr) -> graphviz.Source:
     "I had to do $ brew install graphviz --with-pango to get the cairo support for <sub>"
-    t.set_var_indices(0)
+    set_var_indices(t,0)
     the_leaves = leaves(t)
     the_nonleaves, clusters = nonleaves(t)
     cluster_nodes = [item for cluster in clusters for item in cluster]
