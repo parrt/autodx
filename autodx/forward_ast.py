@@ -9,10 +9,10 @@ BLUE = "#D9E6F5"
 GREEN = "#cfe2d4"
 
 class Expr:
-    def __init__(self, x : numbers.Number = 0, varname : str = None):
+    def __init__(self, x : numbers.Number = 0):
         self.x = x
         self.vi = -1
-        self.varname = varname
+        self.varname = None
 
     def __add__(self, other):
         if isinstance(other, numbers.Number):
@@ -50,14 +50,14 @@ class Expr:
     def value(self) -> numbers.Number:
         return self.x
 
-    def dvdx(self, wrt : 'Expr') -> numbers.Number:
-        return 1 if self==wrt else 0
-
     def gradient(self, X):
         return [self.dvdx(x) for x in X]
 
     def children(self):
         return []
+
+    def __repr__(self):
+        return str(self)
 
 
 class Var(Expr):
@@ -66,19 +66,23 @@ class Var(Expr):
         self.vi = -1
         self.varname = varname
 
+    def dvdx(self, wrt : 'Expr') -> numbers.Number:
+        return 1 if self==wrt else 0
+
     def __str__(self):
         if isinstance(self.x, int):
             return f'Var({self.x})'
         return f'Var({self.x:.4f})'
 
-    def __repr__(self):
-        return str(self)
 
 class Const(Expr):
     def __init__(self, v : numbers.Number):
         self.x = v
         self.vi = -1
         self.varname = None
+
+    def dvdx(self, wrt : 'Expr') -> numbers.Number:
+        return 0
 
     def __str__(self):
         if isinstance(self.x, int):
@@ -100,9 +104,6 @@ class BinaryOp(Expr):
     def __str__(self):
         return f"({self.left} {self.op} {self.right})"
 
-    def __repr__(self):
-        return str(self)
-
 
 class UnaryOp(Expr):
     def __init__(self, op : str, opnd : Expr):
@@ -116,8 +117,6 @@ class UnaryOp(Expr):
     def __str__(self):
         return f"{self.op}({self.opnd})"
 
-    def __repr__(self):
-        return str(self)
 
 
 class Add(BinaryOp):
