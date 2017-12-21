@@ -1,0 +1,267 @@
+from autodx.forward_ast import *
+
+YELLOW = "#fefecd" # "#fbfbd0" # "#FBFEB0"
+BLUE = "#D9E6F5"
+GREEN = "#cfe2d4"
+
+def eqn(t : Expr) -> List[str]:
+    """Perform a dynamic dispatch to X_viz.eqn() for node type X"""
+    vizclass = globals()[t.__class__.__name__ + "_viz"]
+    return getattr(vizclass, "eqn")(t)
+
+
+def eqndx(t : Expr, wrt : 'Expr') -> List[str]:
+    """Perform a dynamic dispatch to X_viz.eqndx() for node type X"""
+    vizclass = globals()[t.__class__.__name__ + "_viz"]
+    return getattr(vizclass, "eqndx")(t, wrt)
+
+
+class Var_viz:
+    @staticmethod
+    def eqn(t : Var) -> List[str]:
+        if t.varname is not None:
+            return [f"v<sub>{t.vi}</sub>", f"{t.varname}", round(t.value())]
+        else:
+            return [f"v<sub>{t.vi}</sub>", "", round(t.value())]
+
+    @staticmethod
+    def eqndx(t : Var, wrt : 'Expr') -> List[str]:
+        result = 1 if t==wrt else 0
+        if wrt.varname is not None and t.varname is not None:
+            return [partial_html(f"∂v<sub>{t.vi}</sub>", f"∂{wrt.varname}"),
+                    partial_html(f"∂{t.varname}", f"∂{wrt.varname}"),
+                    result]
+        else:
+            return [partial_html(f"∂v<sub>{t.vi}</sub>", f"∂v<sub>{wrt.vi}</sub>"), "", result]
+
+
+class Const_viz:
+    @staticmethod
+    def eqn(t : Const) -> List[str]:
+        return [f"v<sub>{t.vi}</sub>", "", round(t.value())]
+
+    @staticmethod
+    def eqndx(t : Const, wrt : 'Expr') -> List[str]:
+        result = 1 if t==wrt else 0
+        if wrt.varname is not None:
+            return [partial_html(f"∂v<sub>{t.vi}</sub>", f"∂{wrt.varname}"), "", result]
+        else:
+            return [partial_html(f"∂v<sub>{t.vi}</sub>", f"∂v<sub>{wrt.vi}</sub>"), "", result]
+
+
+class BinaryOp_viz:
+    def eqn(t : BinaryOp) -> List[str]:
+        if t.op == '*':
+            op = "&times;"
+        elif t.op == '-':
+            op = "&minus;"
+        elif t.op == '/' :
+            op = "&frasl;"
+        else:
+            op = t.op
+        return [f"v<sub>{t.vi}</sub>",
+                f"v<sub>{t.left.vi}</sub> {op} v<sub>{t.right.vi}</sub>",
+                round(t.value())]
+
+
+
+class UnaryOp_viz:
+    @staticmethod
+    def eqn(t : UnaryOp) -> List[str]:
+        return [f"v<sub>{t.vi}</sub>",
+                f"{t.op}(v<sub>{t.opnd.vi}</sub>)" if t.op.isalnum() else f"{t.op} v<sub>{t.opnd.vi}</sub>",
+                round(t.value())]
+
+
+class Add_viz(BinaryOp_viz):
+    @staticmethod
+    def eqndx(t : BinaryOp, wrt : 'Expr') -> List[str]:
+        return [
+            partial_html(f"∂v<sub>{t.vi}</sub>", f"∂{wrt.varname}"),
+            f"∂v<sub>{t.left.vi}</sub> + ∂v<sub>{t.right.vi}</sub>",
+            f"{round(t.left.dvdx(wrt))} + {round(t.right.dvdx(wrt))} = {round(t.dvdx(wrt))}"
+        ]
+
+
+class Sub_viz(BinaryOp_viz):
+    @staticmethod
+    def eqndx(t : BinaryOp, wrt : 'Expr') -> List[str]:
+        return [#f"∂v<sub>{t.vi}</sub>",
+            partial_html(f"∂v<sub>{t.vi}</sub>", f"∂{wrt.varname}"),
+            f"∂v<sub>{t.left.vi}</sub> &minus; ∂v<sub>{t.right.vi}</sub>",
+            f"{round(t.left.dvdx(wrt))} &minus; {round(t.right.dvdx(wrt))} = {round(t.dvdx(wrt))}"
+        ]
+
+
+class Mul_viz(BinaryOp_viz):
+    @staticmethod
+    def eqndx(t : BinaryOp, wrt : 'Expr') -> List[str]:
+        return [
+            partial_html(f"∂v<sub>{t.vi}</sub>", f"∂{wrt.varname}"),
+            f"v<sub>{t.left.vi}</sub> &times; ∂v<sub>{t.right.vi}</sub> + v<sub>{t.right.vi}</sub> &times; ∂v<sub>{t.left.vi}</sub>",
+            f"{round(t.left.value() * t.right.dvdx(wrt))} + {round(t.right.value() * t.left.dvdx(wrt))} = {round(t.dvdx(wrt))}"]
+
+
+class Div_viz(BinaryOp_viz):
+    @staticmethod
+    def eqndx(t : BinaryOp, wrt : 'Expr') -> List[str]:
+        return [
+            partial_html(f"∂v<sub>{t.vi}</sub>", f"∂{wrt.varname}"),
+            partial_html(f"v<sub>{t.right.vi}</sub> &times; ∂v<sub>{t.left.vi}</sub> &minus; v<sub>{t.left.vi}</sub> &times; ∂v<sub>{t.right.vi}</sub>", f"v<sub>{t.right.vi}</sub><sup>2</sup>"),
+            '<table BORDER="0" CELLPADDING="0" CELLBORDER="0" CELLSPACING="1"><tr><td>'+
+            partial_html(f"{round(t.right.value())} &times; {round(t.left.dvdx(wrt))} &minus; {round(t.left.value())} &times; {round(t.right.dvdx(wrt))}", f"{round(t.right.value())}<sup>2</sup>")+
+            f"</td><td> = {round(t.dvdx(wrt))}</td></tr></table>",
+            f"{round(t.left.value() * t.right.dvdx(wrt))} + {round(t.right.value() * t.left.dvdx(wrt))} = {round(t.dvdx(wrt))}"]
+
+
+class Sin_viz(UnaryOp_viz):
+    @staticmethod
+    def eqndx(t : UnaryOp, wrt : 'Expr') -> List[str]:
+        return [
+            partial_html(f"∂v<sub>{t.vi}</sub>", f"∂{wrt.varname}"),
+            f"cos(v<sub>{t.opnd.vi}</sub>) &times; ∂v<sub>{t.opnd.vi}</sub>",
+            f"cos({round(t.opnd.value())}) &times; {round(t.opnd.dvdx(wrt))} = {round(t.dvdx(wrt))}"]
+
+
+class Ln_viz(UnaryOp_viz):
+    @staticmethod
+    def eqndx(t : UnaryOp, wrt : 'Expr') -> List[str]:
+        return [
+            partial_html(f"∂v<sub>{t.vi}</sub>", f"∂{wrt.varname}"),
+            f"(1 &frasl; v<sub>{t.opnd.vi}</sub>) &times; ∂v<sub>{t.opnd.vi}</sub>",
+            f"(1 &frasl; {round(t.opnd.value())}) &times; {round(t.opnd.dvdx(wrt))} = {round(t.dvdx(wrt))}"]
+
+
+def nonleaves(t : Expr) -> (List[Expr], List[List[Expr]]):
+    """Return preorder list of nodes from ast t"""
+    the_nonleaves = []
+    clusters = []
+    work = [t]
+    while len(work)>0:
+        node = work.pop(0)
+        if len(node.children())>0:
+            the_nonleaves.append(node)
+            work += node.children()
+            nonvarleaf_kids = [n for n in node.children() if not isinstance(n,Var)]
+            if len(nonvarleaf_kids)>1:
+                clusters += [nonvarleaf_kids] # track nonleaf children groups so we can make clusters
+    return the_nonleaves, clusters
+
+
+def astviz(t : Expr, wrt : Expr) -> graphviz.Source:
+    "I had to do $ brew install graphviz --with-pango to get the cairo support for <sub>"
+    t.set_var_indices(0)
+    the_leaves = leaves(t)
+    the_nonleaves, clusters = nonleaves(t)
+    cluster_nodes = [item for cluster in clusters for item in cluster]
+
+    consts = [n for n in the_leaves if isinstance(n,Const)]
+    inputs = [n for n in the_leaves if isinstance(n,Var)]
+    connections = []
+    for node in the_leaves + the_nonleaves:
+        connections += [connviz(node, kid) for kid in node.children()]
+
+    opnd_clusters = ""
+    the_nonleaves = [n for n in the_nonleaves if n not in cluster_nodes] # don't repeat nodes already in operand clusters
+    nltab = "\n\t"
+    # note: rank=same with edges crap is to force order of operands to be same as order given in dot file (subgraphs mess up order)
+    # but we need subgraphs to put operands at same tree level.
+    for i,cluster in enumerate(clusters):
+        opnd_clusters += f"""
+            subgraph cluster_opnds{i} {{
+            style=invis; {{rank=same; {'->'.join([f'v{n.vi}' for n in cluster])} [style=invis]}}
+            {nltab.join([nodeviz(node,wrt) for node in cluster])}
+        }}\n"""
+    s = f"""
+
+    digraph G {{
+        nodesep=.1;
+        ranksep=.3;
+        rankdir=TD;
+        node [penwidth="0.5", shape=box, width=.1, height=.1];
+        // OPERATORS
+        {nltab.join([nodeviz(node,wrt) for node in the_nonleaves])}
+        // CONSTANTS (not operand of binary op)
+        {nltab.join([nodeviz(node,wrt) for node in [n for n in consts if n not in cluster_nodes]])}
+        // OPERAND CLUSTERS
+        {opnd_clusters}
+        // INPUTS (leaves)
+        subgraph cluster_inputs {{
+            style=invis
+            {nltab.join([nodeviz(node,wrt) for node in inputs])}
+        }}
+        // EDGES
+        {nltab.join(connections)}
+    }}
+    """
+
+    return graphviz.Source(s)
+
+def nodeviz(t : Expr, wrt : Expr) -> str:
+    color = GREEN if isinstance(t,Var) else YELLOW
+    return f'v{t.vi} [color="#444443", margin="0.02", fontcolor="#444443", fontname="Times-Italic", style=filled, fillcolor="{color}", label=<{nodehtml(t,wrt)}>];'
+
+
+def connviz(t : Expr, kid : Expr) -> str:
+    return f'v{t.vi} -> v{kid.vi} [penwidth="0.5", color="#444443", arrowsize=.4]'
+
+
+def nodehtml(t : Expr, wrt : Expr) -> str:
+    rows = []
+    e = eqn(t)
+    if isinstance(t, Const):
+        rows.append(f"""<tr><td>{e[0]}</td><td> = </td><td align="left">{e[2]}</td></tr>""")
+        if wrt is not None:
+            edx = eqndx(t, wrt)
+            rows.append(
+                f"""<tr><td>{edx[0]}</td><td> = </td><td align="left">{edx[2]}</td></tr>""")
+    else:
+        if len(e)==1:
+            rows.append(f"""
+            <tr><td>{e[0]}</td><td> = </td><td align="left">{e[1]}</td><td> = </td><td align="left">{e[2]}</td></tr>
+            """)
+        else:
+            rows.append(f"""
+            <tr><td>{e[0]}</td><td> = </td><td align="left">{e[1]}</td><td> = </td><td align="left">{e[2]}</td></tr>
+            """)
+
+        if wrt is not None:
+            edx = eqndx(t,wrt)
+            if len(edx)==1:
+                rows.append(f"""
+                <tr><td>{edx[0]}</td><td></td><td></td><td>=</td><td></td></tr>
+                """)
+            else:
+                rows.append(f"""
+                <tr><td>{edx[0]}</td><td> = </td><td align="left">{edx[1]}</td><td>=</td><td align="left">{edx[2]}</td></tr>
+                """)
+
+    return f"""<table BORDER="0" CELLPADDING="0" CELLBORDER="0" CELLSPACING="1">
+    {''.join(rows)}
+    </table>
+    """
+
+
+def partial_html(top : str, bottom : str):
+    return f"""<table BORDER="0" CELLPADDING="0" CELLBORDER="0" CELLSPACING="0">
+        <tr><td cellspacing="0" cellpadding="0" border="1" sides="b">{top}</td></tr>
+        <tr><td cellspacing="0" cellpadding="0">{bottom}</td></tr>
+    </table>
+    """
+
+
+def round(x):
+    if isinstance(x, int):
+        return x
+    if np.isclose(x, 0.0):
+        return 0
+    return float(f"{x:.4f}")
+
+
+if __name__ == '__main__':
+    x1 = Var(2, "x<sub>1</sub>")
+    x2 = Var(5, "x<sub>2</sub>")
+    y = ln(x1) + x1 * x2 - sin(x2) * 9
+    g = astviz(y, x1)
+    print(g.source)
+    g.view()
