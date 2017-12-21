@@ -37,7 +37,7 @@ def autodx_eval_backward_ast(f, X):
 def autodx_eval_forward_ast(f, X):
     if isinstance(X, numbers.Number):
         X = [X]
-    X_ = [autodx.forward_ast.Expr(x) for x in X]
+    X_ = [autodx.forward_ast.Var(x) for x in X]
     ast = f(*X_)
     return ast.value(), ast.gradient(X_)
 

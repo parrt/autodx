@@ -9,7 +9,7 @@ BLUE = "#D9E6F5"
 GREEN = "#cfe2d4"
 
 class Expr:
-    def __init__(self, x : numbers.Number = 0, varname=None):
+    def __init__(self, x : numbers.Number = 0, varname : str = None):
         self.x = x
         self.vi = -1
         self.varname = varname
@@ -63,6 +63,22 @@ class Expr:
         return vi
 
     def eqn(self) -> List[str]:
+        raise NotImplemented
+
+    def eqndx(self, wrt : 'Expr') -> List[str]:
+        raise NotImplemented
+
+    def children(self):
+        return []
+
+
+class Var(Expr):
+    def __init__(self, x : numbers.Number, varname : str = None):
+        self.x = x
+        self.vi = -1
+        self.varname = varname
+
+    def eqn(self) -> List[str]:
         if self.varname is not None:
             return [f"v<sub>{self.vi}</sub>", f"{self.varname}", round(self.value())]
         else:
@@ -77,9 +93,6 @@ class Expr:
         else:
             return [partial_html(f"∂v<sub>{self.vi}</sub>", f"∂v<sub>{wrt.vi}</sub>"), "", result]
 
-    def children(self):
-        return []
-
     def __str__(self):
         if isinstance(self.x, int):
             return f'Var({self.x})'
@@ -87,7 +100,6 @@ class Expr:
 
     def __repr__(self):
         return str(self)
-
 
 class Const(Expr):
     def __init__(self, v : numbers.Number):
@@ -308,7 +320,7 @@ def nonleaves(t : Expr) -> (List[Expr], List[List[Expr]]):
         if len(node.children())>0:
             the_nonleaves.append(node)
             work += node.children()
-            nonvarleaf_kids = [n for n in node.children() if n.varname is None]
+            nonvarleaf_kids = [n for n in node.children() if not isinstance(n,Var)]
             if len(nonvarleaf_kids)>1:
                 clusters += [nonvarleaf_kids] # track nonleaf children groups so we can make clusters
     return the_nonleaves, clusters
@@ -335,13 +347,13 @@ def astviz(t : Expr, wrt : Expr) -> graphviz.Source:
     cluster_nodes = [item for cluster in clusters for item in cluster]
 
     consts = [n for n in the_leaves if isinstance(n,Const)]
-    inputs = [n for n in the_leaves if not n in consts]
+    inputs = [n for n in the_leaves if isinstance(n,Var)]
     connections = []
     for node in the_leaves + the_nonleaves:
         connections += [connviz(node, kid) for kid in node.children()]
 
     opnd_clusters = ""
-    the_nonleaves = [n for n in the_nonleaves if n not in cluster_nodes]
+    the_nonleaves = [n for n in the_nonleaves if n not in cluster_nodes] # don't repeat nodes already in operand clusters
     nltab = "\n\t"
     # note: rank=same with edges crap is to force order of operands to be same as order given in dot file (subgraphs mess up order)
     # but we need subgraphs to put operands at same tree level.
@@ -377,7 +389,7 @@ def astviz(t : Expr, wrt : Expr) -> graphviz.Source:
     return graphviz.Source(s)
 
 def nodeviz(t : Expr, wrt : Expr) -> str:
-    color = GREEN if t.varname is not None else YELLOW
+    color = GREEN if isinstance(t,Var) else YELLOW
     return f'v{t.vi} [color="#444443", margin="0.02", fontcolor="#444443", fontname="Times-Italic", style=filled, fillcolor="{color}", label=<{nodehtml(t,wrt)}>];'
 
 
@@ -437,9 +449,9 @@ def round(x):
 
 
 if __name__ == '__main__':
-    x1 = Expr(2, "x<sub>1</sub>")
-    x2 = Expr(5, "x<sub>2</sub>")
-    y = ln(x1) + x1 * x2 - sin(x2) + sin(99)
+    x1 = Var(2, "x<sub>1</sub>")
+    x2 = Var(5, "x<sub>2</sub>")
+    y = ln(x1) + x1 * x2 - sin(x2) * 9
     g = astviz(y, x1)
     print(g.source)
     g.view()
