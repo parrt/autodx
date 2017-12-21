@@ -1,8 +1,6 @@
 from typing import List
 
-import numpy as np
-import numbers
-import graphviz
+from autodx.viz.support import *
 
 YELLOW = "#fefecd" # "#fbfbd0" # "#FBFEB0"
 BLUE = "#D9E6F5"
@@ -58,7 +56,6 @@ class Expr:
 
     def __repr__(self):
         return str(self)
-
 
 class Var(Expr):
     def __init__(self, x : numbers.Number, varname : str = None):
@@ -219,6 +216,8 @@ def set_var_indices(t : Expr, first_index : int = 0) -> None:
     i = first_index
     for leaf in inputs:
         leaf.vi = i
+        if leaf.varname is None:
+            leaf.varname = sub("x", i)
         i += 1
 
     set_var_indices_(t,i)
@@ -227,7 +226,10 @@ def set_var_indices(t : Expr, first_index : int = 0) -> None:
 def set_var_indices_(t : Expr, vi : int) -> int:
     if t.vi >= 0:
         return vi
-    if isinstance(t, Var) or isinstance(t, Const):
+    if isinstance(t, Var):
+        t.vi = vi
+        return t.vi + 1
+    elif isinstance(t, Const):
         t.vi = vi
         return t.vi + 1
     elif isinstance(t, BinaryOp):

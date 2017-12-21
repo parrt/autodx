@@ -1,4 +1,7 @@
+import graphviz
+
 from autodx.forward_ast import *
+from autodx.viz.support import *
 
 YELLOW = "#fefecd" # "#fbfbd0" # "#FBFEB0"
 BLUE = "#D9E6F5"
@@ -20,33 +23,33 @@ class Var_viz:
     @staticmethod
     def eqn(t : Var) -> List[str]:
         if t.varname is not None:
-            return [f"v<sub>{t.vi}</sub>", f"{t.varname}", round(t.value())]
+            return [f"{sub('v',t.vi)}", f"{t.varname}", round(t.value())]
         else:
-            return [f"v<sub>{t.vi}</sub>", "", round(t.value())]
+            return [f"{sub('v',t.vi)}", "", round(t.value())]
 
     @staticmethod
     def eqndx(t : Var, wrt : 'Expr') -> List[str]:
         result = 1 if t==wrt else 0
         if wrt.varname is not None and t.varname is not None:
-            return [partial_html(f"∂v<sub>{t.vi}</sub>", f"∂{wrt.varname}"),
-                    partial_html(f"∂{t.varname}", f"∂{wrt.varname}"),
+            return [partial_html(f"{sub('∂v',t.vi)}", f"{'∂'+wrt.varname}"),
+                    partial_html(f"{'∂'+t.varname}", f"{'∂'+wrt.varname}"),
                     result]
         else:
-            return [partial_html(f"∂v<sub>{t.vi}</sub>", f"∂v<sub>{wrt.vi}</sub>"), "", result]
+            return [partial_html(f"{sub('∂v',t.vi)}", f"{sub('∂v',wrt.vi)}"), "", result]
 
 
 class Const_viz:
     @staticmethod
     def eqn(t : Const) -> List[str]:
-        return [f"v<sub>{t.vi}</sub>", "", round(t.value())]
+        return [f"{sub('v',t.vi)}", "", round(t.value())]
 
     @staticmethod
     def eqndx(t : Const, wrt : 'Expr') -> List[str]:
         result = 1 if t==wrt else 0
         if wrt.varname is not None:
-            return [partial_html(f"∂v<sub>{t.vi}</sub>", f"∂{wrt.varname}"), "", result]
+            return [partial_html(f"{sub('∂v',t.vi)}", f"{'∂'+wrt.varname}"), "", result]
         else:
-            return [partial_html(f"∂v<sub>{t.vi}</sub>", f"∂v<sub>{wrt.vi}</sub>"), "", result]
+            return [partial_html(f"{sub('∂v',t.vi)}", f"{sub('∂v',wrt.vi)}"), "", result]
 
 
 class BinaryOp_viz:
@@ -59,8 +62,8 @@ class BinaryOp_viz:
             op = "&frasl;"
         else:
             op = t.op
-        return [f"v<sub>{t.vi}</sub>",
-                f"v<sub>{t.left.vi}</sub> {op} v<sub>{t.right.vi}</sub>",
+        return [f"{sub('v',t.vi)}",
+                f"{sub('v',t.left.vi)} {op} {sub('v',t.right.vi)}",
                 round(t.value())]
 
 
@@ -68,8 +71,8 @@ class BinaryOp_viz:
 class UnaryOp_viz:
     @staticmethod
     def eqn(t : UnaryOp) -> List[str]:
-        return [f"v<sub>{t.vi}</sub>",
-                f"{t.op}(v<sub>{t.opnd.vi}</sub>)" if t.op.isalnum() else f"{t.op} v<sub>{t.opnd.vi}</sub>",
+        return [f"{sub('v',t.vi)}",
+                f"{t.op}({sub('v',t.opnd.vi)})" if t.op.isalnum() else f"{t.op} {sub('v',t.opnd.vi)}",
                 round(t.value())]
 
 
@@ -77,8 +80,8 @@ class Add_viz(BinaryOp_viz):
     @staticmethod
     def eqndx(t : BinaryOp, wrt : 'Expr') -> List[str]:
         return [
-            partial_html(f"∂v<sub>{t.vi}</sub>", f"∂{wrt.varname}"),
-            f"∂v<sub>{t.left.vi}</sub> + ∂v<sub>{t.right.vi}</sub>",
+            partial_html(f"{sub('∂v',t.vi)}", f"{'∂'+wrt.varname}"),
+            f"{sub('∂v',t.left.vi)} + {sub('∂v',t.right.vi)}",
             f"{round(t.left.dvdx(wrt))} + {round(t.right.dvdx(wrt))} = {round(t.dvdx(wrt))}"
         ]
 
@@ -86,9 +89,9 @@ class Add_viz(BinaryOp_viz):
 class Sub_viz(BinaryOp_viz):
     @staticmethod
     def eqndx(t : BinaryOp, wrt : 'Expr') -> List[str]:
-        return [#f"∂v<sub>{t.vi}</sub>",
-            partial_html(f"∂v<sub>{t.vi}</sub>", f"∂{wrt.varname}"),
-            f"∂v<sub>{t.left.vi}</sub> &minus; ∂v<sub>{t.right.vi}</sub>",
+        return [#f"{sub('∂v',t.vi)}",
+            partial_html(f"{sub('∂v',t.vi)}", f"{'∂'+wrt.varname}"),
+            f"{sub('∂v',t.left.vi)} &minus; {sub('∂v',t.right.vi)}",
             f"{round(t.left.dvdx(wrt))} &minus; {round(t.right.dvdx(wrt))} = {round(t.dvdx(wrt))}"
         ]
 
@@ -97,8 +100,8 @@ class Mul_viz(BinaryOp_viz):
     @staticmethod
     def eqndx(t : BinaryOp, wrt : 'Expr') -> List[str]:
         return [
-            partial_html(f"∂v<sub>{t.vi}</sub>", f"∂{wrt.varname}"),
-            f"v<sub>{t.left.vi}</sub> &times; ∂v<sub>{t.right.vi}</sub> + v<sub>{t.right.vi}</sub> &times; ∂v<sub>{t.left.vi}</sub>",
+            partial_html(f"{sub('∂v',t.vi)}", f"{'∂'+wrt.varname}"),
+            f"{sub('v',t.left.vi)} &times; {sub('∂v',t.right.vi)} + {sub('v',t.right.vi)} &times; {sub('∂v',t.left.vi)}",
             f"{round(t.left.value() * t.right.dvdx(wrt))} + {round(t.right.value() * t.left.dvdx(wrt))} = {round(t.dvdx(wrt))}"]
 
 
@@ -106,8 +109,8 @@ class Div_viz(BinaryOp_viz):
     @staticmethod
     def eqndx(t : BinaryOp, wrt : 'Expr') -> List[str]:
         return [
-            partial_html(f"∂v<sub>{t.vi}</sub>", f"∂{wrt.varname}"),
-            partial_html(f"v<sub>{t.right.vi}</sub> &times; ∂v<sub>{t.left.vi}</sub> &minus; v<sub>{t.left.vi}</sub> &times; ∂v<sub>{t.right.vi}</sub>", f"v<sub>{t.right.vi}</sub><sup>2</sup>"),
+            partial_html(f"{sub('∂v',t.vi)}", f"{'∂'+wrt.varname}"),
+            partial_html(f"{sub('v',t.right.vi)} &times; {sub('∂v',t.left.vi)} &minus; {sub('v',t.left.vi)} &times; {sub('∂v',t.right.vi)}", f"{sub('v',t.right.vi)}<sup>2</sup>"),
             '<table BORDER="0" CELLPADDING="0" CELLBORDER="0" CELLSPACING="1"><tr><td>'+
             partial_html(f"{round(t.right.value())} &times; {round(t.left.dvdx(wrt))} &minus; {round(t.left.value())} &times; {round(t.right.dvdx(wrt))}", f"{round(t.right.value())}<sup>2</sup>")+
             f"</td><td> = {round(t.dvdx(wrt))}</td></tr></table>",
@@ -118,8 +121,8 @@ class Sin_viz(UnaryOp_viz):
     @staticmethod
     def eqndx(t : UnaryOp, wrt : 'Expr') -> List[str]:
         return [
-            partial_html(f"∂v<sub>{t.vi}</sub>", f"∂{wrt.varname}"),
-            f"cos(v<sub>{t.opnd.vi}</sub>) &times; ∂v<sub>{t.opnd.vi}</sub>",
+            partial_html(f"{sub('∂v',t.vi)}", f"{'∂'+wrt.varname}"),
+            f"cos({sub('v',t.opnd.vi)}) &times; {sub('∂v',t.opnd.vi)}",
             f"cos({round(t.opnd.value())}) &times; {round(t.opnd.dvdx(wrt))} = {round(t.dvdx(wrt))}"]
 
 
@@ -127,8 +130,8 @@ class Ln_viz(UnaryOp_viz):
     @staticmethod
     def eqndx(t : UnaryOp, wrt : 'Expr') -> List[str]:
         return [
-            partial_html(f"∂v<sub>{t.vi}</sub>", f"∂{wrt.varname}"),
-            f"(1 &frasl; v<sub>{t.opnd.vi}</sub>) &times; ∂v<sub>{t.opnd.vi}</sub>",
+            partial_html(f"{sub('∂v',t.vi)}", f"{'∂'+wrt.varname}"),
+            f"(1 &frasl; {sub('v',t.opnd.vi)}) &times; {sub('∂v',t.opnd.vi)}",
             f"(1 &frasl; {round(t.opnd.value())}) &times; {round(t.opnd.dvdx(wrt))} = {round(t.dvdx(wrt))}"]
 
 
@@ -150,7 +153,7 @@ def nonleaves(t : Expr) -> (List[Expr], List[List[Expr]]):
 
 def astviz(t : Expr, wrt : Expr) -> graphviz.Source:
     "I had to do $ brew install graphviz --with-pango to get the cairo support for <sub>"
-    set_var_indices(t,0)
+    set_var_indices(t,1)
     the_leaves = leaves(t)
     the_nonleaves, clusters = nonleaves(t)
     cluster_nodes = [item for cluster in clusters for item in cluster]
@@ -178,7 +181,7 @@ def astviz(t : Expr, wrt : Expr) -> graphviz.Source:
         nodesep=.1;
         ranksep=.3;
         rankdir=TD;
-        node [penwidth="0.5", shape=box, width=.1, height=.1];
+        node [penwidth="0.5", shape=box];
         // OPERATORS
         {nltab.join([nodeviz(node,wrt) for node in the_nonleaves])}
         // CONSTANTS (not operand of binary op)
@@ -195,11 +198,13 @@ def astviz(t : Expr, wrt : Expr) -> graphviz.Source:
     }}
     """
 
+    Var.VAR_COUNT = 1 # reset after visualization so next one has vars x1, x2, etc...
+
     return graphviz.Source(s)
 
 def nodeviz(t : Expr, wrt : Expr) -> str:
     color = GREEN if isinstance(t,Var) else YELLOW
-    return f'v{t.vi} [color="#444443", margin="0.02", fontcolor="#444443", fontname="Times-Italic", style=filled, fillcolor="{color}", label=<{nodehtml(t,wrt)}>];'
+    return f'v{t.vi} [color="#444443", margin="0.02", fontcolor="#444443", fontsize="13" fontname="Times-Italic", style=filled, fillcolor="{color}", label=<{nodehtml(t,wrt)}>];'
 
 
 def connviz(t : Expr, kid : Expr) -> str:
@@ -241,27 +246,18 @@ def nodehtml(t : Expr, wrt : Expr) -> str:
     </table>
     """
 
-
-def partial_html(top : str, bottom : str):
-    return f"""<table BORDER="0" CELLPADDING="0" CELLBORDER="0" CELLSPACING="0">
-        <tr><td cellspacing="0" cellpadding="0" border="1" sides="b">{top}</td></tr>
-        <tr><td cellspacing="0" cellpadding="0">{bottom}</td></tr>
-    </table>
-    """
-
-
-def round(x):
-    if isinstance(x, int):
-        return x
-    if np.isclose(x, 0.0):
-        return 0
-    return float(f"{x:.4f}")
-
-
 if __name__ == '__main__':
-    x1 = Var(2, "x<sub>1</sub>")
-    x2 = Var(5, "x<sub>2</sub>")
-    y = ln(x1) + x1 * x2 - sin(x2) * 9
-    g = astviz(y, x1)
+    x1 = Var(3)
+    x2 = Var(5)
+    y = x1 * x2 * 9
+    g = astviz(y, x2)
     print(g.source)
     g.view()
+
+    #
+    # x1 = Var(2, sub("x",1))
+    # x2 = Var(5, sub("x",2))
+    # y = ln(x1) + x1 * x2 - sin(x2) * 9
+    # g = astviz(y, x1)
+    # print(g.source)
+    # g.view()
