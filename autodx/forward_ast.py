@@ -52,6 +52,9 @@ class Expr:
     def children(self):
         return []
 
+    def isleaf(self) -> bool:
+        return False
+
     def isvar(self) -> bool:
         return False
 
@@ -65,6 +68,9 @@ class Var(Expr):
         self.varname = varname
 
     def isvar(self) -> bool:
+        return True
+
+    def isleaf(self) -> bool:
         return True
 
     def dvdx(self, wrt : 'Expr') -> numbers.Number:
@@ -81,6 +87,9 @@ class Const(Expr):
         self.x = v
         self.vi = -1
         self.varname = None
+
+    def isleaf(self) -> bool:
+        return True
 
     def dvdx(self, wrt : 'Expr') -> numbers.Number:
         return 0

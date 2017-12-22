@@ -26,7 +26,7 @@ def pytorch_eval(f, X):
 def autodx_eval_backward_ast(f, X):
     if isinstance(X, numbers.Number):
         X = [X]
-    X_ = [autodx.backward_ast.Expr(x) for x in X]
+    X_ = [autodx.backward_ast.Var(x) for x in X]
     ast = f(*X_)
     autodx.backward_ast.set_var_indices(ast,1)
     y = ast.forward()

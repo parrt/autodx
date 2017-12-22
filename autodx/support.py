@@ -1,10 +1,10 @@
+from typing import List, Dict
 import numbers
 import numpy as np
 import graphviz
 import tempfile
 from IPython.display import SVG
 from subprocess import check_call
-
 
 def sub(var : str, s):
     if isinstance(s, numbers.Number):
@@ -13,10 +13,18 @@ def sub(var : str, s):
         return f'<font face="Times-Italic" point-size="13">{var}</font><sub><font face="Times-Italic" point-size="9">{s}</font></sub>'
 
 
-def partial_html(top : str, bottom : str):
+def fraction(top : str, bottom : str):
     return f"""<table BORDER="0" CELLPADDING="0" CELLBORDER="0" CELLSPACING="0">
         <tr><td cellspacing="0" cellpadding="0" border="1" sides="b">{top}</td></tr>
         <tr><td cellspacing="0" cellpadding="0">{bottom}</td></tr>
+    </table>
+    """
+
+
+def seq(*elems : List[str]):
+    col = '<td cellspacing="0" cellpadding="0" border="0">{%s}</td>'
+    return f"""<table BORDER="0" CELLPADDING="0" CELLBORDER="0" CELLSPACING="0">
+        <tr>{''.join([col % elem for elem in elems])}</tr>
     </table>
     """
 
@@ -27,6 +35,24 @@ def round(x):
     if np.isclose(x, 0.0):
         return 0
     return float(f"{x:.4f}")
+
+
+def nodes(t) -> (List, List, Dict):
+    """
+    Return preorder list of nodes from ast t and clusters of operands and dict
+    mapping node to unique parent """
+    all = []
+    clusters = []
+    work = [t]
+    while len(work)>0:
+        node = work.pop(0)
+        all.append(node)
+        if len(node.children())>0:
+            work += node.children()
+            nonvarleaf_kids = [n for n in node.children() if not n.isvar()]
+            if len(nonvarleaf_kids)>1:
+                clusters += [nonvarleaf_kids] # track nonleaf children groups so we can make clusters
+    return all, clusters
 
 
 def leaves(t):
