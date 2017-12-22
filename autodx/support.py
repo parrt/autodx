@@ -49,3 +49,35 @@ def display(g : graphviz.files.Source):
     check_call(['dot', '-o', fname+".svg", '-Tsvg:cairo', fname])
     return SVG(filename=fname+".svg")
 
+
+def set_var_indices(t, first_index : int = 0) -> None:
+    the_leaves = leaves(t)
+    inputs = [n for n in the_leaves if n.isvar()]
+    i = first_index
+    for leaf in inputs:
+        leaf.vi = i
+        if leaf.varname is None:
+            leaf.varname = sub("x", i)
+        i += 1
+
+    set_var_indices_(t,i)
+
+
+def set_var_indices_(t, vi : int) -> int:
+    if t.vi >= 0:
+        return vi
+    if t.isvar():
+        t.vi = vi
+        return t.vi + 1
+    elif len(t.children())==0: # must be constant
+        t.vi = vi
+        return t.vi + 1
+    elif hasattr(t, 'left'): # binary op
+        vi = set_var_indices_(t.left,vi)
+        vi = set_var_indices_(t.right,vi)
+        t.vi = vi
+        return t.vi + 1
+    elif hasattr(t, 'opnd'):  # unary op
+        t.vi = set_var_indices_(t.opnd,vi)
+        return t.vi + 1
+    return vi

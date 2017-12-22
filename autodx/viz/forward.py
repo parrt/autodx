@@ -1,7 +1,7 @@
-import graphviz
+from typing import List
 
 from autodx.forward_ast import *
-from autodx.viz.support import *
+from autodx.support import *
 
 YELLOW = "#fefecd" # "#fbfbd0" # "#FBFEB0"
 BLUE = "#D9E6F5"

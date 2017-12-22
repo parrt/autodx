@@ -1,6 +1,4 @@
-import numpy as np
-import numbers
-from autodx.viz.support import *
+from autodx.support import *
 
 class Expr:
     def __init__(self, x : numbers.Number = None):
@@ -9,6 +7,9 @@ class Expr:
             x = 0
         self.x = x
         self.dydv = 0
+
+    def isvar(self) -> bool:
+        return False
 
     def children(self):
         return []
@@ -92,6 +93,9 @@ class Var(Expr):
             x = 0
         self.x = x
         self.dydv = 0
+
+    def isvar(self) -> bool:
+        return True
 
     def forward(self) -> numbers.Number:
         """
@@ -306,36 +310,3 @@ def sin(x:Expr) -> Sin:
 
 def ln(x : Expr) -> Ln:
     return Ln(x)
-
-
-def set_var_indices(t : Expr, first_index : int = 0) -> None:
-    the_leaves = leaves(t)
-    inputs = [n for n in the_leaves if isinstance(n, Var)]
-    i = first_index
-    for leaf in inputs:
-        leaf.vi = i
-        if leaf.varname is None:
-            leaf.varname = sub("x", i)
-        i += 1
-
-    set_var_indices_(t,i)
-
-
-def set_var_indices_(t : Expr, vi : int) -> int:
-    if t.vi >= 0:
-        return vi
-    if isinstance(t, Var):
-        t.vi = vi
-        return t.vi + 1
-    elif isinstance(t, Const):
-        t.vi = vi
-        return t.vi + 1
-    elif isinstance(t, BinaryOp):
-        vi = set_var_indices_(t.left,vi)
-        vi = set_var_indices_(t.right,vi)
-        t.vi = vi
-        return t.vi + 1
-    elif isinstance(t, UnaryOp):
-        t.vi = set_var_indices_(t.opnd,vi)
-        return t.vi + 1
-    return vi
