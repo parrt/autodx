@@ -28,7 +28,7 @@ def autodx_eval_backward_ast(f, X):
         X = [X]
     X_ = [autodx.backward_ast.Expr(x) for x in X]
     ast = f(*X_)
-    ast.set_var_indices(0)
+    autodx.backward_ast.set_var_indices(ast,1)
     y = ast.forward()
     ast.backward()
     return y, [x.dydv for x in X_]

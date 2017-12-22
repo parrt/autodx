@@ -1,5 +1,6 @@
 import numpy as np
 import numbers
+from autodx.viz.support import *
 
 class Expr:
     def __init__(self, x : numbers.Number = None):
@@ -8,6 +9,9 @@ class Expr:
             x = 0
         self.x = x
         self.dydv = 0
+
+    def children(self):
+        return []
 
     def forward(self) -> numbers.Number:
         """
@@ -80,11 +84,47 @@ class Expr:
     def forward_trace(self):
         return [f"v{self.vi} = {self.x}"]
 
-    def set_var_indices(self, vi : int = 0):
-        if self.vi<0:
-            self.vi = vi
-            return self.vi + 1
-        return vi
+
+class Var(Expr):
+    def __init__(self, x : numbers.Number, varname : str = None):
+        self.vi = -1
+        if x is None:
+            x = 0
+        self.x = x
+        self.dydv = 0
+
+    def forward(self) -> numbers.Number:
+        """
+        Compute and return value of expression tree; squirrel away subexpression values
+        as self.x in each subtree root.
+
+        This specific method is used to compute the value of a leaf node.
+        """
+        return self.x
+
+    def dvdv(self, wrt : 'Expr') -> numbers.Number:
+        return 1 if self==wrt else 0
+
+    def __str__(self):
+        if isinstance(self.x, int):
+            return f'Var({self.x})'
+        return f'Var({self.x:.4f})'
+
+
+class Const(Expr):
+    def __init__(self, v : numbers.Number):
+        self.x = v
+        self.vi = -1
+        self.varname = None
+
+    def dvdx(self, wrt : 'Expr') -> numbers.Number:
+        return 0
+
+    def __str__(self):
+        if isinstance(self.x, int):
+            return f'{self.x}'
+        else:
+            return f'{round(self.x)}'
 
 
 class Operator(Expr):
@@ -98,6 +138,9 @@ class BinaryOp(Operator):
         self.left = left
         self.op = op
         self.right = right
+
+    def children(self):
+        return [self.left, self.right]
 
     def backward_(self, dy_dvi : numbers.Number, dvi_dvj : numbers.Number) -> None:
         print(f"backward(v{self.vi} = {self.asvar()})")
@@ -124,20 +167,15 @@ class BinaryOp(Operator):
         print(f"\tv{self.left.vi} = {self.left.x}")
         print(f"\tv{self.right.vi} = {self.right.x}")
 
-    def set_var_indices(self, vi : int = 0) -> int:
-        if self.vi<0:
-            vi = self.left.set_var_indices(vi)
-            vi = self.right.set_var_indices(vi)
-            self.vi = vi
-            return self.vi + 1
-        return vi
-
 
 class UnaryOp(Operator):
     def __init__(self, op : str, opnd : Expr):
         super().__init__()
         self.opnd = opnd
         self.op = op
+
+    def children(self):
+        return [self.opnd]
 
     def backward_(self, dy_dvi : numbers.Number, dvi_dvj : numbers.Number) -> None:
         print(f"backward(v{self.vi} = {self.asvar()})")
@@ -164,12 +202,6 @@ class UnaryOp(Operator):
             print(f"\tv{wrt.vi} = {wrt.asvar()} = {wrt.x}")
         else:
             print(f"\tv{wrt.vi} = {wrt.x}")
-
-    def set_var_indices(self, vi : int = 0) -> int:
-        if self.vi<0:
-            self.vi = self.opnd.set_var_indices(vi)
-            return self.vi + 1
-        return vi
 
 
 class Add(BinaryOp):
@@ -274,3 +306,36 @@ def sin(x:Expr) -> Sin:
 
 def ln(x : Expr) -> Ln:
     return Ln(x)
+
+
+def set_var_indices(t : Expr, first_index : int = 0) -> None:
+    the_leaves = leaves(t)
+    inputs = [n for n in the_leaves if isinstance(n, Var)]
+    i = first_index
+    for leaf in inputs:
+        leaf.vi = i
+        if leaf.varname is None:
+            leaf.varname = sub("x", i)
+        i += 1
+
+    set_var_indices_(t,i)
+
+
+def set_var_indices_(t : Expr, vi : int) -> int:
+    if t.vi >= 0:
+        return vi
+    if isinstance(t, Var):
+        t.vi = vi
+        return t.vi + 1
+    elif isinstance(t, Const):
+        t.vi = vi
+        return t.vi + 1
+    elif isinstance(t, BinaryOp):
+        vi = set_var_indices_(t.left,vi)
+        vi = set_var_indices_(t.right,vi)
+        t.vi = vi
+        return t.vi + 1
+    elif isinstance(t, UnaryOp):
+        t.vi = set_var_indices_(t.opnd,vi)
+        return t.vi + 1
+    return vi

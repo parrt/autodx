@@ -196,20 +196,6 @@ def ln(x:Expr) -> Ln:
     return Ln(x)
 
 
-def leaves(t : Expr) -> List[Expr]:
-    """Return preorder list of nodes from ast t"""
-    the_leaves = []
-    work = [t]
-    while len(work)>0:
-        node = work.pop(0)
-        if len(node.children())==0:
-            if node not in the_leaves:
-                the_leaves.append(node)
-        else:
-            work += node.children()
-    return the_leaves
-
-
 def set_var_indices(t : Expr, first_index : int = 0) -> None:
     the_leaves = leaves(t)
     inputs = [n for n in the_leaves if isinstance(n, Var)]
