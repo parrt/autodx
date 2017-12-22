@@ -31,7 +31,11 @@ class Expr:
         return self.x
 
     def backward(self) -> None:
-        self.backward_(None)
+        "Track backward call to root in case we need it"
+        class OutputNode(Expr):
+            def dvdv(self, wrt: 'Expr') -> numbers.Number:
+                return 1
+        self.backward_(OutputNode(),1)
 
     def dvdv(self, wrt : 'Expr') -> numbers.Number:
         return 1 if self==wrt else 0
@@ -98,11 +102,11 @@ class Var(Expr):
     def dvdv(self, wrt : 'Expr') -> numbers.Number:
         return 1 if self==wrt else 0
 
-    def backward_(self, parent : Expr) -> None: #dy_dvi : numbers.Number, dvi_dvj : numbers.Number) -> None:
+    def backward_(self, parent : Expr, dydv : numbers.Number) -> None:
         # actual variable leaf nodes must accumulate all contributions
         # of this var from up the tree. Sum all dy/dx_i computed backwards.
         print(f"backward(v{self.vi} = {self.asvar()}")
-        self.dydv += parent.dydv * parent.dvdv(self)
+        self.dydv += dydv * parent.dvdv(self)
 
     def __str__(self):
         if isinstance(self.x, int):
@@ -118,7 +122,7 @@ class Const(Expr):
     def isleaf(self) -> bool:
         return True
 
-    def backward_(self, parent : Expr) -> None:
+    def backward_(self, parent : Expr, dydv : numbers.Number) -> None:
         self.dydv = 0
 
     def dvdv(self, wrt : 'Expr') -> numbers.Number:
@@ -141,15 +145,12 @@ class BinaryOp(Expr):
     def children(self):
         return [self.left, self.right]
 
-    def backward_(self, parent : Expr) -> None:
+    def backward_(self, parent : Expr, dydv : numbers.Number) -> None:
         print(f"backward(v{self.vi} = {self.asvar()})")
-        if parent is None:
-            self.dydv = 1
-        else:
-            self.dydv = parent.dydv * parent.dvdv(self) # don't need to accum subexpr adjoints (they are unique)
+        self.dydv = dydv * parent.dvdv(self) # don't need to accum subexpr adjoints (they are unique)
         print(f"adjoint v{self.vi} = {self.dydv}")
-        self.left.backward_(self)
-        self.right.backward_(self)
+        self.left.backward_(self, self.dydv)
+        self.right.backward_(self, self.dydv)
 
     def forward_trace(self):
         return self.left.forward_trace() + self.right.forward_trace() + [f"v{self.vi} = {self.asvar()}"]
@@ -179,14 +180,11 @@ class UnaryOp(Expr):
     def children(self):
         return [self.opnd]
 
-    def backward_(self, parent : Expr) -> None:
+    def backward_(self, parent : Expr, dydv : numbers.Number) -> None:
         print(f"backward(v{self.vi} = {self.asvar()})")
-        if parent is None:
-            self.dydv = 1
-        else:
-            self.dydv = parent.dydv * parent.dvdv(self) # don't need to accum subexpr adjoints (they are unique)
+        self.dydv = dydv * parent.dvdv(self) # don't need to accum subexpr adjoints (they are unique)
         print(f"adjoint v{self.vi} = {self.dydv}")
-        self.opnd.backward_(self)
+        self.opnd.backward_(self, self.dydv)
 
     def forward_trace(self):
         return self.opnd.forward_trace() + [f"v{self.vi} = {self.asvar()}"]

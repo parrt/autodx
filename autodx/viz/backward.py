@@ -193,7 +193,7 @@ def nodehtml(t : Expr, parent : Expr) -> str:
 if __name__ == '__main__':
     x1 = Var(3)
     x2 = Var(5)
-    y = x1 * x2
+    y = x1
 
     ast = y
     set_var_indices(y,1)
