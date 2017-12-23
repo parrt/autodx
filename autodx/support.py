@@ -10,6 +10,14 @@ from collections import defaultdict
 fontsize = 13
 subscript_fontsize = 10
 
+YELLOW = "#fefecd"
+BLUE = "#D9E6F5"
+GREEN = "#cfe2d4"
+DARK_GREY = "#444443"
+BLACK = "#000000"
+
+textcolor = BLACK #DARK_GREY
+
 def sub(var : str, s):
     if isinstance(s, numbers.Number):
         return f'<font face="Times-Italic" point-size="{fontsize}">{var}</font><sub><font face="Times-Italic" point-size="{subscript_fontsize}">{str(s)}</font></sub>'
@@ -93,7 +101,7 @@ def leaves(t):
     return the_leaves
 
 
-def display(g : graphviz.files.Source):
+def show(g : graphviz.files.Source):
     fname = tempfile.mktemp('.dot')
     dot(g, filename=fname+".svg", format='svg')
     return SVG(filename=fname+".svg")

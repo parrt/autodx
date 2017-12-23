@@ -2,12 +2,8 @@ from typing import List
 
 from autodx.forward_ast import *
 from autodx.support import *
-from autodx.support import fontsize
+from autodx.support import fontsize, YELLOW, GREEN, textcolor
 
-
-YELLOW = "#fefecd" # "#fbfbd0" # "#FBFEB0"
-BLUE = "#D9E6F5"
-GREEN = "#cfe2d4"
 
 def eqn(t : Expr) -> List[str]:
     """Perform a dynamic dispatch to X_viz.eqn() for node type X"""
@@ -206,11 +202,11 @@ def astviz(t : Expr, wrt : Expr) -> graphviz.Source:
 
 def nodeviz(t : Expr, wrt : Expr) -> str:
     color = GREEN if isinstance(t,Var) else YELLOW
-    return f'v{t.vi} [color="#444443", margin="0.02", fontcolor="#444443", fontsize="{fontsize}" fontname="Times-Italic", style=filled, fillcolor="{color}", label=<{nodehtml(t,wrt)}>];'
+    return f'v{t.vi} [color="{DARK_GREY}", margin="0.02", fontcolor="{textcolor}", fontsize="{fontsize}" fontname="Times-Italic", style=filled, fillcolor="{color}", label=<{nodehtml(t,wrt)}>];'
 
 
 def connviz(t : Expr, kid : Expr) -> str:
-    return f'v{t.vi} -> v{kid.vi} [penwidth="0.5", color="#444443", arrowsize=.4]'
+    return f'v{t.vi} -> v{kid.vi} [penwidth="0.5", color="{DARK_GREY}", arrowsize=.4]'
 
 
 def nodehtml(t : Expr, wrt : Expr) -> str:
