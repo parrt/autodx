@@ -3,6 +3,8 @@ from typing import List
 from autodx.backward_ast import *
 from autodx.support import *
 
+from autodx.support import fontsize
+
 YELLOW = "#fefecd" # "#fbfbd0" # "#FBFEB0"
 BLUE = "#D9E6F5"
 GREEN = "#cfe2d4"
@@ -218,7 +220,7 @@ def astviz(t : Expr) -> graphviz.Source:
 
 def nodeviz(t : Expr, parent : Expr) -> str:
     color = GREEN if isinstance(t,Var) else YELLOW
-    return f'v{t.vi} [color="#444443", margin="0.02", fontcolor="#444443", fontsize="13" fontname="Times-Italic", style=filled, fillcolor="{color}", label=<{nodehtml(t,parent)}>];'
+    return f'v{t.vi} [color="#444443", margin="0.02", fontcolor="#444443", fontsize="{fontsize}" fontname="Times-Italic", style=filled, fillcolor="{color}", label=<{nodehtml(t,parent)}>];'
 
 
 def connviz(t : Expr, kid : Expr) -> str:
@@ -267,7 +269,7 @@ if __name__ == '__main__':
     x2 = Var(5)
     y = x1 - x1 * x2
 
-    ast = ln(x2) + x1 * x2 - sin(x2)
+    ast = x1 * x2 - sin(x2)
     set_var_indices(y,1)
 
     # compute gradients in leaves
@@ -277,7 +279,8 @@ if __name__ == '__main__':
 
     g = astviz(ast)
     print(g.source)
-    g.view()
+    f = g.view()
+    dot(g,filename="/tmp/t.png",format='png',dpi=600)
 
     #
     # x1 = Var(2, sub("x",1))

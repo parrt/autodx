@@ -2,6 +2,8 @@ from typing import List
 
 from autodx.forward_ast import *
 from autodx.support import *
+from autodx.support import fontsize
+
 
 YELLOW = "#fefecd" # "#fbfbd0" # "#FBFEB0"
 BLUE = "#D9E6F5"
@@ -204,7 +206,7 @@ def astviz(t : Expr, wrt : Expr) -> graphviz.Source:
 
 def nodeviz(t : Expr, wrt : Expr) -> str:
     color = GREEN if isinstance(t,Var) else YELLOW
-    return f'v{t.vi} [color="#444443", margin="0.02", fontcolor="#444443", fontsize="13" fontname="Times-Italic", style=filled, fillcolor="{color}", label=<{nodehtml(t,wrt)}>];'
+    return f'v{t.vi} [color="#444443", margin="0.02", fontcolor="#444443", fontsize="{fontsize}" fontname="Times-Italic", style=filled, fillcolor="{color}", label=<{nodehtml(t,wrt)}>];'
 
 
 def connviz(t : Expr, kid : Expr) -> str:
@@ -250,9 +252,11 @@ if __name__ == '__main__':
     x1 = Var(3)
     x2 = Var(5)
     y = x1 * x2 * x2
+    y = x1 * x2 - sin(x2)
     g = astviz(y, x2)
     print(g.source)
     g.view()
+    dot(g,filename="/tmp/s.png",format='png',dpi=600)
 
     #
     # x1 = Var(2, sub("x",1))

@@ -7,11 +7,14 @@ from IPython.display import SVG
 from subprocess import check_call
 from collections import defaultdict
 
+fontsize = 13
+subscript_fontsize = 10
+
 def sub(var : str, s):
     if isinstance(s, numbers.Number):
-        return f'<font face="Times-Italic" point-size="13">{var}</font><sub><font face="Times-Italic" point-size="9">{str(s)}</font></sub>'
+        return f'<font face="Times-Italic" point-size="{fontsize}">{var}</font><sub><font face="Times-Italic" point-size="{subscript_fontsize}">{str(s)}</font></sub>'
     else:
-        return f'<font face="Times-Italic" point-size="13">{var}</font><sub><font face="Times-Italic" point-size="9">{s}</font></sub>'
+        return f'<font face="Times-Italic" point-size="{fontsize}">{var}</font><sub><font face="Times-Italic" point-size="{subscript_fontsize}">{s}</font></sub>'
 
 
 def fraction(top : str, bottom : str):
@@ -92,9 +95,19 @@ def leaves(t):
 
 def display(g : graphviz.files.Source):
     fname = tempfile.mktemp('.dot')
-    g.save(fname)
-    check_call(['dot', '-o', fname+".svg", '-Tsvg:cairo', fname])
+    dot(g, filename=fname+".svg", format='svg')
     return SVG(filename=fname+".svg")
+
+
+def dot(g, filename, format='svg', dpi=None):
+    fname = tempfile.mktemp('.dot')
+    g.save(fname)
+    if not filename.endswith('.'+format):
+        filename = filename + '.'+format
+    options = ['-o', filename, f'-T{format}:cairo', fname]
+    if dpi:
+        options.append(f'-Gdpi={dpi}')
+    check_call(['dot']+options)
 
 
 def set_var_indices(t, first_index : int = 0) -> None:
