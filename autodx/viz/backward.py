@@ -237,24 +237,24 @@ def nodehtml(t : Expr, parent : Expr) -> str:
         # EQN
         if t.isvar():
             rows.append(f"""
-            <tr><td>{e[0]}</td><td> = </td><td align="left">{e[1]} = {e[2]}</td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>{e[0]}</td><td> = </td><td align="left">{e[1]} = {e[2]}</td><td></td><td></td></tr>
             """)
         else:
             # rows.append(f"""
             # <tr><td>{" = ".join([str(x) for x in e])}</td></tr>
             # """)
             rows.append(f"""
-            <tr><td>{e[0]}</td><td> = </td><td align="left">{e[1]} = {e[2]}</td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>{e[0]}</td><td> = </td><td align="left">{e[1]}</td><td> = </td><td align="left">{e[2]}</td></tr>
             """)
 
         # EQNDX
         if parent is None:
             rows.append(f"""
-            <tr><td>{edx[0]}</td><td> = </td><td align="left">{edx[1]}</td><td> = </td><td align="left">{edx[3]}</td><td></td><td></td></tr>
+            <tr><td>{edx[0]}</td><td> = </td><td align="left">{edx[1]}</td><td> = </td><td align="left">{edx[3]}</td></tr>
             """)
         else:
             rows.append(f"""
-            <tr><td>{edx[0]}</td><td> = </td><td align="left">{edx[1]}</td><td> = </td><td align="left">{edx[2]}</td><td> = </td><td align="left">{edx[3]}</td></tr>
+            <tr><td>{edx[0]}</td><td> = </td><td align="left">{edx[1]}</td><td> = </td><td align="left">{seq(edx[2], " = ", edx[3])}</td></tr>
             """)
 
     return f"""<table BORDER="0" CELLPADDING="0" CELLBORDER="0" CELLSPACING="1">
