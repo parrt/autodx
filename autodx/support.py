@@ -5,6 +5,7 @@ import graphviz
 import tempfile
 from IPython.display import SVG
 from subprocess import check_call
+from collections import defaultdict
 
 def sub(var : str, s):
     if isinstance(s, numbers.Number):
@@ -22,7 +23,7 @@ def fraction(top : str, bottom : str):
 
 
 def seq(*elems : List[str]):
-    col = '<td cellspacing="0" cellpadding="0" border="0">{%s}</td>'
+    col = '<td cellspacing="0" cellpadding="0" border="0">%s</td>'
     return f"""<table BORDER="0" CELLPADDING="0" CELLBORDER="0" CELLSPACING="0">
         <tr>{''.join([col % elem for elem in elems])}</tr>
     </table>
@@ -39,8 +40,8 @@ def round(x):
 
 def nodes(t) -> (List, List, Dict):
     """
-    Return preorder list of nodes from ast t and clusters of operands and dict
-    mapping node to unique parent """
+    Return preorder list of nodes from ast t and clusters of operands
+    """
     all = []
     clusters = []
     work = [t]
@@ -53,6 +54,26 @@ def nodes(t) -> (List, List, Dict):
             if len(nonvarleaf_kids)>1:
                 clusters += [nonvarleaf_kids] # track nonleaf children groups so we can make clusters
     return all, clusters
+
+
+def parents(t) -> Dict:
+    """
+    Return dict mapping node to list of parents. Operators, Consts always have
+    singleton parent list. Vars can have multiple parents.
+    """
+    d = defaultdict(list)
+    parents_(t,None,d)
+    return d
+
+
+def parents_(t, parent, d) -> None:
+    if parent is None:
+        d[t] = None
+    else:
+        d[t] += [parent]
+
+    for child in t.children():
+        parents_(child,t,d)
 
 
 def leaves(t):

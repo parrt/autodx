@@ -13,10 +13,23 @@ def eqn(t : Expr) -> List[str]:
     return getattr(vizclass, "eqn")(t)
 
 
-def eqndx(t : Expr, parent : Expr) -> List[str]:
+def eqndx(t : Expr, parents : List[Expr]) -> List[str]:
     """Perform a dynamic dispatch to X_viz.eqndx() for node type X"""
+    if parents is None:
+        return [
+            fraction("∂y", f"{'∂'+sub('v',t.vi)}"),
+            fraction("∂y", "∂y"),
+            "",
+            "1"
+        ]
     vizclass = globals()[t.__class__.__name__ + "_viz"]
-    return getattr(vizclass, "eqndx")(t, parent)
+    return getattr(vizclass, "eqndx")(t, parents)
+
+
+def eqndvdv(t : BinaryOp, wrt : Expr) -> List[str]:
+    """Give equation for dv/dv"""
+    vizclass = globals()[t.__class__.__name__ + "_viz"]
+    return getattr(vizclass, "eqndvdv")(t, wrt)
 
 
 class Var_viz:
@@ -28,10 +41,31 @@ class Var_viz:
             return [f"{sub('v',t.vi)}", "", round(t.value())]
 
     @staticmethod
-    def eqndx(t : Var, parent : Expr) -> List[str]:
+    def eqndvdv(t: Var, wrt: Expr) -> List[str]:
+        return None
+
+    @staticmethod
+    def eqndx(t : Var, parents : List[Expr]) -> List[str]:
+        # collect contributions from all parents
+        contribs = []
+        contribs_values = []
+        for p in parents:
+            if len(contribs)>0:
+                contribs.append(" + ")
+            contribs.append(fraction("∂y", f"{sub('∂v',p.vi)}"))
+            contribs.append(" &times; ")
+            contribs.append(fraction(f"{sub('∂v',p.vi)}", f"{sub('∂v',t.vi)}"))
+
+            if len(contribs_values)>0:
+                contribs_values.append(" + ")
+            contribs_values.append(str(round(p.dydv)))
+            contribs_values.append(" &times; ")
+            contribs_values.append(str(round(p.dvdv(t))))
+
         return [fraction("∂y", f"{'∂'+t.varname}"),
-                fraction("∂y", f"{sub('∂v',t.vi)}"),
-                t.dydv]
+                seq(*contribs),
+                seq(*contribs_values),
+                round(t.dydv)]
 
 
 class Const_viz:
@@ -40,10 +74,14 @@ class Const_viz:
         return [f"{sub('v',t.vi)}", "", round(t.value())]
 
     @staticmethod
-    def eqndx(t : Const, parent : Expr) -> List[str]:
+    def eqndvdv(t: Var, wrt: Expr) -> List[str]:
+        return None
+
+    @staticmethod
+    def eqndx(t : Const, parents : List[Expr]) -> List[str]:
         return [fraction("∂y", f"{sub('∂v',t.vi)}"),
                 "",
-                t.dydv]
+                round(t.dydv)]
 
 
 class BinaryOp_viz:
@@ -60,6 +98,17 @@ class BinaryOp_viz:
                 f"{sub('v',t.left.vi)} {op} {sub('v',t.right.vi)}",
                 round(t.value())]
 
+    @staticmethod
+    def eqndx(t : BinaryOp, parents : List[Expr]) -> List[str]:
+        return [
+            fraction("∂y", f"{'∂'+sub('v',t.vi)}"),
+            seq(fraction("∂y", f"{'∂'+sub('v',parents[0].vi)}")," &times; ",
+                fraction(f"{'∂'+sub('v',parents[0].vi)}", f"{'∂'+sub('v',t.vi)}")),
+            f"{parents[0].dydv} &times; {eqndvdv(parents[0],t)}",
+            round(parents[0].dydv)
+        ]
+
+
 class UnaryOp_viz:
     @staticmethod
     def eqn(t : UnaryOp) -> List[str]:
@@ -67,22 +116,40 @@ class UnaryOp_viz:
                 f"{t.op}({sub('v',t.opnd.vi)})" if t.op.isalnum() else f"{t.op} {sub('v',t.opnd.vi)}",
                 round(t.value())]
 
+    @staticmethod
+    def eqndx(t : UnaryOp, parents : List[Expr]) -> List[str]:
+        return [
+            fraction("∂y", f"{'∂'+sub('v',t.vi)}"),
+            seq(fraction("∂y", f"{'∂'+sub('v',parents[0].vi)}")," &times; ",
+                fraction(f"{'∂'+sub('v',parents[0].vi)}", f"{'∂'+sub('v',t.vi)}")),
+            f"{parents[0].dydv} &times; {eqndvdv(parents[0],t)}",
+            round(parents[0].dydv)
+        ]
+
 
 class Add_viz(BinaryOp_viz):
-    pass
+    @staticmethod
+    def eqndvdv(t: Var, wrt: Expr) -> List[str]:
+        return "1"
 
 
 class Sub_viz(BinaryOp_viz):
-    pass
+    @staticmethod
+    def eqndvdv(t: Var, wrt: Expr) -> List[str]:
+        if t.left == wrt:
+            return "1"
+        else:
+            return "-1"
 
 
 class Mul_viz(BinaryOp_viz):
     @staticmethod
-    def eqndx(t : BinaryOp, parent : Expr) -> List[str]:
-        return [
-            fraction("∂y", f"{'∂'+sub('v',t.vi)}"),
-            f"{sub('v',t.left.vi)} &times; {sub('∂v',t.right.vi)} + {sub('v',t.right.vi)} &times; {sub('∂v',t.left.vi)}",
-            f"{round(t.left.value() * t.right.dvdx(wrt))} + {round(t.right.value() * t.left.dvdx(wrt))} = {round(t.dvdx(wrt))}"]
+    def eqndvdv(t: Var, wrt: Expr) -> List[str]:
+        if t.left == wrt:
+            p = f"{sub('v',t.right.vi)}"
+        else:
+            p = f"{sub('v',t.left.vi)}"
+        return p
 
 
 class Div_viz(BinaryOp_viz):
@@ -101,6 +168,7 @@ def astviz(t : Expr) -> graphviz.Source:
     set_var_indices(t,1)
     the_leaves = leaves(t)
     allnodes, clusters = nodes(t)
+    parentmap = parents(t)
     the_nonleaves = [n for n in allnodes if not n.isleaf()]
     cluster_nodes = [item for cluster in clusters for item in cluster]
 
@@ -119,7 +187,7 @@ def astviz(t : Expr) -> graphviz.Source:
         opnd_clusters += f"""
             subgraph cluster_opnds{i} {{
             style=invis; {{rank=same; {'->'.join([f'v{n.vi}' for n in cluster])} [style=invis]}}
-            {nltab.join([nodeviz(node) for node in cluster])}
+            {nltab.join([nodeviz(node,parentmap[node]) for node in cluster])}
         }}\n"""
     s = f"""
 
@@ -129,15 +197,15 @@ def astviz(t : Expr) -> graphviz.Source:
         rankdir=TD;
         node [penwidth="0.5", shape=box, width=.1, height=.1];
         // OPERATORS
-        {nltab.join([nodeviz(node) for node in the_nonleaves])}
+        {nltab.join([nodeviz(node,parentmap[node]) for node in the_nonleaves])}
         // CONSTANTS (not operand of binary op)
-        {nltab.join([nodeviz(node) for node in [n for n in consts if n not in cluster_nodes]])}
+        {nltab.join([nodeviz(node,parentmap[node]) for node in [n for n in consts if n not in cluster_nodes]])}
         // OPERAND CLUSTERS
         {opnd_clusters}
         // INPUTS (leaves)
         subgraph cluster_inputs {{
             style=invis
-            {nltab.join([nodeviz(node) for node in inputs])}
+            {nltab.join([nodeviz(node,parentmap[node]) for node in inputs])}
         }}
         // EDGES
         {nltab.join(connections)}
@@ -160,30 +228,19 @@ def connviz(t : Expr, kid : Expr) -> str:
 def nodehtml(t : Expr, parent : Expr) -> str:
     rows = []
     e = eqn(t)
+    edx = eqndx(t, parent)
     if isinstance(t, Const):
         rows.append(f"""<tr><td>{e[0]}</td><td> = </td><td align="left">{e[2]}</td></tr>""")
-        edx = eqndx(t,parent)
         rows.append(
             f"""<tr><td>{edx[0]}</td><td> = </td><td align="left">{edx[2]}</td></tr>""")
     else:
-        if len(e)==1:
-            rows.append(f"""
-            <tr><td>{e[0]}</td><td> = </td><td align="left">{e[1]}</td><td> = </td><td align="left">{e[2]}</td></tr>
-            """)
-        else:
-            rows.append(f"""
-            <tr><td>{e[0]}</td><td> = </td><td align="left">{e[1]}</td><td> = </td><td align="left">{e[2]}</td></tr>
-            """)
+        rows.append(f"""
+        <tr><td>{e[0]}</td><td> = </td><td align="left">{e[1]}</td><td></td><td></td><td> = </td><td align="left">{e[2]}</td></tr>
+        """)
 
-        edx = eqndx(t,parent)
-        if len(edx)==1:
-            rows.append(f"""
-            <tr><td>{edx[0]}</td><td></td><td></td><td>=</td><td></td></tr>
-            """)
-        else:
-            rows.append(f"""
-            <tr><td>{edx[0]}</td><td> = </td><td align="left">{edx[1]}</td><td>=</td><td align="left">{edx[2]}</td></tr>
-            """)
+        rows.append(f"""
+        <tr><td>{edx[0]}</td><td> = </td><td align="left">{edx[1]}</td><td> = </td><td align="left">{edx[2]}</td><td> = </td><td align="left">{edx[3]}</td></tr>
+        """)
 
     return f"""<table BORDER="0" CELLPADDING="0" CELLBORDER="0" CELLSPACING="1">
     {''.join(rows)}
@@ -191,11 +248,11 @@ def nodehtml(t : Expr, parent : Expr) -> str:
     """
 
 if __name__ == '__main__':
-    x1 = Var(3)
+    x1 = Var(2)
     x2 = Var(5)
-    y = x1
+    y = x1 - x1 * x2
 
-    ast = y
+    ast = ln(x1) + x1 * x2 - sin(x2)
     set_var_indices(y,1)
 
     # compute gradients in leaves
