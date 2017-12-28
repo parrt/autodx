@@ -14,11 +14,11 @@ For y = f(x1,x2) = ln(x1) + x1 * x2 - sin(x2):
 
 **Forward**
 
-<img src="images/forward-TD-x2.png" width=400>
+<img src="images/forward-TD-x2.png" width=500>
 
-<img src="images/forward-x1.png" width=500>
-<img src="images/forward-x2.png" width=500>
+<img src="images/forward-x1.png" width=600>
+<img src="images/forward-x2.png" width=600>
 
 **Backward**
 
-<img src="images/backward.png" width=600>
+<img src="images/backward.png" width=700>
