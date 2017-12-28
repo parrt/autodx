@@ -31,7 +31,7 @@ class Expr:
         return self.x
 
     def backward(self) -> None:
-        "Track backward call to root in case we need it"
+        "Leave hook for backward()'s dvdv() call to root's parent in case we need it"
         class OutputNode(Expr):
             def dvdv(self, wrt: 'Expr') -> numbers.Number:
                 return 1
@@ -105,7 +105,6 @@ class Var(Expr):
     def backward_(self, parent : Expr, dydv : numbers.Number) -> None:
         # actual variable leaf nodes must accumulate all contributions
         # of this var from up the tree. Sum all dy/dx_i computed backwards.
-        print(f"backward(v{self.vi} = {self.asvar()}")
         self.dydv += dydv * parent.dvdv(self)
 
     def __str__(self):
@@ -146,9 +145,7 @@ class BinaryOp(Expr):
         return [self.left, self.right]
 
     def backward_(self, parent : Expr, dydv : numbers.Number) -> None:
-        print(f"backward(v{self.vi} = {self.asvar()})")
         self.dydv = dydv * parent.dvdv(self) # don't need to accum subexpr adjoints (they are unique)
-        print(f"adjoint v{self.vi} = {self.dydv}")
         self.left.backward_(self, self.dydv)
         self.right.backward_(self, self.dydv)
 
@@ -164,12 +161,6 @@ class BinaryOp(Expr):
     def asvar(self):
         return f"v{self.left.vi} {self.op} v{self.right.vi}"
 
-    def dbg(self,wrt,p):
-        print(f"partial ∂v{self.vi}/∂v{wrt.vi} of {self.asvar()} = {p}")
-        print(f"\tv{self.vi} = {self.asvar()} = {self}")
-        print(f"\tv{self.left.vi} = {self.left.x}")
-        print(f"\tv{self.right.vi} = {self.right.x}")
-
 
 class UnaryOp(Expr):
     def __init__(self, op : str, opnd : Expr):
@@ -181,9 +172,7 @@ class UnaryOp(Expr):
         return [self.opnd]
 
     def backward_(self, parent : Expr, dydv : numbers.Number) -> None:
-        print(f"backward(v{self.vi} = {self.asvar()})")
         self.dydv = dydv * parent.dvdv(self) # don't need to accum subexpr adjoints (they are unique)
-        print(f"adjoint v{self.vi} = {self.dydv}")
         self.opnd.backward_(self, self.dydv)
 
     def forward_trace(self):
@@ -198,14 +187,6 @@ class UnaryOp(Expr):
     def asvar(self):
         return f"{self.op} v{self.opnd.vi}"
 
-    def dbg(self,wrt,p):
-        print(f"partial ∂v{self.vi}/∂v{wrt.vi} of {self.asvar()} = {p}")
-        print(f"\tv{self.vi} = {self.asvar()} = {self}")
-        if wrt.isleaf():
-            print(f"\tv{wrt.vi} = {wrt.asvar()} = {wrt.x}")
-        else:
-            print(f"\tv{wrt.vi} = {wrt.x}")
-
 
 class Add(BinaryOp):
     def __init__(self, left, right):
@@ -218,7 +199,6 @@ class Add(BinaryOp):
     def dvdv(self, wrt : 'Expr') -> numbers.Number:
         # d/dx(x + y) = d/dy(x - y) = 1
         p = 1
-        self.dbg(wrt,p)
         return p
 
 
@@ -237,7 +217,6 @@ class Sub(BinaryOp):
             p = 1
         else:
             p = -1
-        self.dbg(wrt,p)
         return p
 
 
@@ -254,7 +233,6 @@ class Mul(BinaryOp):
             p = self.right.x
         else:
             p = self.left.x
-        self.dbg(wrt,p)
         return p
 
 
@@ -271,7 +249,6 @@ class Div(BinaryOp):
             p = 1 / self.right.forward()
         else:
             p = - self.left.forward() * (1 / self.right.forward()**2)
-        self.dbg(wrt,p)
         return p
 
 
@@ -288,7 +265,6 @@ class Sin(UnaryOp):
             p = np.cos(self.opnd.forward())
         else:
             p = 0
-        self.dbg(wrt,p)
         return p
 
 
@@ -302,7 +278,6 @@ class Ln(UnaryOp):
 
     def dvdv(self, wrt : 'Expr') -> numbers.Number:
         p = 1 / self.opnd.x if self.opnd == wrt else 0
-        self.dbg(wrt,p)
         return p
 
 
