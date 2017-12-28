@@ -178,7 +178,7 @@ def astviz(t : Expr, wrt : Expr) -> graphviz.Source:
     digraph G {{
         nodesep=.1;
         ranksep=.3;
-        rankdir=TD;
+        rankdir=RL;
         node [penwidth="0.5", shape=box, width=.1, height=.1];
         // OPERATORS
         {nltab.join([nodeviz(node,wrt) for node in the_nonleaves])}
@@ -252,7 +252,7 @@ if __name__ == '__main__':
     g = astviz(y, x2)
     print(g.source)
     g.view()
-    dot(g,filename="/tmp/s.png",format='png',dpi=600)
+    dot(g,filename="/tmp/f.png",format='png',dpi=300)
 
     #
     # x1 = Var(2, sub("x",1))
