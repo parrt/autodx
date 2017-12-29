@@ -51,7 +51,7 @@ class Expr:
         return self.x
 
     def gradient(self, X):
-        return [self.dvdx(x) for x in X]
+        return np.array([self.dvdx(x) for x in X])
 
     def children(self):
         return []
