@@ -80,9 +80,9 @@ class Var(Expr):
     def dvdx(self, wrt : 'Expr') -> Union[numbers.Number,np.ndarray]:
         if isinstance(self.x, np.ndarray):
             if self==wrt:
-                return np.ones(len(self.x), dtype=int)
+                return np.ones(self.x.shape, dtype=int)
             else:
-                return np.zeros(len(self.x), dtype=int)
+                return np.zeros(self.x.shape, dtype=int)
 
         return 1 if self==wrt else 0
 
@@ -185,7 +185,7 @@ class VecDot(BinaryOp):
         if wrt == self.right:
             return self.left.value()
         else:
-            return np.zeros(len(self.left.x))
+            return np.zeros(self.left.x.shape)
 
 
 class Div(BinaryOp):
