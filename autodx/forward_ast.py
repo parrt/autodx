@@ -16,7 +16,7 @@ class Expr:
         return Add(self,other)
 
     def __radd__(self, other):
-        return Add(Const(other),self) # other comes in as left operand so we flip order
+        return Const(other).__add__(self) # other comes in as left operand so we flip order
 
     def __sub__(self, other):
         if isinstance(other, numbers.Number):
@@ -24,7 +24,7 @@ class Expr:
         return Sub(self,other)
 
     def __rsub__(self, other):
-        return Sub(Const(other),self) # other comes in as left operand so we flip order
+        return Const(other).__sub__(self)
 
     def __mul__(self, other: 'Expr') -> 'Expr':  # yuck. must put 'Variable' type in string
         if isinstance(other, numbers.Number):
@@ -33,7 +33,7 @@ class Expr:
 
     def __rmul__(self, other):
         "Allows 5 * Variable(3) to invoke overloaded * operator"
-        return Mul(Const(other),self) # other comes in as left operand so we flip order
+        return Const(other).__mul__(self)
 
     def __truediv__(self, other):
         if isinstance(other, numbers.Number):
@@ -41,7 +41,7 @@ class Expr:
         return Div(self,other)
 
     def __rtruediv__(self, other):
-        return Div(Const(other),self) # other comes in as left operand so we flip order
+        return Const(other).__truediv__(self)
 
     def value(self) -> numbers.Number:
         return self.x
@@ -130,6 +130,17 @@ class UnaryOp(Expr):
 
 
 class Add(BinaryOp):
+    def __init__(self, left, right):
+        super().__init__(left, '+', right)
+
+    def value(self):
+        return self.left.value() + self.right.value()
+
+    def dvdx(self, wrt : Expr) -> numbers.Number:
+        return self.left.dvdx(wrt) + self.right.dvdx(wrt)
+
+
+class VecAdd(BinaryOp):
     def __init__(self, left, right):
         super().__init__(left, '+', right)
 

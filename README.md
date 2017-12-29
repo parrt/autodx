@@ -1,4 +1,4 @@
-# auto-diff-edu
+# autodx
 
 Simple automatic differentiation via operator overloading for educational purposes
 
