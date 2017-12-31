@@ -15,6 +15,10 @@ class Expr:
     def __add__(self, other):
         if isinstance(other, numbers.Number):
             other = Const(other)
+        if other.x.size==1 and self.x.size>1:
+            return Add(self, Expand(other, self.x.size))
+        elif self.x.size==1 and other.x.size>1:
+            return Add(Expand(self, other.x.size), other)
         return Add(self,other)
 
     def __radd__(self, other):
@@ -29,8 +33,6 @@ class Expr:
         return Const(other).__sub__(self)
 
     def __mul__(self, other: 'Expr') -> 'Expr':  # yuck. must put 'Variable' type in string
-        if isinstance(self.x, np.ndarray) and isinstance(other.x,np.ndarray):
-            return VecDot(self,other)
         if isinstance(other, numbers.Number):
             other = Const(other)
         return Mul(self,other)
@@ -67,7 +69,7 @@ class Expr:
 
 class Var(Expr):
     def __init__(self, x, varname : str = None):
-        self.x = x
+        self.x = np.array(x) # ensure all vars are vector vars even if 1x1 (scalars)
         self.vi = -1
         self.varname = varname
 
@@ -78,11 +80,11 @@ class Var(Expr):
         return True
 
     def dvdx(self, wrt : 'Expr') -> Union[numbers.Number,np.ndarray]:
-        if isinstance(self.x, np.ndarray):
+        if isinstance(self.x, np.ndarray) and self.x.size>1:
             if self==wrt:
-                return np.ones(self.x.shape, dtype=int)
+                return np.ones(self.x.size, dtype=int)
             else:
-                return np.zeros(self.x.shape, dtype=int)
+                return np.zeros(self.x.size, dtype=int)
 
         return 1 if self==wrt else 0
 
@@ -94,7 +96,7 @@ class Var(Expr):
 
 class Const(Expr):
     def __init__(self, v : numbers.Number):
-        self.x = v
+        self.x = np.array(v) # ensure all consts are vector consts even if 1x1 (scalars)
         self.vi = -1
         self.varname = None
 
@@ -174,18 +176,28 @@ class Mul(BinaryOp):
 
 class VecDot(BinaryOp):
     def __init__(self, left, right):
-        super().__init__(left, '*', right)
+        super().__init__(left, 'dot', right)
 
     def value(self) -> numbers.Number:
         return np.dot(self.left.value(), self.right.value())
 
     def dvdx(self, wrt : Expr) -> numbers.Number:
-        if wrt == self.left:
-            return self.right.value()
-        if wrt == self.right:
-            return self.left.value()
-        else:
-            return np.zeros(self.left.x.shape)
+        dr = self.right.dvdx(wrt)
+        dl = self.left.dvdx(wrt)
+        return self.left.value() * dr + \
+               self.right.value() * dl
+
+
+class VecSum(UnaryOp):
+    def __init__(self, opnd):
+        super().__init__('sum', opnd)
+
+    def value(self) -> Union[numbers.Number,np.ndarray]:
+        return np.sum(self.opnd.value())
+
+    def dvdx(self, wrt : Expr) -> numbers.Number:
+        # return np.ones(self.opnd.value().size) * self.opnd.dvdx(wrt)
+        return self.opnd.dvdx(wrt)
 
 
 class Div(BinaryOp):
@@ -222,6 +234,18 @@ class Ln(UnaryOp):
         return (1 / self.opnd.value()) * self.opnd.dvdx(wrt)
 
 
+class Expand(UnaryOp):
+    def __init__(self, opnd, n):
+        super().__init__('expand', opnd)
+        self.n = n
+
+    def value(self) -> Union[numbers.Number,np.ndarray]:
+        return np.ones(self.n) * self.opnd.value()
+
+    def dvdx(self, wrt : Expr) -> numbers.Number:
+        return self.n * self.opnd.dvdx(wrt)
+
+
 def sin(x:Expr) -> Sin:
     if isinstance(x, numbers.Number):
         return Sin(Const(x))
@@ -232,3 +256,13 @@ def ln(x:Expr) -> Ln:
     if isinstance(x, numbers.Number):
         return Ln(Const(x))
     return Ln(x)
+
+
+def dot(a : Expr, b : Expr) -> np.ndarray:
+    return VecDot(a, b)
+
+
+def sum(a : Expr) -> VecSum:
+    if isinstance(a, numbers.Number):
+        return VecSum(Const(a))
+    return VecSum(a)

@@ -107,7 +107,10 @@ def f5_forward_ast(x1, x2)  : return autodx.forward_ast.ln(x1) + x1 * x2 - autod
 def f5_backward_ast(x1, x2) : return autodx.backward_ast.ln(x1) + x1 * x2 - autodx.backward_ast.sin(x2)
 def f5_pytorch(x1, x2)      : return torch.log(x1) + x1 * x2 - torch.sin(x2)
 
-simple_funcs = [f, f2, f3]
+# make sure we can handle partials of operations with respect to vars not in arguments
+def f6(x1, x2, x3): return (x1 * x2) / x3
+
+simple_funcs = [f, f2, f3, f6]
 
 finite_diff_funcs = [f4_finite_diff, f5_finite_diff]
 forward_funcs = [f4_forward, f5_forward]

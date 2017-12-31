@@ -140,17 +140,6 @@ class Add(BinaryOp):
         return self.left.dvdx(wrt) + self.right.dvdx(wrt)
 
 
-class VecAdd(BinaryOp):
-    def __init__(self, left, right):
-        super().__init__(left, '+', right)
-
-    def value(self):
-        return self.left.value() + self.right.value()
-
-    def dvdx(self, wrt : Expr) -> numbers.Number:
-        return self.left.dvdx(wrt) + self.right.dvdx(wrt)
-
-
 class Sub(BinaryOp):
     def __init__(self, left, right):
         super().__init__(left, '-', right)
