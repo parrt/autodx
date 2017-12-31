@@ -80,13 +80,18 @@ class Var(Expr):
         return True
 
     def dvdx(self, wrt : 'Expr') -> Union[numbers.Number,np.ndarray]:
-        if isinstance(self.x, np.ndarray) and self.x.size>1:
-            if self==wrt:
-                return np.ones(self.x.size, dtype=int)
-            else:
-                return np.zeros(self.x.size, dtype=int)
-
-        return 1 if self==wrt else 0
+        if self == wrt:
+            return np.ones(wrt.x.size, dtype=int)
+        else:
+            return np.zeros(wrt.x.size, dtype=int)
+        # i don't think the below is needed; above is general since we do len = wrt.size
+        # if isinstance(self.x, np.ndarray) and self.x.size>1:
+        #     if self==wrt:
+        #         return np.ones(wrt.x.size, dtype=int)
+        #     else:
+        #         return np.zeros(wrt.x.size, dtype=int)
+        #
+        # return 1 if self==wrt else 0
 
     def __str__(self):
         if isinstance(self.x, int) or isinstance(self.x, np.ndarray):
@@ -196,7 +201,7 @@ class VecSum(UnaryOp):
         return np.sum(self.opnd.value())
 
     def dvdx(self, wrt : Expr) -> numbers.Number:
-        # return np.ones(self.opnd.value().size) * self.opnd.dvdx(wrt)
+        #return np.ones(self.opnd.value().size) * self.opnd.dvdx(wrt)
         return self.opnd.dvdx(wrt)
 
 
