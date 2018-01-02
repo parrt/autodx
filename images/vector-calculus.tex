@@ -1,0 +1,226 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\textwidth = 6.5 in
+\textheight = 9 in
+\oddsidemargin = 0.0 in
+\evensidemargin = 0.0 in
+\topmargin = 0.0 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.2in
+\parindent = 0.0in
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}{Definition}
+
+\title{Brief Article}
+\author{The Author}
+\begin{document}
+\maketitle
+
+$y = \mathbf{a} + \mathbf{b} = [ a_1+b_1, a_2+b_2, \ldots, a_n+b_n ]$
+
+$\frac{\partial y}{\partial \mathbf{a}} = [ \frac{\partial y}{\partial a_1} a_1, \ldots, \frac{\partial y}{\partial a_n} a_n] = \vec{1}$
+
+$\frac{\partial y}{\partial \mathbf{b}} = [ \frac{\partial y}{\partial b_1}, \ldots, \frac{\partial y}{\partial b_n}] = \vec{1}$
+
+
+$y = \mathbf{a} \cdot \mathbf{b} = \Sigma_i (a_i b_i)$
+
+$\frac{\partial y}{\partial a_j} = \frac{\partial y}{\partial a_j} \Sigma_i (a_i b_i) = \Sigma_i \frac{\partial y}{\partial a_j} (a_i b_i) = \frac{\partial y}{\partial a_j} (a_j b_j) = b_j$
+
+$\frac{\partial y}{\partial \mathbf{a}} = [ b_1, \ldots, b_n ] = \mathbf{b}$
+
+$\frac{\partial y}{\partial \mathbf{b}} = \mathbf{a}$
+
+\section{Vector calculus}
+
+Assume all vectors are vertical by default; $n \times 1$
+
+\subsection{Vector-scalar multiplication}
+
+$y = \mathbf{x} \times c = \begin{bmatrix}
+           x_{1} c\\
+           x_{2} c\\
+           \vdots \\
+           x_{n} c
+         \end{bmatrix}$
+
+$\frac{\partial y}{\partial \mathbf{x}} =  \begin{bmatrix}
+           \frac{\partial}{\partial {x_1}} x_{1} c \\
+           \frac{\partial}{\partial {x_1}} x_{2} c \\
+           \vdots \\
+           \frac{\partial}{\partial {x_1}} x_{} c \\
+         \end{bmatrix} = \begin{bmatrix}
+           c\\
+           c\\
+           \vdots \\
+           c\\
+         \end{bmatrix} = \vec{1} \times c$
+
+$\frac{\partial y}{\partial c} = \begin{bmatrix}
+           \frac{\partial}{\partial c} x_{1} c \\
+           \frac{\partial}{\partial c} x_{2} c \\
+           \vdots \\
+           \frac{\partial}{\partial c} x_{} c \\
+         \end{bmatrix} = \begin{bmatrix}
+           x_{1} \\
+           x_{2} \\
+           \vdots \\
+           x_{n} 
+         \end{bmatrix} = \mathbf{x}$
+
+Note: the Jacobian is an $n \times 1$ matrix (vertical vector) not horizontal gradient vector because it's like we have $n$ simple expressions $y_i = x_i c$.
+
+\subsection{Vector-scalar addition}
+
+$y = \mathbf{x} + c = \mathbf{x} + \vec{1} \times c$
+
+Just to be clear...
+
+$y = \begin{bmatrix}
+           x_{1} \\
+           x_{2} \\
+           \vdots \\
+           x_{n}
+         \end{bmatrix}
+         + \begin{bmatrix}
+           1\\
+           1\\
+           \vdots \\
+           1\\
+         \end{bmatrix} \times c$
+
+$\frac{\partial y}{\partial \mathbf{x}} = \vec{1}$
+
+$\frac{\partial y}{\partial c} = \vec{1}$
+
+\subsection{Vector-vector addition}
+
+$y = \mathbf{w} + \mathbf{x} = \begin{bmatrix}
+           w_{1} + x_{1} \\
+           w_{2} + x_{2}\\
+           \vdots \\
+           w_{n} + x_{n}
+         \end{bmatrix}$
+
+$\frac{\partial y}{\partial \mathbf{w}} = \begin{bmatrix}
+           1 + 0 \\
+           1 + 0\\
+           \vdots \\
+           1 + 0
+         \end{bmatrix} = \vec{1}$
+
+Similarly,
+
+$\frac{\partial y}{\partial \mathbf{x}} = \vec{1}$
+
+\subsection{Vector dot product}
+
+$y = \mathbf{w} \cdot \mathbf{x} = \mathbf{w}^{T} \times \mathbf{x} = \mathbf{x}^{T} \times \mathbf{w}$
+
+$
+\begin{array}{rcl}
+\frac{\partial y}{\partial \mathbf{w}} & = & \mathbf{w}^{T} \times \frac{\partial}{\partial \mathbf{w}}\mathbf{x} + \frac{\partial}{\partial \mathbf{w}}\mathbf{w}^{T} \times \mathbf{x} \\
+ & = & \mathbf{w}^{T} \times \vec{0} + \begin{bmatrix} \frac{\partial}{\partial w_1}\mathbf{w}^{T} \times \mathbf{x}, \frac{\partial}{\partial w_2}\mathbf{w}^{T} \times \mathbf{x}, \ldots, \frac{\partial}{\partial w_n}\mathbf{w}^{T} \times \mathbf{x} \end{bmatrix}\\
+ & = & \begin{bmatrix} \mathbf{i}_1^T \times \mathbf{x}, \mathbf{i}_2^T \times \mathbf{x}, \dots, \mathbf{i}_n^T \times \mathbf{x}\end{bmatrix}
+\end{array}
+$
+
+where $\mathbf{i}_j$ is a vector with $\mathbf{i}_j=1$ and $\mathbf{i}_k=0$ for $k \neq j$ (vector with all zeros except at $j$, which is 1).
+
+Easier way, but one that doesn't emphasize transpose (horiz vector) of variable vectors into gradients.
+
+$y = \mathbf{a} \cdot \mathbf{b} = \Sigma_i (a_i b_i)$
+
+$\frac{\partial y}{\partial a_j} = \frac{\partial y}{\partial a_j} \Sigma_i (a_i b_i) = \Sigma_i \frac{\partial y}{\partial a_j} (a_i b_i) = \frac{\partial y}{\partial a_j} (a_j b_j) = b_j$
+
+$\frac{\partial y}{\partial \mathbf{a}} = [ b_1, \ldots, b_n ] = \mathbf{b}$ Note the gradient is a horizontal vector (1 output)!
+
+$\frac{\partial y}{\partial \mathbf{b}} = \mathbf{a}$
+
+\subsection{Expand scalar to vector}
+
+Example: Addition
+
+$y = \mathbf{x} + c = \mathbf{x} + \vec{1} \times c$ (Jacobian should be $n \times 1$)
+
+$\frac{\partial y_i}{\partial x_i} = \frac{\partial}{\partial x_i} x_i + \frac{\partial}{\partial x_i} \vec{c} = 0 + 1$
+
+$\frac{\partial y}{\partial \mathbf{x}} = \vec{1}$
+
+$\frac{\partial y_i}{\partial c} = \frac{\partial}{\partial c} x_i + \frac{\partial}{\partial c} c = 0 + 1$
+
+$\frac{\partial y}{\partial c} = \vec{1}$
+
+Example: Addition of two scalar multiplies
+
+$y = \mathbf{x} + b \times c = \mathbf{x} + \vec{1} \times (b \times c)$
+
+$\frac{\partial y_i}{\partial c}
+ = \frac{\partial}{\partial c} x_i + \frac{\partial}{\partial c} (\vec{1} \times b \times c)
+ = 0 + b
+ = b
+$
+
+$\frac{\partial y}{\partial c}
+  = \vec{0} + \frac{\partial y}{\partial c} (\vec{1} \times b \times c)
+  = \vec{b}$
+
+$\frac{\partial y}{\partial b}
+  = \vec{0} + \frac{\partial y}{\partial b} (\vec{1} \times b \times c)
+  = \vec{c}$
+
+\subsection{Vector sum}
+ 
+Recall if $\mathbf{y} = \mathbf{f}(\mathbf{x})$ is vector-valued function, it's like this:
+
+$
+\begin{array}{lcl}
+y_1 & = & f_1(x_1)\\
+y_2 & = & f_2(x_2)\\
+ & \vdots & \\
+y_n & = & f_n(x_n)\\
+\end{array}
+$
+
+Let $y = sum( \mathbf{f}(\mathbf{x})) = \Sigma_{i=1}^n f_i(x_i)$ then
+
+$
+\begin{array}{lcl}
+\frac{\partial y}{\partial \mathbf{x}} & = & \begin{bmatrix} \frac{\partial y}{\partial x_1}, \frac{\partial y}{\partial x_2}, \ldots, \frac{\partial y}{\partial x_n} \end{bmatrix}\\\\
+ & = & \begin{bmatrix} \frac{\partial}{\partial x_1} \Sigma_i f_i(x_i),~ \frac{\partial}{\partial x_2} \Sigma_i f_i(x_i),~ \ldots,~ \frac{\partial}{\partial x_n} \Sigma_i  f_i(x_i) \end{bmatrix}\\\\
+ & = & \begin{bmatrix} \Sigma_i \frac{\partial f_i(x_i)}{\partial x_1},~ \Sigma_i \frac{\partial f_i(x_i)}{\partial x_2},~ \ldots,~ \Sigma_i \frac{\partial f_i(x_i)}{\partial x_n}  \end{bmatrix}\\\\
+\end{array}
+$
+
+Example: Sum of addition of vector and scalar
+
+
+$y = sum(\mathbf{x} + c) = sum(\mathbf{x} + \vec{1} \times c)$
+
+$
+\begin{array}{lcl}
+\frac{\partial y}{\partial \mathbf{x}} & = & \begin{bmatrix} \frac{\partial}{\partial x_1} \Sigma_i (x_i+c),~ \frac{\partial}{\partial x_2} \Sigma_i (x_i+c),~ \ldots,~ \frac{\partial}{\partial x_n} \Sigma_i  (x_i+c) \end{bmatrix}\\
+ & = & \begin{bmatrix} \frac{\partial}{\partial x_1} (x_1+1),~ \frac{\partial}{\partial x_2} (x_2+c),~ \ldots,~ \frac{\partial}{\partial x_n}  (x_n+c) \end{bmatrix}\\
+ & = & \begin{bmatrix} 1, 1, \dots, 1 \end{bmatrix} = \vec{1}^T\\
+\end{array}
+$
+
+$
+\begin{array}{lcl}
+\frac{\partial y}{\partial c} & = & \frac{\partial}{\partial c} \Sigma_{i=1}^n (x_i+c)\\
+& = & \Sigma_i \frac{\partial}{\partial c} (x_i+c)\\
+& = & \Sigma_i (0 + 1)\\
+& = & n
+\end{array}
+$
+
+ 
+ \end{document}

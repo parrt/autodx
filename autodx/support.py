@@ -42,12 +42,17 @@ def seq(*elems : List[str]):
 
 
 def round(x):
-    if isinstance(x, int):
-        return x
-    if np.isclose(x, 0.0):
-        return 0
-    return float(f"{x:.4f}")
-
+    if isinstance(x, numbers.Number):
+        if isinstance(x, int):
+            return x
+        if np.isclose(x, 0.0):
+            return 0
+        return float(f"{x:.4f}")
+    if isinstance(x, np.ndarray):
+        if x.ndim==0:
+            return x#float(f"{x:.4f}")
+        return [float(f"{v:.4f}") if isinstance(x, float) else x for v in x]
+    return x
 
 def nodes(t) -> (List, List, Dict):
     """

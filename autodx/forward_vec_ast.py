@@ -83,15 +83,10 @@ class Var(Expr):
         if self == wrt:
             return np.ones(wrt.x.size, dtype=int)
         else:
+            # 0 vector must be size of wrt variable!
+            # d/dv of single-var for len n v is 0 vector of len n
+            # d/dk of vector for single-var k is len 1 0 vector
             return np.zeros(wrt.x.size, dtype=int)
-        # i don't think the below is needed; above is general since we do len = wrt.size
-        # if isinstance(self.x, np.ndarray) and self.x.size>1:
-        #     if self==wrt:
-        #         return np.ones(wrt.x.size, dtype=int)
-        #     else:
-        #         return np.zeros(wrt.x.size, dtype=int)
-        #
-        # return 1 if self==wrt else 0
 
     def __str__(self):
         if isinstance(self.x, int) or isinstance(self.x, np.ndarray):
@@ -109,7 +104,8 @@ class Const(Expr):
         return True
 
     def dvdx(self, wrt : 'Expr') -> numbers.Number:
-        return 0
+        # derivative always has same size as wrt var
+        return np.zeros(wrt.x.size, dtype=int)
 
     def __str__(self):
         if isinstance(self.x, int):
@@ -201,7 +197,7 @@ class VecSum(UnaryOp):
         return np.sum(self.opnd.value())
 
     def dvdx(self, wrt : Expr) -> numbers.Number:
-        #return np.ones(self.opnd.value().size) * self.opnd.dvdx(wrt)
+        # d/dx of sum(expr) is just d/dx of expr (derivate op just passes through)
         return self.opnd.dvdx(wrt)
 
 

@@ -16,7 +16,7 @@ print("y1 grad =",a.grad.data.numpy())
 a, b = np.array([9,7,0]), 99
 a, b = Variable(torch.from_numpy(a).double(), requires_grad=True), \
        Variable(torch.Tensor([b]).double(), requires_grad=True)
-y2 = torch.sum(a + b)
+y2 = torch.sum(a * b)
 y2.backward()
 print("y2 =", y2.data.numpy())
 print("y2 grad =",a.grad.data.numpy(),b.grad.data.numpy())
@@ -42,7 +42,7 @@ print("y1 grad =", g1[0])
 
 a, b = np.array([9,7,0]), 99
 a, b = autodx.forward_vec_ast.Var(a), autodx.forward_vec_ast.Var(b)
-y2 = autodx.forward_vec_ast.sum(a + b)
+y2 = autodx.forward_vec_ast.sum(a * b)
 g2 = y2.gradient([a, b])
 print("y2 =", y2.value())
 print("y2 grad =", g2[0], g2[1])

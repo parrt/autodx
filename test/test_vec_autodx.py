@@ -17,33 +17,39 @@ def pytorch_eval(f, *args):
 
     y.backward()
 
-    return y, np.array([x.grad.data.numpy() if x.grad is not None else None for x in X_])
+    return y.data[0], np.array([x.grad.data.numpy() if x.grad is not None else None for x in X_])
+
+
+def autodx_eval_forward_vec_ast(f, *args):
+    X_ = [autodx.forward_vec_ast.Var(arg) for arg in args]
+    ast = f(*X_)
+    return ast, ast.value(), ast.gradient(X_)
 
 
 # some vector tests
 
-def vf(a,b): return a + b
-
-X =  [np.array([1,3,5]), np.array([9,7,0])]
-X_ = [autodx.forward_vec_ast.Var(x) for x in X]
-
-y = vf(*X_)
-print(y,'=',y.value())
-print("Jacobian:")
-print(y.gradient(X_))
+# def vf_add_const(a): return a + 99
+#
+# X =  [np.array([1,3,5])]
+#
+# y, g   = autodx_eval_forward_vec_ast(vf_add_const, X)
+# ty, tg = pytorch_eval(vf_add_const, *X)
+#
+# print(y,'=',y,'vs',ty)
+# print("gradient",'=',g,'vs',tg)
 
 # -----------------------------------------
 
-def vf(a,b): return a + b
+def vf(a,b): return autodx.forward_vec_ast.sum(a + b)
+def vf_pytorch(a,b): return torch.sum(a + b)
 
 X =  [np.array([1,3,5]), 9]
-X_ = [autodx.forward_vec_ast.Var(x) for x in X]
 
-y = vf(*X_)
-print()
-print(y,'=',y.value())
-print("Jacobian:")
-print(y.gradient(X_))
+ast, y, g   = autodx_eval_forward_vec_ast(vf, *X)
+ty, tg = pytorch_eval(vf_pytorch, *X)
+
+print(ast,'=',y,'vs',ty)
+print("gradient",'=',g,'vs',tg)
 
 # -----------------------------------------
 
@@ -51,14 +57,12 @@ def vf2(a,b): return autodx.forward_vec_ast.dot(a, b)
 def vf2_pytorch(a,b): return torch.dot(a, b)
 
 X =  [np.array([1,3,5]), np.array([9,7,0])]
-X_ = [autodx.forward_vec_ast.Var(x) for x in X]
+ast, y, g   = autodx_eval_forward_vec_ast(vf2, *X)
+ty, tg = pytorch_eval(vf2_pytorch, *X)
 
-y = vf2(*X_)
 print()
-print(y,'=',y.value())
-print("Jacobian:")
-print(y.gradient(X_))
-print(pytorch_eval(vf2_pytorch, *X)[1])
+print(ast,'=',y,'vs',ty)
+print("gradient",'=',g,'vs',tg)
 
 # -----------------------------------------
 
@@ -68,11 +72,9 @@ def vf3_pytorch(a,b,c):
     return r
 
 X =  [np.array([1,3,5]), np.array([9,7,0]), 99]
-X_ = [autodx.forward_vec_ast.Var(x) for x in X]
+ast, y, g   = autodx_eval_forward_vec_ast(vf3, *X)
+ty, tg = pytorch_eval(vf3_pytorch, *X)
 
-y = vf3(*X_)
 print()
-print(y,'=',y.value())
-print("Jacobian:")
-print(y.gradient(X_))
-print(pytorch_eval(vf3_pytorch, *X)[1])
+print(ast,'=',y,'vs',ty)
+print("gradient",'=',g,'vs',tg)
