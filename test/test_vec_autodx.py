@@ -71,9 +71,22 @@ def vf3_pytorch(a,b,c):
     r = torch.dot(a + b, b + c)
     return r
 
-X =  [np.array([1,3,5]), np.array([9,7,0]), 99]
+X =  [np.array([1,3,5]), np.array([9,7,0]), 2]
 ast, y, g   = autodx_eval_forward_vec_ast(vf3, *X)
 ty, tg = pytorch_eval(vf3_pytorch, *X)
+
+print()
+print(ast,'=',y,'vs',ty)
+print("gradient",'=',g,'vs',tg)
+
+# -----------------------------------------
+
+def vf4(a,b,c): return autodx.forward_vec_ast.dot(a, b + c)
+def vf4_pytorch(a,b,c): return torch.dot(a, b + c)
+
+X =  [np.array([1,3,5]), np.array([9,7,0]), 2]
+ast, y, g   = autodx_eval_forward_vec_ast(vf4, *X)
+ty, tg = pytorch_eval(vf4_pytorch, *X)
 
 print()
 print(ast,'=',y,'vs',ty)
