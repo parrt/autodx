@@ -19,6 +19,8 @@
 \newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{definition}{Definition}
 
+\newcommand{\cut}[1]{}
+
 \title{Matrix Calculus Bootcamp}
 \author{Terence Parr and Jeremy Howard}
 \begin{document}
@@ -35,8 +37,72 @@ neural net equation. optimizing it and calculus comes lurching back into your li
  lots of good cheat sheets like https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf and slides like https://www.comp.nus.edu.sg/~cs5240/lecture/matrix-differentiation.pdf
  
 given any particular formula, you can reduce it to its scalar form and use the typical scalar derivative to come up with the formula. That can be tedious and error-prone. It's better to learn the matrix/vector derivatives and apply transformations to get the derivative.
- 
+
+\section{Review: Scalar derivative rules}
+
+$
+\begin{array}{lcc}
+Rule & \text{Scalar function } f(x) & \text{Scalar derivative with repsect to } x\\
+\hline
+\text{Multiplication by constant} &	cf(x)	&cf'(x)\\
+\text{Power Rule}	& x^n	& nx^{n-1}\\
+\text{Sum Rule}	& f + g	& f' + g'\\
+\text{Difference Rule}	& f - g	& f' - g'\\
+\text{Product Rule}	& fg & f g' + f' g\\
+\text{Quotient Rule}	& \frac{f}{g} = fg^{-1} & f (g^{-1})' + f' g^{-1}\\
+\text{Chain Rule}	 & f(g(x)) &   f'(g(x))g'(x)\\
+\end{array}
+$
+
+When a function has a single parameter, $f(x)$, we use $f'$ and $f'(x)$ as shorthands for $\frac{d}{dx} f(x)$.  
+
+You can think of $\frac{d}{dx}$ as an operator that maps a function of one parameter to another function. So to take the derivative with respect to $x$ of $cf(x)$, $\frac{d}{dx} cf(x)$, we are really just moving the constant to the left of the operator: $c\frac{d}{dx}x$ or $c\frac{dx}{dx}$, which makes it more clear that the derivative is $c \times 1 = c$.  We are used to the simplification for the usual arithmetic operators. For example, $-2x = 2 \times -x$ where the negation operator is analogous to our derivative operator. We have just moved to the scalar outside of the operation. Thinking of the derivative as an operator is handy when solving complicated derivatives as we can mechanically apply rules of differentiation.
+
+\section{Review: Vector calculus and partial derivatives}
+
+Real-world problems are rarely so simple that we can express them as a single function of a single parameter, $f(x)$. Let's move on to functions of multiple parameters such as $f(x,y)$. We compute derivatives with respect to one variable (parameter) at a time, giving us two different {\em partial derivatives} for this two-parameter function.  Instead of using operator $\frac{d}{dx}$, we use $\frac{\partial}{\partial x}$ (a stylized $d$ and not the Greek letter $\delta$). For functions of a single parameter, operator $\frac{\partial}{\partial x}$ is equivalent to $\frac{d}{dx}$ but you should  restrict your use of $\frac{d}{dx}$ to functions of a single parameter.
+
+The partial derivative with respect to $x$ is just the usual scalar derivative but treating any other variable in the equation as a constant.  Consider function $f(x,y) = 3x^2y$. The partial derivative with respect to $x$ is written $\frac{\partial}{\partial x} 3x^2y$. There are three constants from the perspective of $\frac{\partial}{\partial x}$: 3, 2, and $y$. Therefore, $\frac{\partial}{\partial x} 3yx^2 = 3y\frac{\partial}{\partial x} x^2 = 3y2x = 6yx$. The partial derivative with respect to $y$ treats $x$ like a constant now: $\frac{\partial}{\partial y} 3x^2y = 3x^2\frac{\partial}{\partial y} y = 3x^2\frac{\partial y}{\partial y} = 3x^2 \times 1 = 3x^2$. 
+
+So, partial derivatives use the usual scalar derivative rules while holding all but a single variable, $x$, as constants for the purpose of computing the partial derivative with respect to $x$.
+
 \section{Matrix calculus}
+
+Moving from vector calculus to matrix calculus now, let's consider what we do with the partial derivatives $\frac{\partial f(x,y)}{\partial x}$ and $\frac{\partial f(x,y)}{\partial y}$ we computed for $f(x,y) = 3x^2y$. Currently they're just kind of floating around and not organized in any way so let's organize them into a horizontal vector:
+
+$[ \frac{\partial f(x,y)}{\partial x}, \frac{\partial f(x,y)}{\partial y}] = [6yx, 3x^2]$
+
+We call this vector the {\em gradient} of $f(x,y)$ and write it as:
+
+$\nabla f(x,y) = [6yx, 3x^2]$.
+
+Now, let's get crazy and consider two functions, both of which take two parameters.  We can keep the same $f(x,y)$ but let's add $g(x,y) = 2x + y^8$.  The gradient for $g$ has two entries, a partial derivative for each parameter. The partials are:
+
+$\frac{\partial g(x,y)}{\partial x} = \frac{\partial 2x}{\partial x} + \frac{\partial y^8}{\partial x} = 2\frac{\partial x}{\partial x} + 0 = 2 \times 1 = 1$
+
+and
+
+$\frac{\partial g(x,y)}{\partial y} = \frac{\partial 2x}{\partial y} + \frac{\partial y^8}{\partial y} = 0 + 8y^7 = 8y^7$
+
+giving us gradient $\nabla g(x,y) = [1, 8y^7]$.
+
+Gradient vectors organize all of the partial derivatives for a specific scalar function. If we have two functions, we can also organize their gradients into a matrix called the {\em Jacobian matrix} where the gradients are rows:
+
+$J =
+\begin{bmatrix}
+	\nabla f(x,y)\\
+	\nabla g(x,y)
+\end{bmatrix} = \begin{bmatrix}
+	6yx & 3x^2\\
+	1 & 8y^7
+\end{bmatrix}
+$
+
+Welcome to matrix calculus!
+
+\includegraphics[scale=.08]{redbang.png} Before moving on, please note that there are multiple ways to represent the Jacobian. We are using the so-called [numerator layout](https://en.wikipedia.org/wiki/Matrix\_calculus\#Layout\_conventions) but many papers and software will use the transpose of this Jacobian (flip it around its's diagonal).
+
+\subsection{Generalization of the Jacobian}
 
 Assume all vectors are vertical by default of size $n \times 1$. Lowercase letters in bold font such as $\mathbf{x}$ are vectors and math italics font like $x$ or scalars so:
 
@@ -73,7 +139,7 @@ where each $\frac{\partial}{\partial {x}} f_i(\mathbf{x})$ is an $n$-vector beca
 
 The width of the Jacobian is the length of the vector $\mathbf{x}$ if we're taking partial derivative with respect to $\mathbf{x}$.  The Jacobian is $m$ rows for $m$ equations.
 
-Show the shape with boxes.  Indicate there are two different ways to represent. We are following the so-called [numerator layout](https://en.wikipedia.org/wiki/Matrix\_calculus\#Layout\_conventions).
+Show the shape with boxes.  
 
 To represent the trivial equation $\mathbf{y} = \mathbf{x}$, for example, $f_i(\mathbf{x}) = x_i$. In this case, the Jacobian is the identity matrix since $m=n$ (a Jacobian matrix size $m \times n$ where $m = |\mathbf{f}| = n = |\mathbf{x}|$).
 
@@ -136,7 +202,7 @@ $
 \end{bmatrix}
 $
 
-That quite a furball, but the Jacobian is most commonly a diagonal matrix, a matrix that is zero everywhere but the diagonal. 
+That's quite a furball, but the Jacobian is very commonly a diagonal matrix, a matrix that is zero everywhere but the diagonal. 
 
 If $f_i(\mathbf{x})$ and $g_i(\mathbf{x})$ are purely functions of $x_i$, and no other elements of vector $\mathbf{x}$, we can reduce $f_i(\mathbf{x}) \bigcirc g_i(\mathbf{x})$ to $f_i(x_i) \bigcirc g_i(x_i)$. This is technically an abuse of our notation because $f_i$ and $g_i$ are functions of vectors not individual elements. We should really write something like $\hat f_{i}(x_i) = f_{i}(\mathbf{x})$, but that would muddy the equations further (and programmers are comfortable overloading functions) so we'll proceed with the notation anyway.
 
@@ -192,59 +258,31 @@ $\mathbf{y} = \mathbf{x} \times c$
 is really
 $\mathbf{y} = \mathbf{f(x)} \otimes \mathbf{g}(c)$.
 
-The partial derivatives of vector-scalar addition and multiplication fall out from our element-wise rule, $\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = diag \left( \ldots \frac{\partial}{\partial x_i} ( f_i(x_i) \bigcirc g_i(c) ) \ldots \right)$, since we've identified $f_i(x_i) = x_i$ and $g_i(c) = c$. Note that functions $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(c) = \vec{1} \times c$ clearly satisfy our constraint for the special case of diagonal Jacobian (that $f_i(\mathbf{x})$ refer at most to $x_i$ and $g_i(c)$ refer to the $i^{th}$ value of the $\vec{1}$ vector). 
+The partial derivative of vector-scalar addition and multiplication with respect to vector $\mathbf{x}$  fall out from our element-wise rule, $\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = diag \left( \ldots \frac{\partial}{\partial x_i} ( f_i(x_i) \bigcirc g_i(c) ) \ldots \right)$, since we've identified $f_i(x_i) = x_i$ and $g_i(c) = c$. Note that functions $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(c) = \vec{1} \times c$ clearly satisfy our constraint for the special case of diagonal Jacobian (that $f_i(\mathbf{x})$ refer at most to $x_i$ and $g_i(c)$ refer to the $i^{th}$ value of the $\vec{1}$ vector). 
 
 Using the usual rules for scalar partial derivatives, we arrive at the following diagonal elements of the Jacobian for vector-scalar addition:
  
 $\frac{\partial}{\partial x_i} ( f_i(x_i) + g_i(c) ) = \frac{\partial (x_i + c)}{\partial x_i} = \frac{\partial x_i}{\partial x_i} + \frac{\partial c}{\partial x_i} = 1 + 0 = 1$
 
+So, $\frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} + c ) = diag(\vec{1}) = I$.
+
+Computing the partial derivative with respect to the single-valued parameter $c$, however, results in a vertical vector not a diagonal matrix whose elements are:
+ 
 $\frac{\partial}{\partial c} ( f_i(x_i) + g_i(c) ) = \frac{\partial (x_i + c)}{\partial c} = \frac{\partial x_i}{\partial c} + \frac{\partial c}{\partial c} = 0 + 1 = 1$
 
-So, $\frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} + c ) = diag(\vec{1}) = I$ and $\frac{\partial}{\partial c} ( \mathbf{x} + c ) = \vec{1}$.
+Therefore, $\frac{\partial}{\partial c} ( \mathbf{x} + c ) = \vec{1}$.
 
 The diagonal elements of the Jacobian for vector-scalar multiplication involve the product rule for scalar derivatives:
 
 $\frac{\partial}{\partial x_i} ( f_i(x_i) \otimes g_i(c) ) = x_i \times \frac{\partial c}{\partial x_i} + c \times \frac{\partial x_i}{\partial x_i} = 0 + c = c$
 
+So, $\frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} \times c ) = diag(\vec{1} \times c) = I \times c$. 
+
+The partial derivative with respect to single-valued parameter $c$ is a vertical vector whose elements are:
+
 $\frac{\partial}{\partial c} ( f_i(x_i) \otimes g_i(c) ) = x_i \times \frac{\partial c}{\partial c} + c \times \frac{\partial x_i}{\partial c} = x_i + 0 = x_i$
 
-So, $\frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} \times c ) = diag(\vec{1} \times c) = I \times c$ and $\frac{\partial}{\partial c} ( \mathbf{x} \times c ) = diag(\mathbf{x})$.
-
-$
-\begin{array}{llllll}
-\text{Op} & \frac{\partial}{\partial x_i} ( f_i(x_i) \bigcirc g_i(c) ) & \frac{\partial (\mathbf{x}  \bigcirc c)}{\partial \mathbf{x}} & \frac{\partial}{\partial c} ( f_i(x_i) \bigcirc g_i(c) ) & \frac{\partial (\mathbf{x} \bigcirc c)}{\partial \mathbf{c}}\\
-
-\hline\\
-
-+ & \frac{\partial x_i}{\partial x_i} + \frac{\partial (1 \times c)}{\partial x_i} = 0 + 1 = 1 & diag(\vec{1}) = I & \frac{\partial x_i}{\partial c} + \frac{\partial (1 \times c)}{\partial c} = 0 + 1 = 1& diag(\vec{1}) = I\\\\
-
-\otimes & x_i \times \frac{\partial (1 \times c)}{\partial x_i} + c \times \frac{\partial x_i}{\partial x_i} = 0 + c = c & diag(\vec{1} \times c) = Ic & x_i \times \frac{\partial (1 \times c)}{\partial c} + c \times \frac{\partial x_i}{\partial c} = x_i& diag(\mathbf{x})\\\\
-
-\end{array}
-$ 
-
-
- if we can figure out the partial derivatives of scalar expansion: $\frac{\partial}{\partial c} (\vec{1} \times c)$ and $\frac{\partial}{\partial \mathbf{x}} (\vec{1} \times c)$. It helps to picture the shape of the resulting Jacobians. Because $\vec{1} \times c$ is a vector-valued result, the resulting Jacobian with respect to a scalar, $c$, will be a vertical vector with shape $n \times 1$. Each element of that vector is $\frac{\partial}{\partial c}(1 \times c) = \frac{\partial}{\partial c} c = 1$, which means that the Jacobian is a vertical $\vec{1}$ vector. For the partial with respect to $\mathbf{x}$, on the other hand, the Jacobian is the $\mathbf{0}$ matrix of size $n \times n$ because $\mathbf{y}$ is again vector-valued and we are taking the partial derivative with respect to a vector of variables ($n = |\mathbf{x}|$).
-
-. This leads to the straightforward definitions of partial derivatives for vector-scalar addition:
-
-$\frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} + c ) = \frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} + \vec{1} \times c ) = \frac{\partial \mathbf{x}}{\partial \mathbf{x}} + \frac{\partial (\vec{1} \times c)}{\partial \mathbf{x}} = I + \mathbf{0} = I$
-
-$\frac{\partial}{\partial c} ( \mathbf{x} + c ) = \frac{\partial}{\partial c} ( \mathbf{x} + \vec{1} \times c ) = \frac{\partial \mathbf{x}}{\partial c} + \frac{\partial (\vec{1} \times c)}{\partial c} = \vec{0} + \vec{1} = \vec{1}$
-
-and vector-scalar multiplication:
-
-$\frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} \otimes c ) = \frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} \otimes \vec{1} \times c ) = \mathbf{x} \times \frac{\partial (1 \times c)}{\partial \mathbf{x}} + c \times \frac{\partial \mathbf{x}}{\partial \mathbf{x}}$
-
-$\frac{\partial}{\partial c} ( \mathbf{x} + c ) = \frac{\partial}{\partial c} ( \mathbf{x} + \vec{1} \times c ) = \frac{\partial \mathbf{x}}{\partial c} + \frac{\partial (\vec{1} \times c)}{\partial c} = \vec{0} + \vec{1} = \vec{1}$
-
-
-
-$\mathbf{y} = \mathbf{f(x)}(\mathbf{x},c) = \mathbf{x} + \vec{1} \times c$
-
-Using the special case for element-wise operation derivatives, $\frac{\partial}{\partial x_i} ( f_i(x_i) \bigcirc g_i(x_i) )$, we see that the derivative of
-
-$\frac{\partial}{\partial x_i} \mathbf{f}(\mathbf{x},c) = ( f_{i}(w_i) + g_{i}(x_i) ) = \frac{\partial}{\partial x_i}(w_i + x_i) = 1 + 0 = 1$
+This gives us $\frac{\partial}{\partial c} ( \mathbf{x} \times c ) = \mathbf{x}$.
 
 \subsection{Derivatives of vector-scalar addition}
 
