@@ -21,13 +21,14 @@
 
 \newcommand{\cut}[1]{}
 
-\title{Matrix Calculus Bootcamp}
+\title{Matrix Calculus Jumpstart}
 \author{Terence Parr and Jeremy Howard}
 \begin{document}
 \maketitle
 
 \section{Introduction}
 
+\cut{
 three-dimensional coordinates in room yielding a temperature. then can yield temperature and noise or humidity or light.  Sheldon Cooper: you're in my spot.
 
 $\Delta x$ gives what $\Delta y$? rise/run to determine derivative.
@@ -37,6 +38,7 @@ neural net equation. optimizing it and calculus comes lurching back into your li
  lots of good cheat sheets like https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf and slides like https://www.comp.nus.edu.sg/~cs5240/lecture/matrix-differentiation.pdf
  
 given any particular formula, you can reduce it to its scalar form and use the typical scalar derivative to come up with the formula. That can be tedious and error-prone. It's better to learn the matrix/vector derivatives and apply transformations to get the derivative.
+}
 
 \section{Review: Scalar derivative rules}
 
@@ -54,9 +56,9 @@ Rule & \text{Scalar function } f(x) & \text{Scalar derivative with repsect to } 
 \end{array}
 $
 
-When a function has a single parameter, $f(x)$, we use $f'$ and $f'(x)$ as shorthands for $\frac{d}{dx} f(x)$.  
+When a function has a single parameter, $f(x)$, you'll often see $f'$ and $f'(x)$ used as shorthands for $\frac{d}{dx} f(x)$.  
 
-You can think of $\frac{d}{dx}$ as an operator that maps a function of one parameter to another function. So to take the derivative with respect to $x$ of $cf(x)$, $\frac{d}{dx} cf(x)$, we are really just moving the constant to the left of the operator: $c\frac{d}{dx}x$ or $c\frac{dx}{dx}$, which makes it more clear that the derivative is $c \times 1 = c$.  We are used to the simplification for the usual arithmetic operators. For example, $-2x = 2 \times -x$ where the negation operator is analogous to our derivative operator. We have just moved to the scalar outside of the operation. Thinking of the derivative as an operator is handy when solving complicated derivatives as we can mechanically apply rules of differentiation.
+You can think of $\frac{d}{dx}$ as an operator that maps a function of one parameter to another function. So to take the derivative with respect to $x$ of $cf(x)$, $\frac{d}{dx} cf(x)$, we are really just moving the constant to the left of the operator: $c\frac{d}{dx}x$ or $c\frac{dx}{dx}$, which makes it more clear that the derivative is $c \times 1 = c$.  We are used to this simplification for the usual arithmetic operators. For example, $-2x = 2 \times -x$ where the negation operator is analogous to our derivative operator. We have just moved to the scalar outside of the operation. Thinking of the derivative as an operator is handy when solving complicated derivatives as we can mechanically apply rules of differentiation.
 
 \section{Review: Vector calculus and partial derivatives}
 
@@ -284,9 +286,104 @@ $\frac{\partial}{\partial c} ( f_i(x_i) \otimes g_i(c) ) = x_i \times \frac{\par
 
 This gives us $\frac{\partial}{\partial c} ( \mathbf{x} \times c ) = \mathbf{x}$.
 
+\subsection{Vector sum}
+
+Summing the elements of a vector is an important operation in and of itself in applications based upon linear algebra, but we can also use it as a way to simplify computing the derivative of vector dot product and other operations that reduce vectors to scalars.
+
+Let $y = sum( \mathbf{f}(\mathbf{x})) = \Sigma_{i=1}^n f_i(\mathbf{x})$ where we have to be careful to leave the parameter as a vector $\mathbf{x}$ because each function $f_i$ could use all values in the vector not just $x_i$. The sum is over the {\bf results} of the function and not the parameter. The gradient ($1 \times n$ Jacobian) of vector summation is:
+
+$
+\begin{array}{lcl}
+\frac{\partial y}{\partial \mathbf{x}} & = & \begin{bmatrix} \frac{\partial y}{\partial x_1}, \frac{\partial y}{\partial x_2}, \ldots, \frac{\partial y}{\partial x_n} \end{bmatrix}\\\\
+ & = & \begin{bmatrix} \frac{\partial}{\partial x_1} \Sigma_i f_i(\mathbf{x}),~ \frac{\partial}{\partial x_2} \Sigma_i f_i(\mathbf{x}),~ \ldots,~ \frac{\partial}{\partial x_n} \Sigma_i  f_i(\mathbf{x}) \end{bmatrix} \\\\
+ & = & \begin{bmatrix} \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_1},~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_2},~ \ldots,~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_n}  \end{bmatrix}(\text{move derivative inside }\Sigma)\\\\
+\end{array}
+$
+
+The summation inside the gradient elements can be tricky so make sure to keep your notation consistent. 
+
+Let's look at the gradient of the simple $y = sum(\mathbf{x})$. The function inside the summation is just $f_i(\mathbf{x}) = x_i$ and the gradient is then:
+
+$\nabla y = \begin{bmatrix} \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_1},~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_2},~ \ldots,~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_n}  \end{bmatrix} = \begin{bmatrix} \Sigma_i \frac{\partial x_i}{\partial x_1},~ \Sigma_i \frac{\partial x_i}{\partial x_2},~ \ldots,~ \Sigma_i \frac{\partial x_i}{\partial x_n}  \end{bmatrix}$
+
+Because $\frac{\partial}{\partial x_j} x_i = 0$ for $j \neq i$, we can simplify to:
+
+$\nabla y = \begin{bmatrix} \frac{\partial x_1}{\partial x_1},~ \frac{\partial x_2}{\partial x_2},~ \ldots,~ \frac{\partial x_n}{\partial x_n}  \end{bmatrix} = \begin{bmatrix}1, 1, \ldots, 1\end{bmatrix} = \vec{1}^T$
+
+Notice that the result is a horizontal vector full of 1s, not a vertical vector, and so the gradient is $\vec{1}^T$. It's very important to keep the shape of all of your vectors and matrices in order otherwise it's impossible to compute the derivatives of complex functions.
+
+As another example, let's sum a vector-scalar multiplication.  If $y = sum(\mathbf{x} \times c)$ then $f_i(\mathbf{x},c) = x_i \times c$. The gradient is:
+
+$
+\begin{array}{lcl}
+\frac{\partial y}{\partial \mathbf{x}} & = & \begin{bmatrix} \Sigma_i \frac{\partial}{\partial x_1} x_i c,~ \Sigma_i \frac{\partial }{\partial x_2} x_i c,~ \ldots,~ \Sigma_i \frac{\partial}{\partial x_n} x_i c  \end{bmatrix}\\\\
+ & = & \begin{bmatrix} \frac{\partial}{\partial x_1} x_1 c,~ \frac{\partial }{\partial x_2} x_2 c,~ \ldots,~ \frac{\partial}{\partial x_n} x_n c  \end{bmatrix}\\\\
+ & = & \begin{bmatrix} c, c, \ldots, c \end{bmatrix}\\\\
+\end{array}
+$
+
+The derivative with respect to scalar variable $c$ is $1 \times 1$:
+
+$
+\begin{array}{lcl}
+\frac{\partial y}{\partial c} & = & \frac{\partial}{\partial c} \Sigma_{i=1}^n (x_i+c)\\\\
+& = & \Sigma_i \frac{\partial}{\partial c} (x_i+c)\\\\
+& = & \Sigma_i (0 + 1)\\\\
+& = & n
+\end{array}
+$
+
+\subsection{Vector chain rule}
+
+We can't compute partial derivatives of very complicated functions using just the basic matrix calculus rules we've seen so far. We need to be able to combine them using the so-called {\em chain rule}. The easiest way to think about deploying the chain rule is probably like a computer scientist rather than a mathematician. Consider a simple scalar equation like $y = f(a,b,c) = a + b \times c^2$.  Because at the CPU instruction level computers perform single operations on one or two operands, compilers tend to translate expressions into a sequence of subexpressions assigned to registers:
+
+$r_1 = a + r_2$\\
+$r_2 = b \times r_3$\\
+$r_3 = c^2$
+
+Then $y = r_1$. To compute the scalar derivative of $y = f(a,b,c)$ with respect to $a$, we can treat each of these subexpressions in isolation using just the basic rules.  The order of operations is actually in reverse order because we can't compute $r_1$ until we know the result of $r_2$, which needs $r_3$. The same is true when we compute the partial derivatives.
+
+$
+\begin{array}{lllll}
+\frac{\partial }{\partial a} r_3 & = & \frac{\partial }{\partial a} c^2 & = & 0\\
+\frac{\partial }{\partial a} r_2 & = & \frac{\partial }{\partial a} (b \times r_3) & = & b \times \frac{\partial r_3}{\partial a} + r_3 \times \frac{\partial b}{\partial a} = b \times 0 + c^2 \times 0 = 0\\
+\frac{\partial }{\partial a} r_1 & = & \frac{\partial a}{\partial a} + \frac{\partial r_2}{\partial a} & = & 1 + 0 = 1\\
+\end{array}
+$
+
+Since $\frac{\partial }{\partial a} y = \frac{\partial }{\partial a} r_1$, $\frac{\partial }{\partial a} y = 1$.
+
+Something important to keep in mind: we substitute $\frac{\partial r_3}{\partial a}$ with the result of the $\frac{\partial r_3}{\partial a}$ partial derivative computation, rather than treating $r_3$ like a function parameter.  The partial derivative of a temporary variable with respect to a function parameter is its own partial derivative computation. Don't make the mistake of treating $\frac{\partial r_3}{\partial a}$ as 0 just because $r_3$ and $a$ are different variables.
+
+Here is the sequence to compute the partial derivative with respect to $b$:
+
+$
+\begin{array}{lllll}
+\frac{\partial }{\partial b} r_3 & = & \frac{\partial }{\partial b} c^2 & = & 0\\
+\frac{\partial }{\partial b} r_2 & = & \frac{\partial }{\partial b} (b \times r_3) & = & b \times \frac{\partial r_3}{\partial b} + r_3 \times \frac{\partial b}{\partial b} = b \times 0 + c^2 \times 1 = c^2\\
+\frac{\partial }{\partial b} r_1 & = & \frac{\partial a}{\partial b} + \frac{\partial r_2}{\partial b} & = & 0 + c^2 = c^2\\
+\end{array}
+$
+
+Finally, here is the partial derivative with respect to $c$:
+ 
+$
+\begin{array}{lllll}
+\frac{\partial }{\partial c} r_3 & = & \frac{\partial }{\partial c} c^2 & = & 2c\\
+\frac{\partial }{\partial c} r_2 & = & \frac{\partial }{\partial c} (b \times r_3) & = & b \times \frac{\partial r_3}{\partial c} + r_3 \times \frac{\partial b}{\partial c} = b \times 2c + c^2 \times 0 = 2bc\\
+\frac{\partial }{\partial c} r_1 & = & \frac{\partial a}{\partial c} + \frac{\partial r_2}{\partial c} & = & 0 + c^2 = 2bc\\
+\end{array}
+$
+
+The gradient would be $\nabla f(a,b,c) = [1, c^2, 2bc]$.
+
+$D[f(g(x))] = f'(g(x))g'(x)$
+
 \subsection{Derivatives of vector dot product}
 
-For vector dot product $y = \mathbf{f(x)} \cdot \mathbf{g(x)}$ (note $y$ not $\mathbf{y}$ as the result of that product is a scalar), we get:
+Now that we can compute the Jacobians for both element-wise binary operations and vector summation, we can define the gradient of the important vector dot product $y = \mathbf{f(x)} \cdot \mathbf{g(x)}$. Note we use $y$ not $\mathbf{y}$ as the result of the dot product is a scalar not a vector.
+
+The dot product $\mathbf{w} \cdot \mathbf{x}$ is the summation of the element-wise multiplication of the elements: $\Sigma_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$. (You might also find it useful to remember the linear algebra notation $\mathbf{w} \cdot \mathbf{x} = \mathbf{w}^{T} \times \mathbf{x}$.)
 
 $
 \begin{array}{rcl}
@@ -302,9 +399,6 @@ As an example, consider $y = \mathbf{w} \cdot \mathbf{x}$. The partial derivativ
 
 $\frac{\partial y}{\partial \mathbf{w}} = \mathbf{w} \cdot \frac{\partial \mathbf{x}}{\partial \mathbf{w}} + \mathbf{x} \cdot \frac{\partial \mathbf{w}}{\partial \mathbf{w}} = \mathbf{w}^T \times \frac{\partial \mathbf{x}}{\partial \mathbf{w}} + \mathbf{x}^T \times \frac{\partial \mathbf{w}}{\partial \mathbf{w}} = \mathbf{w}^T \times \mathbf{0} + \mathbf{x}^T \times I = \mathbf{x}^T$. Similarly, $\frac{\partial y}{\partial \mathbf{x}} = \mathbf{w}^T$.
 
-Note: the dot product transforms into vector-vector multiplication via:
-
-$y = \mathbf{w} \cdot \mathbf{x} = \mathbf{w}^{T} \times \mathbf{x}$
 
 Note: the gradient is a horizontal vector (1 output)!
 
@@ -317,46 +411,6 @@ $\frac{\partial y}{\partial w_j} = \frac{\partial}{\partial w_j} \Sigma_i (w_i x
 Then:
 
 $\frac{\partial y}{\partial \mathbf{w}} = [ x_1, \ldots, x_n ] = \mathbf{x}^T$
-
-\subsection{Vector sum}
-
-Let $y = sum( \mathbf{f}(\mathbf{x})) = \Sigma_{i=1}^n f_i(\mathbf{x})$ then
-
-$
-\begin{array}{lcl}
-\frac{\partial y}{\partial \mathbf{x}} & = & \begin{bmatrix} \frac{\partial y}{\partial x_1}, \frac{\partial y}{\partial x_2}, \ldots, \frac{\partial y}{\partial x_n} \end{bmatrix}\\\\
- & = & \begin{bmatrix} \frac{\partial}{\partial x_1} \Sigma_i f_i(\mathbf{x}),~ \frac{\partial}{\partial x_2} \Sigma_i f_i(\mathbf{x}),~ \ldots,~ \frac{\partial}{\partial x_n} \Sigma_i  f_i(\mathbf{x}) \end{bmatrix} \\\\
- & = & \begin{bmatrix} \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_1},~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_2},~ \ldots,~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_n}  \end{bmatrix}(\text{move derivative inside})\\\\
-\end{array}
-$
-
-Example: Sum of vector-scalar multiplication.
-
-
-If $y = sum(\mathbf{x} \times c)$ then $f_i(\mathbf{x},c) = x_i \times c$.
-
-$
-\begin{array}{lcl}
-\frac{\partial y}{\partial \mathbf{x}} & = & \begin{bmatrix} \Sigma_i \frac{\partial}{\partial x_1} x_i c,~ \Sigma_i \frac{\partial }{\partial x_2} x_i c,~ \ldots,~ \Sigma_i \frac{\partial}{\partial x_n} x_i c  \end{bmatrix}\\\\
- & = & \begin{bmatrix} \frac{\partial}{\partial x_1} x_1 c,~ \frac{\partial }{\partial x_2} x_2 c,~ \ldots,~ \frac{\partial}{\partial x_n} x_n c  \end{bmatrix}\\\\
- & = & \begin{bmatrix} c, c, \ldots, c \end{bmatrix}\\\\
-\end{array}
-$
-
-The derivative with respect to scalar variable $c$ is $1 \times 1$:
-
-$
-\begin{array}{lcl}
-\frac{\partial y}{\partial c} & = & \frac{\partial}{\partial c} \Sigma_{i=1}^n (x_i+c)\\
-& = & \Sigma_i \frac{\partial}{\partial c} (x_i+c)\\
-& = & \Sigma_i (0 + 1)\\
-& = & n
-\end{array}
-$
-
-\subsection{Vector chain rule}
-
-$D[f(g(x))] = f'(g(x))g'(x)$
 
 \section{Acknowledgements}
 

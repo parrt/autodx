@@ -53,6 +53,20 @@ print("gradient",'=',g,'vs',tg)
 
 # -----------------------------------------
 
+def vf(a,b): return autodx.forward_vec_ast.sum(a * b)
+def vf_pytorch(a,b): return torch.sum(a * b)
+
+X =  [np.array([1,3,5]), 9]
+
+ast, y, g   = autodx_eval_forward_vec_ast(vf, *X)
+ty, tg = pytorch_eval(vf_pytorch, *X)
+
+print()
+print(ast,'=',y,'vs',ty)
+print("gradient",'=',g,'vs',tg)
+
+# -----------------------------------------
+
 def vf2(a,b): return autodx.forward_vec_ast.dot(a, b)
 def vf2_pytorch(a,b): return torch.dot(a, b)
 
