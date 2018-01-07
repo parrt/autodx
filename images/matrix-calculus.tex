@@ -68,9 +68,7 @@ The partial derivative with respect to $x$ is just the usual scalar derivative b
 
 So, partial derivatives use the usual scalar derivative rules while holding all but a single variable, $x$, as constants for the purpose of computing the partial derivative with respect to $x$.
 
-\section{Matrix calculus}
-
-Moving from vector calculus to matrix calculus now, let's consider what we do with the partial derivatives $\frac{\partial f(x,y)}{\partial x}$ and $\frac{\partial f(x,y)}{\partial y}$ we computed for $f(x,y) = 3x^2y$. Currently they're just kind of floating around and not organized in any way so let's organize them into a horizontal vector:
+To make it clear we are doing vector calculus and not just multivariate calculus, let's consider what we do with the partial derivatives $\frac{\partial f(x,y)}{\partial x}$ and $\frac{\partial f(x,y)}{\partial y}$ we computed for $f(x,y) = 3x^2y$. Currently they're just kind of floating around and not organized in any way so let's organize them into a horizontal vector:
 
 $[ \frac{\partial f(x,y)}{\partial x}, \frac{\partial f(x,y)}{\partial y}] = [6yx, 3x^2]$
 
@@ -78,7 +76,11 @@ We call this vector the {\em gradient} of $f(x,y)$ and write it as:
 
 $\nabla f(x,y) = [6yx, 3x^2]$.
 
-Now, let's get crazy and consider two functions, both of which take two parameters.  We can keep the same $f(x,y)$ but let's add $g(x,y) = 2x + y^8$.  The gradient for $g$ has two entries, a partial derivative for each parameter. The partials are:
+Vector calculus deals with functions mapping $n$ real parameters to a real scalar, $f : \mathbb{R}^n \rightarrow \mathbb{R}$.  Now, let's get crazy and consider two functions at the same time.
+
+\section{Matrix calculus}
+
+Moving from vector calculus to matrix calculus now, let's compute partial derivatives for two functions, both of which take two parameters.  We can keep the same $f(x,y)$ from the last section but let's add $g(x,y) = 2x + y^8$.  The gradient for $g$ has two entries, a partial derivative for each parameter. The partials are:
 
 $\frac{\partial g(x,y)}{\partial x} = \frac{\partial 2x}{\partial x} + \frac{\partial y^8}{\partial x} = 2\frac{\partial x}{\partial x} + 0 = 2 \times 1 = 1$
 
@@ -102,11 +104,11 @@ $
 
 Welcome to matrix calculus!
 
-\includegraphics[scale=.08]{redbang.png} Before moving on, please note that there are multiple ways to represent the Jacobian. We are using the so-called [numerator layout](https://en.wikipedia.org/wiki/Matrix\_calculus\#Layout\_conventions) but many papers and software will use the transpose of this Jacobian (flip it around its's diagonal).
+\includegraphics[scale=.08]{redbang.png} Before moving on, please note that there are multiple ways to represent the Jacobian. We are using the so-called [numerator layout](https://en.wikipedia.org/wiki/Matrix\_calculus\#Layout\_conventions) but many papers and software will use the transpose of this Jacobian (flip it around its diagonal).
 
 \subsection{Generalization of the Jacobian}
 
-Assume all vectors are vertical by default of size $n \times 1$. Lowercase letters in bold font such as $\mathbf{x}$ are vectors and math italics font like $x$ or scalars so:
+So far, we've looked at a specific example of a Jacobian matrix. To define a Jacobian matrix, let's combine multiple parameters into a single vector argument: $f(x,y,z) \Rightarrow f(\mathbf{x})$. Lowercase letters in bold font such as $\mathbf{x}$ are vectors and math italics font like $x$ are scalars; $x_i$ is the $i{th}$ element of vector $\mathbf{x}$. We also have to define an orientation for vector $\mathbf{x}$. We'll assume that all vectors are vertical by default of size $n \times 1$:
 
 $\mathbf{x} = \begin{bmatrix}
            x_1\\
@@ -115,7 +117,7 @@ $\mathbf{x} = \begin{bmatrix}
            x_n\\
            \end{bmatrix}$
 
-Let $\mathbf{y} = \mathbf{f}(\mathbf{x})$ be a vector of $m$ scalar-valued functions, $f_i : R^n \rightarrow R$ with $n=|\mathbf{x}|$. $\mathbf{y} = \mathbf{f}(\mathbf{x})$ is a set of $m$ equations that are functions of $\mathbf{x}$:
+With multiple scalar-valued functions, we can combine them all into a vector just like we did with the parameters. Let $\mathbf{y} = \mathbf{f}(\mathbf{x})$ be a vector of $m$ scalar-valued functions, $f_i : R^n \rightarrow R$ with $n=|\mathbf{x}|$. $\mathbf{y} = \mathbf{f}(\mathbf{x})$ is a set of $m$ equations that are functions of vector $\mathbf{x}$:
 
 $
 \begin{array}{lcl}
@@ -126,22 +128,24 @@ y_m & = & f_m(\mathbf{x})\\
 \end{array}
 $
 
+It's very often the case that $m=n$ because we will have a scalar function result for each element of the vector; this is the case for $\mathbf{y} = \mathbf{f}(\mathbf{x})$.
+
 The Jacobian matrix is the collection of all $m \times n$ possible partial derivatives:
 
 $
 \frac{\partial \mathbf{y}}{\partial \mathbf{x}} = \begin{bmatrix}
-\frac{\partial}{\partial {x}} f_1(\mathbf{x}) \\
-\frac{\partial}{\partial {x}} f_2(\mathbf{x})\\
+\frac{\partial}{\partial \mathbf{x}} f_1(\mathbf{x}) \\
+\frac{\partial}{\partial \mathbf{x}} f_2(\mathbf{x})\\
 \ldots\\
-\frac{\partial}{\partial {x}} f_m(\mathbf{x})
+\frac{\partial}{\partial \mathbf{x}} f_m(\mathbf{x})
 \end{bmatrix}
 $
 
-where each $\frac{\partial}{\partial {x}} f_i(\mathbf{x})$ is an $n$-vector because the partial derivative is with respect to a vector, $\mathbf{x}$, whose length is $n = |\mathbf{x}|$.
+where each $\frac{\partial}{\partial \mathbf{x}} f_i(\mathbf{x})$ is an $n$-vector because the partial derivative is with respect to a vector, $\mathbf{x}$, whose length is $n = |\mathbf{x}|$.
 
-The width of the Jacobian is the length of the vector $\mathbf{x}$ if we're taking partial derivative with respect to $\mathbf{x}$.  The Jacobian is $m$ rows for $m$ equations.
+The width of the Jacobian is the length of the vector $\mathbf{x}$ if we're taking partial derivative with respect to $\mathbf{x}$.  The Jacobian is always $m$ rows for $n$ equations.
 
-Show the shape with boxes.  
+todo: Show the shape with boxes.  
 
 To represent the trivial equation $\mathbf{y} = \mathbf{x}$, for example, $f_i(\mathbf{x}) = x_i$. In this case, the Jacobian is the identity matrix since $m=n$ (a Jacobian matrix size $m \times n$ where $m = |\mathbf{f}| = n = |\mathbf{x}|$).
 
@@ -173,7 +177,7 @@ where $\mathbf{i}_j$ is a vector with $\mathbf{i}_j=1$ and $\mathbf{i}_k=0$ for 
 
 It's very important to track whether a matrix is vertical or horizontal, $\mathbf{x}$ or $\mathbf{x}^T$. Also make sure you pay attention to whether something is a scalar-valued function or a vector valued function. Is it $\mathbf{y} = \ldots$ or $y = \ldots$?
 
-The other trick is to reduce everything down to a set of scalar equations and then take all of the partials derivatives. This dictates whether you get a scalar, vector, or matrix Jacobian.
+When trying to deduce the Jacobian of a complex vector equation, a good trick is to reduce everything down to a set of scalar equations and then take all of the partials derivatives, combining the results appropriately into vectors and matrices.
 
 \subsection{Derivatives of vector element-wise binary operators}
 
@@ -206,7 +210,7 @@ $
 
 That's quite a furball, but the Jacobian is very commonly a diagonal matrix, a matrix that is zero everywhere but the diagonal. 
 
-If $f_i(\mathbf{x})$ and $g_i(\mathbf{x})$ are purely functions of $x_i$, and no other elements of vector $\mathbf{x}$, we can reduce $f_i(\mathbf{x}) \bigcirc g_i(\mathbf{x})$ to $f_i(x_i) \bigcirc g_i(x_i)$. This is technically an abuse of our notation because $f_i$ and $g_i$ are functions of vectors not individual elements. We should really write something like $\hat f_{i}(x_i) = f_{i}(\mathbf{x})$, but that would muddy the equations further (and programmers are comfortable overloading functions) so we'll proceed with the notation anyway.
+If $f_i(\mathbf{x})$ and $g_i(\mathbf{x})$ are purely functions of at most $x_i$, and no other elements of vector $\mathbf{x}$, we can reduce $f_i(\mathbf{x}) \bigcirc g_i(\mathbf{x})$ to $f_i(x_i) \bigcirc g_i(x_i)$. This is technically an abuse of our notation because $f_i$ and $g_i$ are functions of vectors not individual elements. We should really write something like $\hat f_{i}(x_i) = f_{i}(\mathbf{x})$, but that would muddy the equations further (and programmers are comfortable overloading functions) so we'll proceed with the notation anyway.
 
 With the constraint that $f_i(\mathbf{x})$ and $g_i(\mathbf{x})$ can only access $x_i$, the elements along the diagonal of the Jacobian are $\frac{\partial}{\partial x_i} ( f_i(x_i) \bigcirc g_i(x_i) )$:
 
@@ -260,7 +264,7 @@ $\mathbf{y} = \mathbf{x} \times c$
 is really
 $\mathbf{y} = \mathbf{f(x)} \otimes \mathbf{g}(c)$.
 
-The partial derivative of vector-scalar addition and multiplication with respect to vector $\mathbf{x}$  fall out from our element-wise rule, $\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = diag \left( \ldots \frac{\partial}{\partial x_i} ( f_i(x_i) \bigcirc g_i(c) ) \ldots \right)$, since we've identified $f_i(x_i) = x_i$ and $g_i(c) = c$. Note that functions $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(c) = \vec{1} \times c$ clearly satisfy our constraint for the special case of diagonal Jacobian (that $f_i(\mathbf{x})$ refer at most to $x_i$ and $g_i(c)$ refer to the $i^{th}$ value of the $\vec{1}$ vector). 
+The partial derivative of vector-scalar addition and multiplication with respect to vector $\mathbf{x}$  fall out from our element-wise rule, $\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = diag \left( \ldots \frac{\partial}{\partial x_i} ( f_i(x_i) \bigcirc g_i(c) ) \ldots \right)$, since we've identified $f_i(x_i) = x_i$ and $g_i(c) = c$. Note that functions $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(c) = \vec{1} \times c$ clearly satisfy our constraint for the special case of diagonal Jacobian (that $f_i(\mathbf{x})$ refer at most to $x_i$ and $g_i(c)$ refers to the $i^{th}$ value of the $\vec{1}$ vector). 
 
 Using the usual rules for scalar partial derivatives, we arrive at the following diagonal elements of the Jacobian for vector-scalar addition:
  
@@ -335,45 +339,61 @@ $
 
 \subsection{Vector chain rule}
 
-We can't compute partial derivatives of very complicated functions using just the basic matrix calculus rules we've seen so far. We need to be able to combine them using the so-called {\em chain rule}. The easiest way to think about deploying the chain rule is probably like a computer scientist rather than a mathematician. Consider a simple scalar equation like $y = f(a,b,c) = a + b \times c^2$.  Because at the CPU instruction level computers perform single operations on one or two operands, compilers tend to translate expressions into a sequence of subexpressions assigned to registers:
+We can't compute partial derivatives of very complicated functions using just the basic matrix calculus rules we've seen so far. We need to be able to combine them using the so-called {\em chain rule}.  The chain rule comes into play when we need the derivative of an expression that is also made up of (sub-) expressions. For example, $\frac{d}{dx} x^n$ is really $nx^{n-1} \times \frac{dx}{dx} = nx^{n-1} \times 1 = nx^{n-1}$. If $x$ were itself a subexpression instead of plain $x$, $(2x+1)^2$, we'd need to multiply the result by the derivative of the subexpression: 
 
-$r_1 = a + r_2$\\
-$r_2 = b \times r_3$\\
-$r_3 = c^2$
+$\frac{dx}{dx} (2x+1)^2 = 2 (2x+1) \times \frac{dx}{dx} (2x+1) = 2 (2x+1) \times 2 = 4(2x+1) = 8x+4$
 
-Then $y = r_1$. To compute the scalar derivative of $y = f(a,b,c)$ with respect to $a$, we can treat each of these subexpressions in isolation using just the basic rules.  The order of operations is actually in reverse order because we can't compute $r_1$ until we know the result of $r_2$, which needs $r_3$. The same is true when we compute the partial derivatives.
+To verify results, we can multiply everything out first $(2x+1)^2$ to avoid the exponential. $(2x+1)^2 = (2x+1)(2x+1) = 4x^2 + 4x + 1$. Taking the derivative of that, gives us $8x + 4$, thus, verifying the  chain method for $(2x+1)^2$.
 
-$
-\begin{array}{lllll}
-\frac{\partial }{\partial a} r_3 & = & \frac{\partial }{\partial a} c^2 & = & 0\\
-\frac{\partial }{\partial a} r_2 & = & \frac{\partial }{\partial a} (b \times r_3) & = & b \times \frac{\partial r_3}{\partial a} + r_3 \times \frac{\partial b}{\partial a} = b \times 0 + c^2 \times 0 = 0\\
-\frac{\partial }{\partial a} r_1 & = & \frac{\partial a}{\partial a} + \frac{\partial r_2}{\partial a} & = & 1 + 0 = 1\\
-\end{array}
-$
+Working towards a general chain rule mechanism, let's substitute an intermediate variable, $u$, for the subexpression in $(2x+1)^2 \Rightarrow u^2$ where $u = 2x+1$. Now we have two simpler equations whose derivatives we can easily compute:
 
-Since $\frac{\partial }{\partial a} y = \frac{\partial }{\partial a} r_1$, $\frac{\partial }{\partial a} y = 1$.
+$y = f(u) = u^2$\\
+$u = g(x) = 2x+1$
 
-Something important to keep in mind: we substitute $\frac{\partial r_3}{\partial a}$ with the result of the $\frac{\partial r_3}{\partial a}$ partial derivative computation, rather than treating $r_3$ like a function parameter.  The partial derivative of a temporary variable with respect to a function parameter is its own partial derivative computation. Don't make the mistake of treating $\frac{\partial r_3}{\partial a}$ as 0 just because $r_3$ and $a$ are different variables.
+Putting the functions $f$ and $g$ in there make it clear which variables $y$ and $u$ are a function of, which is important because we take the derivative with respect to those parameters:
 
-Here is the sequence to compute the partial derivative with respect to $b$:
+$\frac{dy}{du} = \frac{d}{du} f(u) = \frac{d}{du} u^2 = 2u \times \frac{du}{du} = 2u$\\
+$\frac{du}{dx} = \frac{d}{dx} g(x) = \frac{d}{dx} (2x+1) = 2$
 
-$
-\begin{array}{lllll}
-\frac{\partial }{\partial b} r_3 & = & \frac{\partial }{\partial b} c^2 & = & 0\\
-\frac{\partial }{\partial b} r_2 & = & \frac{\partial }{\partial b} (b \times r_3) & = & b \times \frac{\partial r_3}{\partial b} + r_3 \times \frac{\partial b}{\partial b} = b \times 0 + c^2 \times 1 = c^2\\
-\frac{\partial }{\partial b} r_1 & = & \frac{\partial a}{\partial b} + \frac{\partial r_2}{\partial b} & = & 0 + c^2 = c^2\\
-\end{array}
-$
+Now, we just have to combine the derivatives of the simpler subexpressions, which means multiplying the two derivatives together
 
-Finally, here is the partial derivative with respect to $c$:
+$\frac{dy}{dx} = \frac{dy}{du} \times \frac{du}{dx} = 2 u \times 2 = 4u$
+
+then substituting the intermediate variable back in
+
+$\frac{dy}{dx} = 4(2x+1) = 8x+4$
+
+Combining the derivatives of subexpressions is where we are actually applying the chain rule:
+
+$\frac{dy}{dx} = \frac{dy}{du} \times \frac{du}{dx}$
+
+You can think of the chain rule in terms of units canceling. If we let $y$ be gallons of gas, $x$ be the gallons in a gas tank, $u$ as miles we can interpret $\frac{dy}{dx}$ like $\frac{miles}{tank} = \frac{miles}{gallon} \times \frac{gallon}{tank}$. The $gallon$s denominator and numerator cancel.
  
+The chain rule is a divide and conquer strategy (like Quicksort) where we are dividing up a complex expression into its subexpressions and then combining the derivative of the simpler subexpressions.  You will see the chain rule defined using function composition $(f \circ g)(x)$ or as nested functions $f(g(x))$.  Avoid using notation $f'(g(x))g'(x)$ because it doesn't highlight the fact that we are introducing an intermediate variable. Instead, use the explicit $\frac{dy}{dx} = \frac{dy}{du} \times \frac{du}{dx}$ notation.
+
+Naturally, some expressions nest more than one level deep.  It might help to think about deploying the chain rule like a compiler implementor.   At the CPU instruction level, computers perform single operations on one or two operands, so compilers tend to translate expressions into a sequence of subexpressions assigned to registers (temporary variables). Consider a scalar equation like $y = f(x) = cos(x^3)^2$ broken down into subexpressions assigned to temporary variables:
+
+$r_1 = f_1(x) = x^3$\\
+$r_2 = f_2(r_1) = cos(r_1)$\\
+$r_3 = f_3(r_2) = r_2^2$ ~~~~~~($y = r_3$)
+
+The order of these $r_i$ subexpressions does not affect the answer, but we recommend working in the order of operations dictated by arithmetic. That way, expressions and derivatives are always functions of previously-computed elements.
+
+To compute the scalar derivative of $y = f(x)$ with respect to $x$, we can treat each of these subexpressions in isolation using just the basic scalar partial derivative rules.
+
 $
 \begin{array}{lllll}
-\frac{\partial }{\partial c} r_3 & = & \frac{\partial }{\partial c} c^2 & = & 2c\\
-\frac{\partial }{\partial c} r_2 & = & \frac{\partial }{\partial c} (b \times r_3) & = & b \times \frac{\partial r_3}{\partial c} + r_3 \times \frac{\partial b}{\partial c} = b \times 2c + c^2 \times 0 = 2bc\\
-\frac{\partial }{\partial c} r_1 & = & \frac{\partial a}{\partial c} + \frac{\partial r_2}{\partial c} & = & 0 + c^2 = 2bc\\
+\frac{d}{r_x} r_1 & = & \frac{d}{x} x^3 & = & 3x^2\\
+\frac{d}{r_1} r_2 & = & \frac{d}{r_1} cos(r_1) & = & -sin(r_1) \\
+\frac{d}{r_2} r_3 & = & \frac{d}{r_2} r_2^2 & =& 2r_2\\
 \end{array}
 $
+
+Using the chain rule, $\frac{dy}{dx} = \frac{dy}{r_3} \times \frac{dr_3}{d r_2} \times \frac{dr_2}{dr_1} \times \frac{dr_1}{dx} = 1 \times 2r_2 \times -sin(r_1) \times 3x^2 = 2cos(x^3) \times -sin(x^3) \times 3x^2 = -6x^2cos(x^3)sin(x^3)$
+
+The derivative of a temporary variable with respect to a function parameter is its own  derivative computation. 
+
+...
 
 The gradient would be $\nabla f(a,b,c) = [1, c^2, 2bc]$.
 
