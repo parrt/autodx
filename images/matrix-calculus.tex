@@ -339,90 +339,84 @@ $
 
 \subsection{Vector chain rule}
 
-We can't compute partial derivatives of very complicated functions using just the basic matrix calculus rules we've seen so far. We need to be able to combine them using the so-called {\em chain rule}.  The chain rule comes into play when we need the derivative of an expression that is also made up of (sub-) expressions. For example, $\frac{d}{dx} x^n$ is really $nx^{n-1} \times \frac{dx}{dx} = nx^{n-1} \times 1 = nx^{n-1}$. If $x$ were itself a subexpression instead of plain $x$, $(2x+1)^2$, we'd need to multiply the result by the derivative of the subexpression: 
+We can't compute partial derivatives of very complicated functions using just the basic matrix calculus rules we've seen so far. We need to be able to combine them using the so-called {\em chain rule}.  The chain rule is a divide and conquer strategy (like Quicksort) that breaks complicated expressions into subexpressions that are easier to compute derivatives for.  The chain rule comes into play when we need the derivative of an expression with nested subexpressions, such as $\frac{d}{dx} sin(x^2)$.  
 
-$\frac{dx}{dx} (2x+1)^2 = 2 (2x+1) \times \frac{dx}{dx} (2x+1) = 2 (2x+1) \times 2 = 4(2x+1) = 8x+4$
+In general, the chain rule is defined in terms of expressions that can be written as $y = f(g(x))$. (You will also see the chain rule defined using function composition $(f \circ g)(x)$ which is the same thing.)  Some sources write the derivative using shorthand notation $f'(g(x))g'(x)$, but that hides the fact that we are performing a variable substitution: $u = g(x)$. It's better to define the chain rule explicitly via the following so we never take the derivative with respect to the wrong variable.
 
-To verify results, we can multiply everything out first $(2x+1)^2$ to avoid the exponential. $(2x+1)^2 = (2x+1)(2x+1) = 4x^2 + 4x + 1$. Taking the derivative of that, gives us $8x + 4$, thus, verifying the  chain method for $(2x+1)^2$.
+$\frac{dy}{dx} = \frac{dy}{du} \times \frac{du}{dx}$.
 
-Working towards a general chain rule mechanism, let's substitute an intermediate variable, $u$, for the subexpression in $(2x+1)^2 \Rightarrow u^2$ where $u = 2x+1$. Now we have two simpler equations whose derivatives we can easily compute:
+In this case, we split $sin(x^2)$ into two functions:
 
-$y = f(u) = u^2$\\
-$u = g(x) = 2x+1$
+$u = g(x) = x^2$\\
+$y = f(u) = sin(u)$
 
-Putting the functions $f$ and $g$ in there make it clear which variables $y$ and $u$ are a function of, which is important because we take the derivative with respect to those parameters:
+Putting the functions $f$ and $g$ and their parameters in there makes it clear which variables we must take the derivative with respect to. The order of these subexpressions does not affect the answer, but we recommend working in the reverse order of operations dictated by the nesting (innermost to outermost). That way, expressions and derivatives are always functions of previously-computed elements. Here are the derivatives of the simplified functions:
 
-$\frac{dy}{du} = \frac{d}{du} f(u) = \frac{d}{du} u^2 = 2u \times \frac{du}{du} = 2u$\\
-$\frac{du}{dx} = \frac{d}{dx} g(x) = \frac{d}{dx} (2x+1) = 2$
+$\frac{du}{dx} = \frac{d}{dx} x^2 = 2x$\\
+$\frac{dy}{du} = \frac{d}{du} sin(u) = cos(u)$
 
-Now, we just have to combine the derivatives of the simpler subexpressions, which means multiplying the two derivatives together
+Now, we just have to combine the derivatives using the chain rule, which means multiplying the two derivatives together:
 
-$\frac{dy}{dx} = \frac{dy}{du} \times \frac{du}{dx} = 2 u \times 2 = 4u$
+$\frac{dy}{dx} = \frac{dy}{du} \times \frac{du}{dx} = cos(u) \times 2x$
 
 then substituting the intermediate variable back in
 
-$\frac{dy}{dx} = 4(2x+1) = 8x+4$
+$\frac{dy}{dx} = cos(x^2) \times 2x = 2xcos(x^2)$
 
-Combining the derivatives of subexpressions is where we are actually applying the chain rule:
+You can think of the chain rule in terms of units canceling. If we let $y$ be gallons of gas, $x$ be the gallons in a gas tank, and $u$ as miles we can interpret $\frac{dy}{dx}$ as $\frac{miles}{tank} = \frac{miles}{gallon} \times \frac{gallon}{tank}$. The $gallon$ denominator and numerator cancel. This is a convenient way to remember the chain rule but the analogy only goes so far; don't treat $dy$ and $dx$ has separate variables since they are two components in the name of a single operator.
 
-$\frac{dy}{dx} = \frac{dy}{du} \times \frac{du}{dx}$
+When there is only one variable substitution, it's straightforward to directly write the derivative down without explicitly creating and substituting a temporary variable. With deeply nested expressions, however, it's easy to get lost and it's better to carefully track all of the intermediate variables.
 
-You can think of the chain rule in terms of units canceling. If we let $y$ be gallons of gas, $x$ be the gallons in a gas tank, $u$ as miles we can interpret $\frac{dy}{dx}$ like $\frac{miles}{tank} = \frac{miles}{gallon} \times \frac{gallon}{tank}$. The $gallon$s denominator and numerator cancel.
- 
-The chain rule is a divide and conquer strategy (like Quicksort) where we are dividing up a complex expression into its subexpressions and then combining the derivative of the simpler subexpressions.  You will see the chain rule defined using function composition $(f \circ g)(x)$ or as nested functions $f(g(x))$.  Avoid using notation $f'(g(x))g'(x)$ because it doesn't highlight the fact that we are introducing an intermediate variable. Instead, use the explicit $\frac{dy}{dx} = \frac{dy}{du} \times \frac{du}{dx}$ notation.
-
-Naturally, some expressions nest more than one level deep.  It might help to think about deploying the chain rule like a compiler implementor.   At the CPU instruction level, computers perform single operations on one or two operands, so compilers tend to translate expressions into a sequence of subexpressions assigned to registers (temporary variables). Consider a scalar equation like $y = f(x) = cos(x^3)^2$ broken down into subexpressions assigned to temporary variables:
+It might help to think about deploying the chain rule the way a compiler implementor thinks about generating code for complicated expressions.  The compiler must unravel function call nesting like $f_1(f_2(f_3(f_4(x))))$ into a sequence of calls. The result of calling function $f_i$ is saved to a temporary variable called a register, which is then passed as a parameter to $f_{i-1}$.  Consider a nested equation like $y = f(x) = ln(sin(x^3)^2)$ breaks down into subexpressions assigned to  intermediate (temporary) variables:
 
 $r_1 = f_1(x) = x^3$\\
-$r_2 = f_2(r_1) = cos(r_1)$\\
-$r_3 = f_3(r_2) = r_2^2$ ~~~~~~($y = r_3$)
+$r_2 = f_2(r_1) = sin(r_1)$\\
+$r_3 = f_3(r_2) = r_2^2$\\
+$r_4 = f_4(r_3) = ln(r_3)$ ~~~~~~($y = r_4$)
 
-The order of these $r_i$ subexpressions does not affect the answer, but we recommend working in the order of operations dictated by arithmetic. That way, expressions and derivatives are always functions of previously-computed elements.
-
-To compute the scalar derivative of $y = f(x)$ with respect to $x$, we can treat each of these subexpressions in isolation using just the basic scalar partial derivative rules.
+To compute the scalar derivative $\frac{dy}{dx}$, we can treat each of those subexpressions in isolation using just the basic scalar derivative rules.
 
 $
 \begin{array}{lllll}
+\vspace{1mm}
 \frac{d}{r_x} r_1 & = & \frac{d}{x} x^3 & = & 3x^2\\
-\frac{d}{r_1} r_2 & = & \frac{d}{r_1} cos(r_1) & = & -sin(r_1) \\
+\vspace{1mm}
+\frac{d}{r_1} r_2 & = & \frac{d}{r_1} sin(r_1) & = & cos(r_1) \\
 \frac{d}{r_2} r_3 & = & \frac{d}{r_2} r_2^2 & =& 2r_2\\
+\frac{d}{r_3} r_4 & = & \frac{d}{r_3} ln(r_3) & =& \frac{1}{r_3}\\
 \end{array}
 $
 
-Using the chain rule, $\frac{dy}{dx} = \frac{dy}{r_3} \times \frac{dr_3}{d r_2} \times \frac{dr_2}{dr_1} \times \frac{dr_1}{dx} = 1 \times 2r_2 \times -sin(r_1) \times 3x^2 = 2cos(x^3) \times -sin(x^3) \times 3x^2 = -6x^2cos(x^3)sin(x^3)$
+Using the chain rule for 4 intermediate variables,
 
-The derivative of a temporary variable with respect to a function parameter is its own  derivative computation. 
+$\frac{dy}{dx} = \frac{dy}{r_4} \times \frac{d r_4}{r_3} \times \frac{dr_3}{d r_2} \times \frac{dr_2}{dr_1} \times \frac{dr_1}{dx}$
 
-...
+we get
 
-The gradient would be $\nabla f(a,b,c) = [1, c^2, 2bc]$.
+$\frac{dy}{dx} = 1 \times \frac{1}{r_3} \times 2r_2 \times cos(r_1) \times 3x^2 = \frac{6r_2x^2cos(r_1)}{r_3}$
 
-$D[f(g(x))] = f'(g(x))g'(x)$
+Substituting the intermediate variables back in, gives us:
+
+$\frac{dy}{dx} = \frac{6sin(r_1)x^2cos(x^3)}{r_2^2} = \frac{6sin(x^3)x^2cos(x^3)}{sin(r_1)^2} = \frac{6sin(x^3)x^2cos(x^3)}{sin(x^3)^2} = \frac{6x^2cos(x^3)}{sin(x^3)}$
+
+Ok, so much for the scalar chain rule. It turns out that the chain rule also works for computing partial derivatives of vector functions with respect to vectors.  Previously, we manually computed the derivative with respect to $\mathbf{x}$ of $y = sum(\mathbf{x} \times c)$ as $[c, c, \ldots, c]$, but we can also use the chain rule. Let vector $\mathbf{u} = \mathbf{x} \times c$ then $y = sum(\mathbf{u})$. The vector chain rule tells us that $\frac{dy}{d\mathbf{x}} = \frac{dy}{d\mathbf{u}} \times \frac{d\mathbf{u}}{d\mathbf{x}}$, which means 
+
+$\frac{dy}{d\mathbf{x}} = \vec{1}^T \times \frac{\mathbf{u}}{d\mathbf{x}} (\mathbf{x} \times c) = \vec{1}^T \times diag(\vec{1}c) = \vec{1}^T \times I \times c = \vec{1}^T \times c = [c, c, \ldots, c]$
 
 \subsection{Derivatives of vector dot product}
 
-Now that we can compute the Jacobians for both element-wise binary operations and vector summation, we can define the gradient of the important vector dot product $y = \mathbf{f(x)} \cdot \mathbf{g(x)}$. Note we use $y$ not $\mathbf{y}$ as the result of the dot product is a scalar not a vector.
+Now that we've got the chain rule in mind and we can compute the Jacobians for both element-wise binary operations and vector summation, we can define the gradient of the important vector dot product $y = \mathbf{f(x)} \cdot \mathbf{g(x)}$. (Note we use $y$ not $\mathbf{y}$ as the result is a scalar not a vector.) You will find the derivative of dot product defined as $f(\mathbf{x}) \cdot g'(\mathbf{x}) + f'(\mathbf{x}) \cdot g(\mathbf{x})$, but we'll use the chain rule instead to avoid having to memorize yet another rule.
 
-The dot product $\mathbf{w} \cdot \mathbf{x}$ is the summation of the element-wise multiplication of the elements: $\Sigma_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$. (You might also find it useful to remember the linear algebra notation $\mathbf{w} \cdot \mathbf{x} = \mathbf{w}^{T} \times \mathbf{x}$.)
+Notice that dot product $\mathbf{w} \cdot \mathbf{x}$ is just the summation of the element-wise multiplication of the elements: $\Sigma_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$. (You might also find it useful to remember the linear algebra notation $\mathbf{w} \cdot \mathbf{x} = \mathbf{w}^{T} \times \mathbf{x}$.)  To use the chain rule, we perform a quick substitution, $\mathbf{u} = \mathbf{w} \otimes \mathbf{x}$ and $y = sum(\mathbf{u})$, and multiply their partial derivatives:
 
-$
-\begin{array}{rcl}
-\frac{\partial y}{\partial \mathbf{x}} & = & \mathbf{f(x)} \cdot \frac{\partial \mathbf{g(x)}}{\partial \mathbf{x}} + \mathbf{g(x)} \cdot \frac{\partial \mathbf{f(x)}}{\partial \mathbf{x}}\\\\
- & = & \mathbf{f(x)} \cdot \begin{bmatrix} \frac{\partial g(\mathbf{x})}{\partial x_1},~ \frac{\partial g(\mathbf{x})}{\partial x_2},~ \ldots,~ \frac{\partial g(\mathbf{x})}{\partial x_n} \end{bmatrix}  + \mathbf{g(x)} \cdot \begin{bmatrix} \frac{\partial f(\mathbf{x})}{\partial x_1},~ \frac{\partial f(\mathbf{x})}{\partial x_2},~ \ldots,~ \frac{\partial f(\mathbf{x})}{\partial x_n} \end{bmatrix}\\
+$\frac{d \mathbf{u}}{d\mathbf{x}} = \frac{d}{d\mathbf{x}} (\mathbf{w} \otimes \mathbf{x}) = diag(\mathbf{w})$\\
+$\frac{dy}{d\mathbf{u}} = \frac{d}{d\mathbf{u}} sum(\mathbf{u}) = \vec{1}^T$
 
-\end{array}
-$
+$\frac{dy}{d\mathbf{x}} = \frac{dy}{d\mathbf{u}} \times \frac{d\mathbf{u}}{d\mathbf{x}} = \vec{1}^T \times diag(\mathbf{w}) = \mathbf{w}$
 
-Note that the partial derivatives are $\frac{\partial f(\mathbf{x})}{\partial x_i}$ not $\frac{\partial f(x_i)}{\partial x_i}$ and not $\frac{\partial f_i(x_i)}{\partial x_i}$.
+Similarly, $\frac{dy}{d\mathbf{w}} = \mathbf{x}^T$. Note: the gradient is a horizontal vector (1 output)!
 
-As an example, consider $y = \mathbf{w} \cdot \mathbf{x}$. The partial derivative with respect to either factor is a gradient, horizontal vector:
-
-$\frac{\partial y}{\partial \mathbf{w}} = \mathbf{w} \cdot \frac{\partial \mathbf{x}}{\partial \mathbf{w}} + \mathbf{x} \cdot \frac{\partial \mathbf{w}}{\partial \mathbf{w}} = \mathbf{w}^T \times \frac{\partial \mathbf{x}}{\partial \mathbf{w}} + \mathbf{x}^T \times \frac{\partial \mathbf{w}}{\partial \mathbf{w}} = \mathbf{w}^T \times \mathbf{0} + \mathbf{x}^T \times I = \mathbf{x}^T$. Similarly, $\frac{\partial y}{\partial \mathbf{x}} = \mathbf{w}^T$.
-
-
-Note: the gradient is a horizontal vector (1 output)!
-
-We can also grind the dot product down into a pure scalar function:
+To check our results, we can also grind the dot product down into a pure scalar function:
 
 $y = \mathbf{w} \cdot \mathbf{x} = \Sigma_i^n (w_i x_i)$
 
