@@ -367,7 +367,7 @@ You can think of the chain rule in terms of units canceling. If we let $y$ be ga
 
 When there is only one variable substitution, it's straightforward to directly write the derivative down without explicitly creating and substituting a temporary variable. With deeply nested expressions, however, it's easy to get lost and it's better to carefully track all of the intermediate variables.
 
-It might help to think about deploying the chain rule the way a compiler implementor thinks about generating code for complicated expressions.  The compiler must unravel function call nesting like $f_1(f_2(f_3(f_4(x))))$ into a sequence of calls. The result of calling function $f_i$ is saved to a temporary variable called a register, which is then passed as a parameter to $f_{i-1}$.  Consider a nested equation like $y = f(x) = ln(sin(x^3)^2)$ breaks down into subexpressions assigned to  intermediate (temporary) variables:
+It might help to think about deploying the chain rule the way a compiler implementor thinks about generating code for complicated expressions.  The compiler must unravel function call nesting like $f_1(f_2(f_3(f_4(x))))$ into a sequence of calls. The result of calling function $f_i$ is saved to a temporary variable called a register, which is then passed as a parameter to $f_{i-1}$.  Consider a nested equation like $y = f(x) = ln(sin(x^3)^2)$ that breaks down into subexpressions assigned to  intermediate (temporary) variables:
 
 $r_1 = f_1(x) = x^3$\\
 $r_2 = f_2(r_1) = sin(r_1)$\\
@@ -401,7 +401,7 @@ $\frac{dy}{dx} = \frac{6sin(r_1)x^2cos(x^3)}{r_2^2} = \frac{6sin(x^3)x^2cos(x^3)
 
 Ok, so much for the scalar chain rule. It turns out that the chain rule also works for computing partial derivatives of vector functions with respect to vectors.  Previously, we manually computed the derivative with respect to $\mathbf{x}$ of $y = sum(\mathbf{x} \times c)$ as $[c, c, \ldots, c]$, but we can also use the chain rule. Let vector $\mathbf{u} = \mathbf{x} \times c$ then $y = sum(\mathbf{u})$. The vector chain rule tells us that $\frac{dy}{d\mathbf{x}} = \frac{dy}{d\mathbf{u}} \times \frac{d\mathbf{u}}{d\mathbf{x}}$, which means 
 
-$\frac{dy}{d\mathbf{x}} = \vec{1}^T \times \frac{\mathbf{u}}{d\mathbf{x}} (\mathbf{x} \times c) = \vec{1}^T \times diag(\vec{1}c) = \vec{1}^T \times I \times c = \vec{1}^T \times c = [c, c, \ldots, c]$
+$\frac{dy}{d\mathbf{x}} = \vec{1}^T \times \frac{d}{d\mathbf{x}} (\mathbf{x} \times c) = \vec{1}^T \times diag(\vec{1}c) = \vec{1}^T \times I \times c = \vec{1}^T \times c = [c, c, \ldots, c]$
 
 \subsection{Derivatives of vector dot product}
 
@@ -412,7 +412,7 @@ Notice that dot product $\mathbf{w} \cdot \mathbf{x}$ is just the summation of t
 $\frac{d \mathbf{u}}{d\mathbf{x}} = \frac{d}{d\mathbf{x}} (\mathbf{w} \otimes \mathbf{x}) = diag(\mathbf{w})$\\
 $\frac{dy}{d\mathbf{u}} = \frac{d}{d\mathbf{u}} sum(\mathbf{u}) = \vec{1}^T$
 
-$\frac{dy}{d\mathbf{x}} = \frac{dy}{d\mathbf{u}} \times \frac{d\mathbf{u}}{d\mathbf{x}} = \vec{1}^T \times diag(\mathbf{w}) = \mathbf{w}$
+$\frac{dy}{d\mathbf{x}} = \frac{dy}{d\mathbf{u}} \times \frac{d\mathbf{u}}{d\mathbf{x}} = \vec{1}^T \times diag(\mathbf{w}) = \mathbf{w}^T$
 
 Similarly, $\frac{dy}{d\mathbf{w}} = \mathbf{x}^T$. Note: the gradient is a horizontal vector (1 output)!
 
