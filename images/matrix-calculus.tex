@@ -44,7 +44,7 @@ given any particular formula, you can reduce it to its scalar form and use the t
 
 $
 \begin{array}{lcc}
-Rule & \text{Scalar function } f(x) & \text{Scalar derivative with repsect to } x\\
+Rule & \text{Scalar function } f(x) & \text{Scalar derivative with respect to } x\\
 \hline
 \text{Multiplication by constant} &	cf(x)	&cf'(x)\\
 \text{Power Rule}	& x^n	& nx^{n-1}\\
@@ -56,25 +56,21 @@ Rule & \text{Scalar function } f(x) & \text{Scalar derivative with repsect to } 
 \end{array}
 $
 
-When a function has a single parameter, $f(x)$, you'll often see $f'$ and $f'(x)$ used as shorthands for $\frac{d}{dx} f(x)$.  
+When a function has a single parameter, $f(x)$, you'll often see $f'$ and $f'(x)$ used as shorthands for $\frac{d}{dx} f(x)$. We recommend against this notation as it does not make clear the variable we're taking the derivative with respect to.
 
 You can think of $\frac{d}{dx}$ as an operator that maps a function of one parameter to another function. So to take the derivative with respect to $x$ of $cf(x)$, $\frac{d}{dx} cf(x)$, we are really just moving the constant to the left of the operator: $c\frac{d}{dx}x$ or $c\frac{dx}{dx}$, which makes it more clear that the derivative is $c \times 1 = c$.  We are used to this simplification for the usual arithmetic operators. For example, $-2x = 2 \times -x$ where the negation operator is analogous to our derivative operator. We have just moved to the scalar outside of the operation. Thinking of the derivative as an operator is handy when solving complicated derivatives as we can mechanically apply rules of differentiation.
 
 \section{Review: Vector calculus and partial derivatives}
 
-Real-world problems are rarely so simple that we can express them as a single function of a single parameter, $f(x)$. Let's move on to functions of multiple parameters such as $f(x,y)$. We compute derivatives with respect to one variable (parameter) at a time, giving us two different {\em partial derivatives} for this two-parameter function.  Instead of using operator $\frac{d}{dx}$, we use $\frac{\partial}{\partial x}$ (a stylized $d$ and not the Greek letter $\delta$). For functions of a single parameter, operator $\frac{\partial}{\partial x}$ is equivalent to $\frac{d}{dx}$ but you should  restrict your use of $\frac{d}{dx}$ to functions of a single parameter.
+Real-world problems are rarely so simple that we can express them as a single function of a single parameter, $f(x)$. Let's move on to functions of multiple parameters such as $f(x,y)$. We compute derivatives with respect to one variable (parameter) at a time, giving us two different {\em partial derivatives} for this two-parameter function.  Instead of using operator $\frac{d}{dx}$, we use $\frac{\partial}{\partial x}$ (a stylized $d$ and not the Greek letter $\delta$). For functions of a single parameter, operator $\frac{\partial}{\partial x}$ is equivalent to $\frac{d}{dx}$ (for sufficiently smooth functions), but you should restrict your use of $\frac{d}{dx}$ to functions of a single parameter.
 
 The partial derivative with respect to $x$ is just the usual scalar derivative but treating any other variable in the equation as a constant.  Consider function $f(x,y) = 3x^2y$. The partial derivative with respect to $x$ is written $\frac{\partial}{\partial x} 3x^2y$. There are three constants from the perspective of $\frac{\partial}{\partial x}$: 3, 2, and $y$. Therefore, $\frac{\partial}{\partial x} 3yx^2 = 3y\frac{\partial}{\partial x} x^2 = 3y2x = 6yx$. The partial derivative with respect to $y$ treats $x$ like a constant now: $\frac{\partial}{\partial y} 3x^2y = 3x^2\frac{\partial}{\partial y} y = 3x^2\frac{\partial y}{\partial y} = 3x^2 \times 1 = 3x^2$. 
 
 So, partial derivatives use the usual scalar derivative rules while holding all but a single variable, $x$, as constants for the purpose of computing the partial derivative with respect to $x$.
 
-To make it clear we are doing vector calculus and not just multivariate calculus, let's consider what we do with the partial derivatives $\frac{\partial f(x,y)}{\partial x}$ and $\frac{\partial f(x,y)}{\partial y}$ we computed for $f(x,y) = 3x^2y$. Currently they're just kind of floating around and not organized in any way so let's organize them into a horizontal vector:
+To make it clear we are doing vector calculus and not just multivariate calculus, let's consider what we do with the partial derivatives $\frac{\partial f(x,y)}{\partial x}$ and $\frac{\partial f(x,y)}{\partial y}$ we computed for $f(x,y) = 3x^2y$. Currently they're just kind of floating around and not organized in any way so let's organize them into a horizontal vector. We call this vector the {\em gradient} of $f(x,y)$ and write it as:
 
-$[ \frac{\partial f(x,y)}{\partial x}, \frac{\partial f(x,y)}{\partial y}] = [6yx, 3x^2]$
-
-We call this vector the {\em gradient} of $f(x,y)$ and write it as:
-
-$\nabla f(x,y) = [6yx, 3x^2]$.
+$\nabla f(x,y)  = [ \frac{\partial f(x,y)}{\partial x}, \frac{\partial f(x,y)}{\partial y}] = [6yx, 3x^2]$
 
 Vector calculus deals with functions mapping $n$ real parameters to a real scalar, $f : \mathbb{R}^n \rightarrow \mathbb{R}$.  Now, let's get crazy and consider multiple functions simultaneously, $\mathbf{f}: \mathbb{R}^n \rightarrow \mathbb{R}^m$.
 
@@ -96,6 +92,9 @@ $J =
 \begin{bmatrix}
 	\nabla f(x,y)\\
 	\nabla g(x,y)
+\end{bmatrix} = \begin{bmatrix}
+\frac{\partial f(x,y)}{\partial x} & \frac{\partial f(x,y)}{\partial y}\\
+\frac{\partial g(x,y)}{\partial x} & \frac{\partial g(x,y)}{\partial y}\\
 \end{bmatrix} = \begin{bmatrix}
 	6yx & 3x^2\\
 	1 & 8y^7
@@ -150,27 +149,31 @@ todo: Show the shape with boxes.
 To represent the trivial equation $\mathbf{y} = \mathbf{x}$, for example, $f_i(\mathbf{x}) = x_i$. In this case, the Jacobian is the identity matrix since $m=n$ (a Jacobian matrix size $m \times n$ where $m = |\mathbf{f}| = n = |\mathbf{x}|$).
 
 $
+\begin{array}{lll}
 \frac{\partial \mathbf{y}}{\partial \mathbf{x}} = \begin{bmatrix}
 \frac{\partial}{\partial {x}} f_1(\mathbf{x}) \\
 \frac{\partial}{\partial {x}} f_2(\mathbf{x})\\
 \ldots\\
 \frac{\partial}{\partial {x}} f_m(\mathbf{x})
-\end{bmatrix} = \begin{bmatrix}
-\frac{\partial}{\partial {x_1}} f_1(\mathbf{x}) \frac{\partial}{\partial {x_2}} f_1(\mathbf{x}) \ldots \frac{\partial}{\partial {x_n}} f_1(\mathbf{x}) \\
-\frac{\partial}{\partial {x_1}} f_2(\mathbf{x}) \frac{\partial}{\partial {x_2}} f_2(\mathbf{x}) \ldots \frac{\partial}{\partial {x_n}} f_2(\mathbf{x}) \\
+\end{bmatrix} &=& \begin{bmatrix}
+\frac{\partial}{\partial {x_1}} f_1(\mathbf{x})~ \frac{\partial}{\partial {x_2}} f_1(\mathbf{x}) ~\ldots~ \frac{\partial}{\partial {x_n}} f_1(\mathbf{x}) \\
+\frac{\partial}{\partial {x_1}} f_2(\mathbf{x})~ \frac{\partial}{\partial {x_2}} f_2(\mathbf{x}) ~\ldots~ \frac{\partial}{\partial {x_n}} f_2(\mathbf{x}) \\
 \ldots\\
-\frac{\partial}{\partial {x_1}} f_m(\mathbf{x}) \frac{\partial}{\partial {x_2}} f_m(\mathbf{x}) \ldots \frac{\partial}{\partial {x_n}} f_m(\mathbf{x}) \\
-\end{bmatrix} = \begin{bmatrix}
-\frac{\partial}{\partial {x_1}} x_1 \frac{\partial}{\partial {x_2}} x_1 \ldots \frac{\partial}{\partial {x_n}} x_1 \\
-\frac{\partial}{\partial {x_1}} x_2 \frac{\partial}{\partial {x_2}} x_2 \ldots \frac{\partial}{\partial {x_n}} x_2 \\
+~\frac{\partial}{\partial {x_1}} f_m(\mathbf{x})~ \frac{\partial}{\partial {x_2}} f_m(\mathbf{x}) ~\ldots~ \frac{\partial}{\partial {x_n}} f_m(\mathbf{x}) \\
+\end{bmatrix}\\\\
+ & = & \begin{bmatrix}
+\frac{\partial}{\partial {x_1}} x_1~ \frac{\partial}{\partial {x_2}} x_1 ~\ldots~ \frac{\partial}{\partial {x_n}} x_1 \\
+\frac{\partial}{\partial {x_1}} x_2~ \frac{\partial}{\partial {x_2}} x_2 ~\ldots~ \frac{\partial}{\partial {x_n}} x_2 \\
 \ldots\\
-\frac{\partial}{\partial {x_1}} x_m \frac{\partial}{\partial {x_2}} x_m \ldots \frac{\partial}{\partial {x_n}} x_m \\
-\end{bmatrix} = \begin{bmatrix}
+~\frac{\partial}{\partial {x_1}} x_m~ \frac{\partial}{\partial {x_2}} x_m ~\ldots~ \frac{\partial}{\partial {x_n}} x_m \\
+\end{bmatrix}\\\\
+& = & \begin{bmatrix}
            \mathbf{i}_1\\
            \mathbf{i}_2\\
            \vdots \\
            \mathbf{i}_m\\
            \end{bmatrix} = I
+\end{array}
 $
 
 where $\mathbf{i}_j$ is a vector with $\mathbf{i}_j=1$ and $\mathbf{i}_k=0$ for $k \neq j$ (vector with all zeros except at $j$, which is 1).
@@ -181,7 +184,7 @@ When trying to deduce the Jacobian of a complex vector equation, a good trick is
 
 \subsection{Derivatives of vector element-wise binary operators}
 
-Element-wise binary operations on vectors, such as vector addition $\mathbf{w} + \mathbf{x}$, are important because we can express many common vector operations, such as vector-scalar multiplication, as element-wise binary operations.  We can generalize the element-wise binary operations with notation $\mathbf{y} = \mathbf{f(x)} \bigcirc \mathbf{g(x)}$, where we're using $\bigcirc$ to represent any element-wise operator and not the $\circ$ function composition operator.  Here's what that equation looks like when we zoom in to examine the scalar equations:
+Element-wise binary operations on vectors, such as vector addition $\mathbf{w} + \mathbf{x}$, are important because we can express many common vector operations, such as vector-constant-scalar multiplication, as element-wise binary operations.  We can generalize the element-wise binary operations with notation $\mathbf{y} = \mathbf{f(w)} \bigcirc \mathbf{g(x)}$ where $m=n=|y|=|w|=|x|$. The $\bigcirc$ symbol represents any element-wise operator and not the $\circ$ function composition operator.  Here's what that equation looks like when we zoom in to examine the scalar equations:
 
 $\begin{bmatrix}
            y_1\\
@@ -189,53 +192,76 @@ $\begin{bmatrix}
            \vdots \\
            y_n\\
            \end{bmatrix} = \begin{bmatrix}
-           f_{1}(\mathbf{x}) \bigcirc g_{1}(\mathbf{x})\\
-           f_{n}(\mathbf{x}) \bigcirc g_{2}(\mathbf{x})\\
+           f_{1}(\mathbf{w}) \bigcirc g_{1}(\mathbf{x})\\
+           f_{n}(\mathbf{w}) \bigcirc g_{2}(\mathbf{x})\\
            \vdots \\
-           f_{n}(\mathbf{x}) \bigcirc g_{n}(\mathbf{x})\\
+           f_{n}(\mathbf{w}) \bigcirc g_{n}(\mathbf{x})\\
          \end{bmatrix}$
 
 where we write $n$ not $m$ equations vertically to emphasize the fact that the result of element-wise operators give $m=n$ sized vector results.
 
-The general case for the Jacobian is the square matrix:
+The general case for the Jacobian with respect to $\mathbf{w}$ is the square matrix:
+
+$
+\frac{\partial \mathbf{y}}{\partial \mathbf{w}}  = \begin{bmatrix}
+\frac{\partial}{\partial w_1} ( f_{1}(\mathbf{w}) \bigcirc g_{1}(\mathbf{x}) ) & \frac{\partial}{\partial w_2} ( f_{1}(\mathbf{w}) \bigcirc g_{1}(\mathbf{x}) ) & \ldots & \frac{\partial}{\partial w_n} ( f_{1}(\mathbf{w}) \bigcirc g_{1}(\mathbf{x}) )\\\\
+\frac{\partial}{\partial w_1} ( f_{2}(\mathbf{w}) \bigcirc g_{2}(\mathbf{x}) ) & \frac{\partial}{\partial w_2} ( f_{2}(\mathbf{w}) \bigcirc g_{2}(\mathbf{x}) ) & \ldots & \frac{\partial}{\partial w_n} ( f_{2}(\mathbf{w}) \bigcirc g_{2}(\mathbf{x}) )\\\\
+& \ldots\\\\
+\frac{\partial}{\partial w_1} ( f_{n}(\mathbf{w}) \bigcirc g_{n}(\mathbf{x}) ) & \frac{\partial}{\partial w_2} ( f_{n}(\mathbf{w}) \bigcirc g_{n}(\mathbf{x}) ) & \ldots & \frac{\partial}{\partial w_n} ( f_{n}(\mathbf{w}) \bigcirc g_{n}(\mathbf{x}) )\\
+\end{bmatrix}
+$
+
+and the Jacobian with respect to $\mathbf{x}$:
 
 $
 \frac{\partial \mathbf{y}}{\partial \mathbf{x}}  = \begin{bmatrix}
-\frac{\partial}{\partial x_1} ( f_{1}(\mathbf{x}) \bigcirc g_{1}(\mathbf{x}) ) & \frac{\partial}{\partial x_2} ( f_{1}(\mathbf{x}) \bigcirc g_{1}(\mathbf{x}) ) & \ldots & \frac{\partial}{\partial x_n} ( f_{1}(\mathbf{x}) \bigcirc g_{1}(\mathbf{x}) )\\\\
-\frac{\partial}{\partial x_1} ( f_{2}(\mathbf{x}) \bigcirc g_{2}(\mathbf{x}) ) & \frac{\partial}{\partial x_2} ( f_{2}(\mathbf{x}) \bigcirc g_{2}(\mathbf{x}) ) & \ldots & \frac{\partial}{\partial x_n} ( f_{2}(\mathbf{x}) \bigcirc g_{2}(\mathbf{x}) )\\\\
+\frac{\partial}{\partial x_1} ( f_{1}(\mathbf{w}) \bigcirc g_{1}(\mathbf{x}) ) & \frac{\partial}{\partial x_2} ( f_{1}(\mathbf{w}) \bigcirc g_{1}(\mathbf{x}) ) & \ldots & \frac{\partial}{\partial x_n} ( f_{1}(\mathbf{w}) \bigcirc g_{1}(\mathbf{x}) )\\\\
+\frac{\partial}{\partial x_1} ( f_{2}(\mathbf{w}) \bigcirc g_{2}(\mathbf{x}) ) & \frac{\partial}{\partial x_2} ( f_{2}(\mathbf{w}) \bigcirc g_{2}(\mathbf{x}) ) & \ldots & \frac{\partial}{\partial x_n} ( f_{2}(\mathbf{w}) \bigcirc g_{2}(\mathbf{x}) )\\\\
 & \ldots\\\\
-\frac{\partial}{\partial x_1} ( f_{n}(\mathbf{x}) \bigcirc g_{n}(\mathbf{x}) ) & \frac{\partial}{\partial x_2} ( f_{n}(\mathbf{x}) \bigcirc g_{n}(\mathbf{x}) ) & \ldots & \frac{\partial}{\partial x_n} ( f_{n}(\mathbf{x}) \bigcirc g_{n}(\mathbf{x}) )\\
+\frac{\partial}{\partial x_1} ( f_{n}(\mathbf{w}) \bigcirc g_{n}(\mathbf{x}) ) & \frac{\partial}{\partial x_2} ( f_{n}(\mathbf{w}) \bigcirc g_{n}(\mathbf{x}) ) & \ldots & \frac{\partial}{\partial x_n} ( f_{n}(\mathbf{w}) \bigcirc g_{n}(\mathbf{x}) )\\
 \end{bmatrix}
 $
 
 That's quite a furball, but the Jacobian is very commonly a diagonal matrix, a matrix that is zero everywhere but the diagonal. 
 
-If $f_i(\mathbf{x})$ and $g_i(\mathbf{x})$ are purely functions of at most $x_i$, and no other elements of vector $\mathbf{x}$, we can reduce $f_i(\mathbf{x}) \bigcirc g_i(\mathbf{x})$ to $f_i(x_i) \bigcirc g_i(x_i)$. This is technically an abuse of our notation because $f_i$ and $g_i$ are functions of vectors not individual elements. We should really write something like $\hat f_{i}(x_i) = f_{i}(\mathbf{x})$, but that would muddy the equations further (and programmers are comfortable overloading functions) so we'll proceed with the notation anyway.
+If $f_i(\mathbf{w})$ and $g_i(\mathbf{x})$ are purely functions of at most $w_i$ and $x_i$, respectively, and no other elements of vector $\mathbf{w}$ or $\mathbf{x}$, we can reduce $f_i(\mathbf{w}) \bigcirc g_i(\mathbf{x})$ to $f_i(w_i) \bigcirc g_i(x_i)$. This is technically an abuse of our notation because $f_i$ and $g_i$ are functions of vectors not individual elements. We should really write something like $\hat f_{i}(w_i) = f_{i}(\mathbf{w})$, but that would muddy the equations further (and programmers are comfortable overloading functions) so we'll proceed with the notation anyway.
 
-With the constraint that $f_i(\mathbf{x})$ and $g_i(\mathbf{x})$ can only access $x_i$, the elements along the diagonal of the Jacobian are $\frac{\partial}{\partial x_i} ( f_i(x_i) \bigcirc g_i(x_i) )$:
+With the constraint that $f_i(\mathbf{w})$ and $g_i(\mathbf{x})$ can only access $w_i$ and $x_i$, the elements along the diagonal of the Jacobian are $\frac{\partial}{\partial x_i} ( f_i(w_i) \bigcirc g_i(x_i) )$:
 
 $
-\frac{\partial \mathbf{y}}{\partial \mathbf{x}}  = \begin{bmatrix}
-\frac{\partial}{\partial x_1} ( f_{1}(x_1) \bigcirc g_{1}(x_1) )\\
-& \frac{\partial}{\partial x_2} (f_{2}(x_2) \bigcirc g_{2}(x_2) ) & &\text{\huge0}\\
+\frac{\partial \mathbf{y}}{\partial \mathbf{w}}  = \begin{bmatrix}
+\frac{\partial}{\partial w_1} ( f_{1}(w_1) \bigcirc g_{1}(x_1) )\\
+& \frac{\partial}{\partial w_2} (f_{2}(w_2) \bigcirc g_{2}(x_2) ) & &\text{\huge0}\\
 & & \ldots \\
-\text{\huge0}& & & \frac{\partial}{\partial x_n} (f_{n}(x_n) \bigcirc g_{n}(x_n) )
+\text{\huge0}& & & \frac{\partial}{\partial w_n} (f_{n}(w_n) \bigcirc g_{n}(x_n) )
 \end{bmatrix}
 $
 
 Or more succinctly,
 
-$\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = diag \left( \frac{\partial}{\partial x_1}(f_{1}(x_1) \bigcirc g_{1}(x_1)),~ \frac{\partial}{\partial x_2}(f_{2}(x_2) \bigcirc g_{2}(x_2)),~ \ldots,~ \frac{\partial}{\partial x_n}(f_{n}(x_n) \bigcirc g_{n}(x_n)) \right)$. 
+$\frac{\partial \mathbf{y}}{\partial \mathbf{w}} = diag \left( \frac{\partial}{\partial w_1}(f_{1}(w_1) \bigcirc g_{1}(x_1)),~ \frac{\partial}{\partial w_2}(f_{2}(w_2) \bigcirc g_{2}(x_2)),~ \ldots,~ \frac{\partial}{\partial w_n}(f_{n}(w_n) \bigcirc g_{n}(x_n)) \right)$
 
-We know that all off-diagonal entries are 0 because $\frac{\partial}{\partial x_j} ( f_i(x_i) \bigcirc g_i(x_i) ) = 0$ for $j \neq i$. When $j \neq i$, $f_i(x_i) \bigcirc g_i(x_i)$ looks like a constant to the partial derivative operator $\frac{\partial}{\partial x_j}$, and the derivative of any constant is 0.
+and
 
-Because we do lots of simple vector arithmetic, the general function $\mathbf{f(x)}$ is often just the vector $\mathbf{x}$.  Any time the general function is a vector, we know that $f_i(\mathbf{x})$ reduces to $f_i(x_i) = x_i$. For example, vector addition $\mathbf{w + x}$ fits our general case as $\mathbf{f(w)} + \mathbf{g(x)}$ with scalar equations $y_i = f_i(\mathbf{w}) + g_i(\mathbf{x})$. But, that reduces to just $y_i = f_i(w_i) + g_i(x_i) = w_i + x_i$ and so we get partial derivative:
+$\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = diag \left( \frac{\partial}{\partial x_1}(f_{1}(w_1) \bigcirc g_{1}(x_1)),~ \frac{\partial}{\partial x_2}(f_{2}(w_2) \bigcirc g_{2}(x_2)),~ \ldots,~ \frac{\partial}{\partial x_n}(f_{n}(w_n) \bigcirc g_{n}(x_n)) \right)$
 
-$\frac{\partial}{\partial x_i} ( f_{i}(w_i) + g_{i}(x_i) ) = \frac{\partial}{\partial x_i}(w_i + x_i) = 1 + 0 = 1$
+where $diag(\mathbf{x})$ constructs a matrix whose diagonal elements are taken from vector $\mathbf{x}$: $diag(\mathbf{x}) = \mathbf{x}^T I$.
 
-That gives us $\frac{\partial (\mathbf{w+x})}{\partial \mathbf{w}} = I$, the identity matrix, because every element along the diagonal is 1.  Similarly, $\frac{\partial (\mathbf{w+x})}{\partial \mathbf{x}} = I$.
+We know that all off-diagonal entries are 0 because for $j \neq i$:
 
-Given the simplicity of this special case, $f_i(\mathbf{x})$ reducing to $f_i(x_i)$, we can easily write out the Jacobian's for the common element-wise binary operations on vectors:
+$\frac{\partial}{\partial w_j} ( f_i(w_i) \bigcirc g_i(x_i) ) = \frac{\partial}{\partial x_j} ( f_i(w_i) \bigcirc g_i(x_i) ) = 0$
+
+When $j \neq i$, $f_i(w_i) \bigcirc g_i(x_i)$ looks like a constant to the partial derivative operators $\frac{\partial}{\partial w_j}$ and $\frac{\partial}{\partial x_j}$, and the derivative of any constant is 0.
+
+Because we do lots of simple vector arithmetic, the general function $\mathbf{f(w)}$ is often just the vector $\mathbf{w}$.  Any time the general function is a vector, we know that $f_i(\mathbf{w})$ reduces to $f_i(w_i) = w_i$. For example, vector addition $\mathbf{w + x}$ fits our general case as $\mathbf{f(w)} + \mathbf{g(x)}$ with scalar equations $y_i = f_i(\mathbf{w}) + g_i(\mathbf{x})$. But, that reduces to just $y_i = f_i(w_i) + g_i(x_i) = w_i + x_i$ and so we get partial derivatives:
+
+$\frac{\partial}{\partial w_i} ( f_{i}(w_i) + g_{i}(x_i) ) = \frac{\partial}{\partial w_i}(w_i + x_i) = 1 + 0 = 1$\\
+$\frac{\partial}{\partial x_i} ( f_{i}(w_i) + g_{i}(x_i) ) = \frac{\partial}{\partial x_i}(w_i + x_i) = 0 + 1 = 1$
+
+
+That gives us $\frac{\partial (\mathbf{w+x})}{\partial \mathbf{w}} = \frac{\partial (\mathbf{w+x})}{\partial \mathbf{x}} = I$, the identity matrix, because every element along the diagonal is 1.
+
+Given the simplicity of this special case, $f_i(\mathbf{w})$ reducing to $f_i(w_i)$, we can easily write out the Jacobian's for the common element-wise binary operations on vectors:
 
 $
 \begin{array}{lllll}
@@ -253,42 +279,42 @@ $
 \end{array}
 $
 
+The $\otimes$ and $\oslash$ operators are element-wise multiplication and division; $\otimes$ is sometimes called the {\em Hadamard product}.
+
 \subsection{Derivatives involving scalar expansion}
 
-When we add or multiply scalars to vectors, we are implicitly expanding the scalar to a vector and then performing an element-wise operation. For example, vector-scalar addition 
-$\mathbf{y} = \mathbf{x} + c$
+When we add or multiply scalars to vectors, we are implicitly expanding the scalar to a vector and then performing an element-wise operation. For example, adding scalar $z$  to vector $\mathbf{x}$, $\mathbf{y} = \mathbf{x} + z$,
 is really
-$\mathbf{y} = \mathbf{f(x)} + \mathbf{g}(c)$ where $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(c) = \vec{1} \times c$.
-Similarly, vector-scalar multiplication
-$\mathbf{y} = \mathbf{x} \times c$
+$\mathbf{y} = \mathbf{f(x)} + \mathbf{g}(z)$ where $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(z) = \vec{1} z$.  It's okay to think of variable $z$ as a constant for our discussion here, but $z$ is more generally a scalar that doesn't depend on any other variables.
+Similarly, multiplying by a scalar, $\mathbf{y} = \mathbf{x} z$,
 is really
-$\mathbf{y} = \mathbf{f(x)} \otimes \mathbf{g}(c)$.
+$\mathbf{y} = \mathbf{f(x)} \otimes \mathbf{g}(z)$.
 
-The partial derivative of vector-scalar addition and multiplication with respect to vector $\mathbf{x}$  fall out from our element-wise rule, $\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = diag \left( \ldots \frac{\partial}{\partial x_i} ( f_i(x_i) \bigcirc g_i(c) ) \ldots \right)$, since we've identified $f_i(x_i) = x_i$ and $g_i(c) = c$. Note that functions $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(c) = \vec{1} \times c$ clearly satisfy our constraint for the special case of diagonal Jacobian (that $f_i(\mathbf{x})$ refer at most to $x_i$ and $g_i(c)$ refers to the $i^{th}$ value of the $\vec{1}$ vector). 
+The partial derivative of vector-scalar addition and multiplication with respect to vector $\mathbf{x}$ fall out from our element-wise rule, $\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = diag \left( \ldots \frac{\partial}{\partial x_i} ( f_i(x_i) \bigcirc g_i(z) ) \ldots \right)$, since we've identified $f_i(x_i) = x_i$ and $g_i(z) = z$ where $z$ doesn't depend on $\mathbf{x}$ or any other variable. Note that functions $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(z) = \vec{1} z$ clearly satisfy our constraint for the special case of diagonal Jacobian (that $f_i(\mathbf{x})$ refer at most to $x_i$ and $g_i(z)$ refers to the $i^{th}$ value of the $\vec{1}z$ vector). 
 
 Using the usual rules for scalar partial derivatives, we arrive at the following diagonal elements of the Jacobian for vector-scalar addition:
  
-$\frac{\partial}{\partial x_i} ( f_i(x_i) + g_i(c) ) = \frac{\partial (x_i + c)}{\partial x_i} = \frac{\partial x_i}{\partial x_i} + \frac{\partial c}{\partial x_i} = 1 + 0 = 1$
+$\frac{\partial}{\partial x_i} ( f_i(x_i) + g_i(z) ) = \frac{\partial (x_i + z)}{\partial x_i} = \frac{\partial x_i}{\partial x_i} + \frac{\partial z}{\partial x_i} = 1 + 0 = 1$
 
-So, $\frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} + c ) = diag(\vec{1}) = I$.
+So, $\frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} + z ) = diag(\vec{1}) = I$.
 
-Computing the partial derivative with respect to the single-valued parameter $c$, however, results in a vertical vector not a diagonal matrix whose elements are:
+Computing the partial derivative with respect to the single-valued parameter $z$, however, results in a vertical vector not a diagonal matrix whose elements are:
  
-$\frac{\partial}{\partial c} ( f_i(x_i) + g_i(c) ) = \frac{\partial (x_i + c)}{\partial c} = \frac{\partial x_i}{\partial c} + \frac{\partial c}{\partial c} = 0 + 1 = 1$
+$\frac{\partial}{\partial z} ( f_i(x_i) + g_i(z) ) = \frac{\partial (x_i + z)}{\partial z} = \frac{\partial x_i}{\partial z} + \frac{\partial z}{\partial z} = 0 + 1 = 1$
 
-Therefore, $\frac{\partial}{\partial c} ( \mathbf{x} + c ) = \vec{1}$.
+Therefore, $\frac{\partial}{\partial z} ( \mathbf{x} + z ) = \vec{1}$.
 
 The diagonal elements of the Jacobian for vector-scalar multiplication involve the product rule for scalar derivatives:
 
-$\frac{\partial}{\partial x_i} ( f_i(x_i) \otimes g_i(c) ) = x_i \times \frac{\partial c}{\partial x_i} + c \times \frac{\partial x_i}{\partial x_i} = 0 + c = c$
+$\frac{\partial}{\partial x_i} ( f_i(x_i) \otimes g_i(z) ) = x_i  \frac{\partial z}{\partial x_i} + z  \frac{\partial x_i}{\partial x_i} = 0 + z = z$
 
-So, $\frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} \times c ) = diag(\vec{1} \times c) = I \times c$. 
+So, $\frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} z ) = diag(\vec{1}  z) = I z$. 
 
-The partial derivative with respect to single-valued parameter $c$ is a vertical vector whose elements are:
+The partial derivative with respect to single-valued parameter $z$ is a vertical vector whose elements are:
 
-$\frac{\partial}{\partial c} ( f_i(x_i) \otimes g_i(c) ) = x_i \times \frac{\partial c}{\partial c} + c \times \frac{\partial x_i}{\partial c} = x_i + 0 = x_i$
+$\frac{\partial}{\partial z} ( f_i(x_i) \otimes g_i(z) ) = x_i \frac{\partial z}{\partial z} + z \frac{\partial x_i}{\partial z} = x_i + 0 = x_i$
 
-This gives us $\frac{\partial}{\partial c} ( \mathbf{x} \times c ) = \mathbf{x}$.
+This gives us $\frac{\partial}{\partial z} ( \mathbf{x}s z ) = \mathbf{x}$.
 
 \subsection{Vector sum}
 
@@ -316,22 +342,22 @@ $\nabla y = \begin{bmatrix} \frac{\partial x_1}{\partial x_1},~ \frac{\partial x
 
 Notice that the result is a horizontal vector full of 1s, not a vertical vector, and so the gradient is $\vec{1}^T$. It's very important to keep the shape of all of your vectors and matrices in order otherwise it's impossible to compute the derivatives of complex functions.
 
-As another example, let's sum a vector-scalar multiplication.  If $y = sum(\mathbf{x} \times c)$ then $f_i(\mathbf{x},c) = x_i \times c$. The gradient is:
+As another example, let's sum the result of multiplying a vector by a constant scalar.  If $y = sum(\mathbf{x} z)$ then $f_i(\mathbf{x},z) = x_i z$. The gradient is:
 
 $
 \begin{array}{lcl}
-\frac{\partial y}{\partial \mathbf{x}} & = & \begin{bmatrix} \Sigma_i \frac{\partial}{\partial x_1} x_i c,~ \Sigma_i \frac{\partial }{\partial x_2} x_i c,~ \ldots,~ \Sigma_i \frac{\partial}{\partial x_n} x_i c  \end{bmatrix}\\\\
- & = & \begin{bmatrix} \frac{\partial}{\partial x_1} x_1 c,~ \frac{\partial }{\partial x_2} x_2 c,~ \ldots,~ \frac{\partial}{\partial x_n} x_n c  \end{bmatrix}\\\\
- & = & \begin{bmatrix} c, c, \ldots, c \end{bmatrix}\\\\
+\frac{\partial y}{\partial \mathbf{x}} & = & \begin{bmatrix} \Sigma_i \frac{\partial}{\partial x_1} x_i z,~ \Sigma_i \frac{\partial }{\partial x_2} x_i z,~ \ldots,~ \Sigma_i \frac{\partial}{\partial x_n} x_i z  \end{bmatrix}\\\\
+ & = & \begin{bmatrix} \frac{\partial}{\partial x_1} x_1 z,~ \frac{\partial }{\partial x_2} x_2 z,~ \ldots,~ \frac{\partial}{\partial x_n} x_n z  \end{bmatrix}\\\\
+ & = & \begin{bmatrix} z, z, \ldots, z \end{bmatrix}\\\\
 \end{array}
 $
 
-The derivative with respect to scalar variable $c$ is $1 \times 1$:
+The derivative with respect to scalar variable $z$ is $1 \times 1$:
 
 $
 \begin{array}{lcl}
-\frac{\partial y}{\partial c} & = & \frac{\partial}{\partial c} \Sigma_{i=1}^n (x_i+c)\\\\
-& = & \Sigma_i \frac{\partial}{\partial c} (x_i+c)\\\\
+\frac{\partial y}{\partial z} & = & \frac{\partial}{\partial z} \Sigma_{i=1}^n (x_i+z)\\\\
+& = & \Sigma_i \frac{\partial}{\partial z} (x_i+z)\\\\
 & = & \Sigma_i (0 + 1)\\\\
 & = & n
 \end{array}
@@ -343,7 +369,7 @@ We can't compute partial derivatives of very complicated functions using just th
 
 In general, the chain rule is defined in terms of expressions that can be written as $y = f(g(x))$. (You will also see the chain rule defined using function composition $(f \circ g)(x)$ which is the same thing.)  Some sources write the derivative using shorthand notation $f'(g(x))g'(x)$, but that hides the fact that we are performing a variable substitution: $u = g(x)$. It's better to define the chain rule explicitly via the following so we never take the derivative with respect to the wrong variable.
 
-$\frac{dy}{dx} = \frac{dy}{du} \times \frac{du}{dx}$.
+$\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$.
 
 In this case, we split $sin(x^2)$ into two functions:
 
@@ -357,13 +383,13 @@ $\frac{dy}{du} = \frac{d}{du} sin(u) = cos(u)$
 
 Now, we just have to combine the derivatives using the chain rule, which means multiplying the two derivatives together:
 
-$\frac{dy}{dx} = \frac{dy}{du} \times \frac{du}{dx} = cos(u) \times 2x$
+$\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx} = cos(u) 2x$
 
 then substituting the intermediate variable back in
 
-$\frac{dy}{dx} = cos(x^2) \times 2x = 2xcos(x^2)$
+$\frac{dy}{dx} = cos(x^2) 2x = 2xcos(x^2)$
 
-You can think of the chain rule in terms of units canceling. If we let $y$ be gallons of gas, $x$ be the gallons in a gas tank, and $u$ as miles we can interpret $\frac{dy}{dx}$ as $\frac{miles}{tank} = \frac{miles}{gallon} \times \frac{gallon}{tank}$. The $gallon$ denominator and numerator cancel. This is a convenient way to remember the chain rule but the analogy only goes so far; don't treat $dy$ and $dx$ has separate variables since they are two components in the name of a single operator.
+You can think of the chain rule in terms of units canceling. If we let $y$ be gallons of gas, $x$ be the gallons in a gas tank, and $u$ as miles we can interpret $\frac{dy}{dx}$ as $\frac{miles}{tank} = \frac{miles}{gallon} \frac{gallon}{tank}$. The $gallon$ denominator and numerator cancel. This is a convenient way to remember the chain rule but the analogy only goes so far; don't treat $dy$ and $dx$ has separate variables since they are two components in the name of a single operator.
 
 When there is only one variable substitution, it's straightforward to directly write the derivative down without explicitly creating and substituting a temporary variable. With deeply nested expressions, however, it's easy to get lost and it's better to carefully track all of the intermediate variables.
 
@@ -389,19 +415,19 @@ $
 
 Using the chain rule for 4 intermediate variables,
 
-$\frac{dy}{dx} = \frac{dy}{r_4} \times \frac{d r_4}{r_3} \times \frac{dr_3}{d r_2} \times \frac{dr_2}{dr_1} \times \frac{dr_1}{dx}$
+$\frac{dy}{dx} = \frac{dy}{r_4} \frac{d r_4}{r_3} \frac{dr_3}{d r_2} \frac{dr_2}{dr_1} \frac{dr_1}{dx}$
 
 we get
 
-$\frac{dy}{dx} = 1 \times \frac{1}{r_3} \times 2r_2 \times cos(r_1) \times 3x^2 = \frac{6r_2x^2cos(r_1)}{r_3}$
+$\frac{dy}{dx} = 1  \frac{1}{r_3}  2r_2  cos(r_1)  3x^2 = \frac{6r_2x^2cos(r_1)}{r_3}$
 
 Substituting the intermediate variables back in, gives us:
 
 $\frac{dy}{dx} = \frac{6sin(r_1)x^2cos(x^3)}{r_2^2} = \frac{6sin(x^3)x^2cos(x^3)}{sin(r_1)^2} = \frac{6sin(x^3)x^2cos(x^3)}{sin(x^3)^2} = \frac{6x^2cos(x^3)}{sin(x^3)}$
 
-Ok, so much for the scalar chain rule. It turns out that the chain rule also works for computing partial derivatives of vector functions with respect to vectors.  Previously, we manually computed the derivative with respect to $\mathbf{x}$ of $y = sum(\mathbf{x} \times c)$ as $[c, c, \ldots, c]$, but we can also use the chain rule. Let vector $\mathbf{u} = \mathbf{x} \times c$ then $y = sum(\mathbf{u})$. The vector chain rule tells us that $\frac{dy}{d\mathbf{x}} = \frac{dy}{d\mathbf{u}} \times \frac{d\mathbf{u}}{d\mathbf{x}}$, which means 
+Ok, so much for the scalar chain rule. It turns out that the chain rule also works for computing partial derivatives of vector functions with respect to vectors.  Previously, we manually computed the derivative with respect to $\mathbf{x}$ of $y = sum(\mathbf{x}  z)$ as $[z, z, \ldots, z]$, but we can also use the chain rule. Let vector $\mathbf{u} = \mathbf{x}  z$ then $y = sum(\mathbf{u})$. The vector chain rule tells us that $\frac{dy}{d\mathbf{x}} = \frac{dy}{d\mathbf{u}}  \frac{d\mathbf{u}}{d\mathbf{x}}$, which means 
 
-$\frac{dy}{d\mathbf{x}} = \vec{1}^T \times \frac{d}{d\mathbf{x}} (\mathbf{x} \times c) = \vec{1}^T \times diag(\vec{1}c) = \vec{1}^T \times I \times c = \vec{1}^T \times c = [c, c, \ldots, c]$
+$\frac{dy}{d\mathbf{x}} = \vec{1}^T  \frac{d}{d\mathbf{x}} (\mathbf{x}  z) = \vec{1}^T  diag(\vec{1}z) = \vec{1}^T  I  z = \vec{1}^T  z = [z, z, \ldots, z]$
 
 \subsection{Derivatives of vector dot product}
 
