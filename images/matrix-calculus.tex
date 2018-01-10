@@ -28,37 +28,47 @@
 
 \section{Introduction}
 
-\cut{
-three-dimensional coordinates in room yielding a temperature. then can yield temperature and noise or humidity or light.  Sheldon Cooper: you're in my spot.
+Most of us last saw calculus in school, but function derivatives are a critical part of machine learning, particularly deep learning neural networks where we optimize loss functions to train models. Pick up a machine learning paper or the documentation of a library such as PyTorch and calculus comes screeching back into your life like distant relatives around the holidays.  And it's not just any old scalar differential calculus that pops up---we need {\em matrix calculus}. 
 
-$\Delta x$ gives what $\Delta y$? rise/run to determine derivative.
+For example, the output function of an artificial neuron (with rectified linear activation function) is typically described using a dot product  (from linear algebra) of an edge weight vector $\mathbf{w}$ with an input vector $\mathbf{x}$ plus a scalar bias (threshold): $output(\mathbf{x}) = max(0, \Sigma_i^n w_i x_i + b) = max(0, \mathbf{w} \cdot \mathbf{x} + b)$. Visually that neuron looks like:
 
-neural net equation. optimizing it and calculus comes lurching back into your life like distant relatives around the holidays.
+\begin{center}
+	\includegraphics[scale=.9]{neuron.png}
+\end{center}
 
- lots of good cheat sheets like https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf and slides like https://www.comp.nus.edu.sg/~cs5240/lecture/matrix-differentiation.pdf
- 
-given any particular formula, you can reduce it to its scalar form and use the typical scalar derivative to come up with the formula. That can be tedious and error-prone. It's better to learn the matrix/vector derivatives and apply transformations to get the derivative.
-}
+Training this neuron means choosing weights $\mathbf{w}$ and bias $b$ so that we get the desired output for all inputs $\mathbf{x}$.  To do that, we minimize a {\em loss function} that compares $output({\mathbf{x}})$ with the desired output for all input $\mathbf{x}$ vectors. To minimize the loss function, we use some variation on gradient  descent, which requires the partial derivative (the gradient) of $output({\mathbf{x}})$ with respect to model parameters $\mathbf{w}$ and $b$. Our goal is to gradually tweak $\mathbf{w}$ and $b$ so that the overall loss function keeps getting smaller across all $\mathbf{x}$ inputs.
+
+If we're careful, we can derive the gradient by differentiating the scalar version of a common loss function (mean squared error), $\frac{1}{n} \Sigma_{\mathbf{x}} ||desiredoutput(\mathbf{x}) - output(\mathbf{x})||_2^2 = \frac{1}{n} \Sigma_{\mathbf{x}} ||desiredoutput(\mathbf{x}) - max(0, \Sigma_i^n w_i x_i + b)||_2^2$. But this is just one neuron and full networks must train the weights and biases of all neurons simultaneously. We really need general rules for the derivative of a function with respect to a vector and even rules for the derivative of a vector-valued function with respect to a vector.
+
+This article walks through the derivation of some important rules for computing partial derivatives with respect to vectors, particularly those useful for training neural networks. There are lots of useful resources on the net, such as https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf and  https://www.comp.nus.edu.sg/~cs5240/lecture/matrix-differentiation.pdf but they mainly provide results. In contrast, we're going to rederive and ``rediscover'' some key matrix calculus rules in an effort to explain them.
 
 \section{Review: Scalar derivative rules}
 
+It's probably a good idea to summarize the main scalar derivative rules just so we have everything in one place.
+
 $
 \begin{array}{lcc}
-Rule & \text{Scalar function } f(x) & \text{Scalar derivative with respect to } x\\
+Rule & \text{Scalar function } f(x) & \text{Scalar derivative of $f(x)$ with respect to } x\\
 \hline
-\text{Multiplication by constant} &	cf(x)	&cf'(x)\\
+\vspace{1mm}
+\text{Multiplication by constant} &	cf	&c \frac{df}{dx}\\
+\vspace{1mm}
 \text{Power Rule}	& x^n	& nx^{n-1}\\
-\text{Sum Rule}	& f + g	& f' + g'\\
-\text{Difference Rule}	& f - g	& f' - g'\\
-\text{Product Rule}	& fg & f g' + f' g\\
-\text{Quotient Rule}	& \frac{f}{g} = fg^{-1} & f (g^{-1})' + f' g^{-1}\\
-\text{Chain Rule}	 & f(g(x)) &   f'(g(x))g'(x)\\
+\vspace{1mm}
+\text{Sum Rule}	& f + g	& \frac{df}{dx} + \frac{dg}{dx}\\
+\vspace{1mm}
+\text{Difference Rule}	& f - g	& \frac{df}{dx} - \frac{dg}{dx}\\
+\vspace{1mm}
+\text{Product Rule}	& fg & f \frac{dg}{dx} + \frac{df}{dx} g\\
+\vspace{1mm}
+\text{Quotient Rule}	& \frac{f}{g} = fg^{-1} & f \frac{dg}{dx}^{-1} + \frac{df}{dx} g^{-1}\\
+\text{Chain Rule}	 & f(g(x)) &   \frac{df(g(x))}{dx}\frac{dg(x)}{dx}\\
 \end{array}
 $
 
 When a function has a single parameter, $f(x)$, you'll often see $f'$ and $f'(x)$ used as shorthands for $\frac{d}{dx} f(x)$. We recommend against this notation as it does not make clear the variable we're taking the derivative with respect to.
 
-You can think of $\frac{d}{dx}$ as an operator that maps a function of one parameter to another function. So to take the derivative with respect to $x$ of $cf(x)$, $\frac{d}{dx} cf(x)$, we are really just moving the constant to the left of the operator: $c\frac{d}{dx}x$ or $c\frac{dx}{dx}$, which makes it more clear that the derivative is $c \times 1 = c$.  We are used to this simplification for the usual arithmetic operators. For example, $-2x = 2 \times -x$ where the negation operator is analogous to our derivative operator. We have just moved to the scalar outside of the operation. Thinking of the derivative as an operator is handy when solving complicated derivatives as we can mechanically apply rules of differentiation.
+You can think of $\frac{d}{dx}$ as an operator that maps a function of one parameter to another function. So to take the derivative with respect to $x$ of $cx$, $\frac{d}{dx} cx$, we are really just moving the constant to the left of the operator: $c\frac{d}{dx}x$ or $c\frac{dx}{dx}$, which makes it more clear that the derivative is $c \times 1 = c$.  We are used to this simplification for the usual arithmetic operators. For example, $-2x = 2 \times -x$ where the negation operator is analogous to our derivative operator. We have just moved to the scalar outside of the operation. Thinking of the derivative as an operator is handy when solving complicated derivatives as we can mechanically apply rules of differentiation.
 
 \section{Review: Vector calculus and partial derivatives}
 
@@ -70,13 +80,13 @@ So, partial derivatives use the usual scalar derivative rules while holding all 
 
 To make it clear we are doing vector calculus and not just multivariate calculus, let's consider what we do with the partial derivatives $\frac{\partial f(x,y)}{\partial x}$ and $\frac{\partial f(x,y)}{\partial y}$ we computed for $f(x,y) = 3x^2y$. Currently they're just kind of floating around and not organized in any way so let's organize them into a horizontal vector. We call this vector the {\em gradient} of $f(x,y)$ and write it as:
 
-$\nabla f(x,y)  = [ \frac{\partial f(x,y)}{\partial x}, \frac{\partial f(x,y)}{\partial y}] = [6yx, 3x^2]$
+$\nabla f(x,y)  = [ \frac{\partial f(x,y)}{\partial x} ~\frac{\partial f(x,y)}{\partial y}] = [6yx ~3x^2]$
 
 Vector calculus deals with functions mapping $n$ real parameters to a real scalar, $f : \mathbb{R}^n \rightarrow \mathbb{R}$.  Now, let's get crazy and consider multiple functions simultaneously, $\mathbf{f}: \mathbb{R}^n \rightarrow \mathbb{R}^m$.
 
 \section{Matrix calculus}
 
-Moving from vector calculus to matrix calculus now, let's compute partial derivatives for two functions, both of which take two parameters.  We can keep the same $f(x,y)$ from the last section but let's add $g(x,y) = 2x + y^8$.  The gradient for $g$ has two entries, a partial derivative for each parameter. The partials are:
+Moving from vector calculus to matrix calculus now, let's compute partial derivatives for two functions, both of which take two parameters.  We can keep the same $f(x,y)$ from the last section, but let's add $g(x,y) = 2x + y^8$.  The gradient for $g$ has two entries, a partial derivative for each parameter. The partials are:
 
 $\frac{\partial g(x,y)}{\partial x} = \frac{\partial 2x}{\partial x} + \frac{\partial y^8}{\partial x} = 2\frac{\partial x}{\partial x} + 0 = 2 \times 1 = 1$
 
@@ -116,7 +126,7 @@ $\mathbf{x} = \begin{bmatrix}
            x_n\\
            \end{bmatrix}$
 
-With multiple scalar-valued functions, we can combine them all into a vector just like we did with the parameters. Let $\mathbf{y} = \mathbf{f}(\mathbf{x})$ be a vector of $m$ scalar-valued functions, $f_i : R^n \rightarrow R$ with $n=|\mathbf{x}|$. $\mathbf{y} = \mathbf{f}(\mathbf{x})$ is a set of $m$ equations that are functions of vector $\mathbf{x}$:
+With multiple scalar-valued functions, we can combine them all into a vector just like we did with the parameters. Let $\mathbf{y} = \mathbf{f}(\mathbf{x})$ be a vector of $m$ scalar-valued functions, $\mathbf{f}: \mathbb{R}^n \rightarrow \mathbb{R}^m$ with $n=|\mathbf{x}|$. Each $f_i$ function within $\mathbf{f}$  is a scalar, $f_i : R^n \rightarrow R$ like we had in the previous section:
 
 $
 \begin{array}{lcl}
@@ -127,7 +137,7 @@ y_m & = & f_m(\mathbf{x})\\
 \end{array}
 $
 
-It's very often the case that $m=n$ because we will have a scalar function result for each element of the vector; this is the case for $\mathbf{y} = \mathbf{f}(\mathbf{x})$.
+It's very often the case that $m=n$ because we will have a scalar function result for each element of the vector; this is the case for $\mathbf{y} = \mathbf{x}$, for example.
 
 The Jacobian matrix is the collection of all $m \times n$ possible partial derivatives:
 
@@ -140,11 +150,17 @@ $
 \end{bmatrix}
 $
 
-where each $\frac{\partial}{\partial \mathbf{x}} f_i(\mathbf{x})$ is an $n$-vector because the partial derivative is with respect to a vector, $\mathbf{x}$, whose length is $n = |\mathbf{x}|$.
+where each $\frac{\partial}{\partial \mathbf{x}} f_i(\mathbf{x})$ is an $n$-vector because the partial derivative is with respect to a vector, $\mathbf{x}$, whose length is $n = |\mathbf{x}|$.  The width of the Jacobian is the length of the vector $\mathbf{x}$ if we're taking partial derivative with respect to $\mathbf{x}$.  The Jacobian is always $m$ rows for $n$ equations.  It helps to think about the Jacobian shapes visually:
 
-The width of the Jacobian is the length of the vector $\mathbf{x}$ if we're taking partial derivative with respect to $\mathbf{x}$.  The Jacobian is always $m$ rows for $n$ equations.
-
-todo: Show the shape with boxes.  
+\begin{center}
+\begin{tabular}{c|ccl}
+\parbox[b][40pt][c]{40pt}{Jacobian shape table}  & ~\framebox(25,25){$x$} & \framebox(25,60){$\mathbf{x}$}\\
+\hline
+\\[\dimexpr-\normalbaselineskip+5pt]
+\framebox(25,25){$f$} &~\framebox(25,25){$\frac{\partial f}{\partial {x}}$} & \framebox(60,25){$\frac{\partial f}{\partial {\mathbf{x}}}$}&\\
+\framebox(25,60){$\mathbf{f}$} &~\framebox(25,60){$\frac{\partial \mathbf{f}}{\partial {x}}$} & \framebox(60,60){$\frac{\partial \mathbf{f}}{\partial \mathbf{x}}$}\\
+\end{tabular}
+\end{center}
 
 To represent the trivial equation $\mathbf{y} = \mathbf{x}$, for example, $f_i(\mathbf{x}) = x_i$. In this case, the Jacobian is the identity matrix since $m=n$ (a Jacobian matrix size $m \times n$ where $m = |\mathbf{f}| = n = |\mathbf{x}|$).
 
@@ -167,16 +183,22 @@ $
 \ldots\\
 ~\frac{\partial}{\partial {x_1}} x_m~ \frac{\partial}{\partial {x_2}} x_m ~\ldots~ \frac{\partial}{\partial {x_n}} x_m \\
 \end{bmatrix}\\\\
-& = & \begin{bmatrix}
-           \mathbf{i}_1\\
-           \mathbf{i}_2\\
-           \vdots \\
-           \mathbf{i}_m\\
-           \end{bmatrix} = I
+& & (\text{and since } \frac{\partial}{\partial {x_j}} x_i = 0 \text{ for } j \neq i)\\\\
+ & = & \begin{bmatrix}
+\frac{\partial}{\partial {x_1}} x_1 & 0 & \ldots& 0 \\
+0 & \frac{\partial}{\partial {x_2}} x_2 &\ldots & 0 \\
+& & \ddots\\
+0 & 0 &\ldots& \frac{\partial}{\partial {x_n}} x_m \\
+\end{bmatrix}\\\\
+ & = & \begin{bmatrix}
+1 & 0 & \ldots& 0 \\
+0 &1 &\ldots & 0 \\
+& & \ddots\\
+0 & 0 & &1 \\
+\end{bmatrix}\\\\
+& = & I\\
 \end{array}
 $
-
-where $\mathbf{i}_j$ is a vector with $\mathbf{i}_j=1$ and $\mathbf{i}_k=0$ for $k \neq j$ (vector with all zeros except at $j$, which is 1).
 
 It's very important to track whether a matrix is vertical or horizontal, $\mathbf{x}$ or $\mathbf{x}^T$. Also make sure you pay attention to whether something is a scalar-valued function or a vector valued function. Is it $\mathbf{y} = \ldots$ or $y = \ldots$?
 
@@ -285,12 +307,16 @@ The $\otimes$ and $\oslash$ operators are element-wise multiplication and divisi
 
 When we add or multiply scalars to vectors, we are implicitly expanding the scalar to a vector and then performing an element-wise operation. For example, adding scalar $z$  to vector $\mathbf{x}$, $\mathbf{y} = \mathbf{x} + z$,
 is really
-$\mathbf{y} = \mathbf{f(x)} + \mathbf{g}(z)$ where $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(z) = \vec{1} z$.  It's okay to think of variable $z$ as a constant for our discussion here, but $z$ is more generally a scalar that doesn't depend on any other variables.
+$\mathbf{y} = \mathbf{f(x)} + \mathbf{g}(z)$ where $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(z) = \vec{1} z$.  It's okay to think of variable $z$ as a constant for our discussion here, but $z$ is more generally a scalar that doesn't depend on $\mathbf{x}$. We need this condition so that $\frac{\partial z}{\partial x_i} = 0$ for any $x_i$.
 Similarly, multiplying by a scalar, $\mathbf{y} = \mathbf{x} z$,
 is really
-$\mathbf{y} = \mathbf{f(x)} \otimes \mathbf{g}(z)$.
+$\mathbf{y} = \mathbf{f(x)} \otimes \mathbf{g}(z)$ where $\otimes$ is the element-wise  multiplication (Hadamard product) of the two vectors.
 
-The partial derivative of vector-scalar addition and multiplication with respect to vector $\mathbf{x}$ fall out from our element-wise rule, $\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = diag \left( \ldots \frac{\partial}{\partial x_i} ( f_i(x_i) \bigcirc g_i(z) ) \ldots \right)$, since we've identified $f_i(x_i) = x_i$ and $g_i(z) = z$ where $z$ doesn't depend on $\mathbf{x}$ or any other variable. Note that functions $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(z) = \vec{1} z$ clearly satisfy our constraint for the special case of diagonal Jacobian (that $f_i(\mathbf{x})$ refer at most to $x_i$ and $g_i(z)$ refers to the $i^{th}$ value of the $\vec{1}z$ vector). 
+The partial derivative of vector-scalar addition and multiplication with respect to vector $\mathbf{x}$ fall out from our element-wise rule:
+
+$\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = diag \left( \ldots \frac{\partial}{\partial x_i} ( f_i(x_i) \bigcirc g_i(z) ) \ldots \right)$
+
+since we've identified $f_i(x_i) = x_i$ and $g_i(z) = z$ where $z$ doesn't depend on $\mathbf{x}$. Note that functions $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(z) = \vec{1} z$ clearly satisfy our constraint for the special case of diagonal Jacobian (that $f_i(\mathbf{x})$ refer at most to $x_i$ and $g_i(z)$ refers to the $i^{th}$ value of the $\vec{1}z$ vector where $z$ doesn't depend on $\mathbf{x}$). 
 
 Using the usual rules for scalar partial derivatives, we arrive at the following diagonal elements of the Jacobian for vector-scalar addition:
  
@@ -318,7 +344,7 @@ This gives us $\frac{\partial}{\partial z} ( \mathbf{x}s z ) = \mathbf{x}$.
 
 \subsection{Vector sum}
 
-Summing the elements of a vector is an important operation in and of itself in applications based upon linear algebra, but we can also use it as a way to simplify computing the derivative of vector dot product and other operations that reduce vectors to scalars.
+Summing the elements of a vector is an important operation in and of itself in applications based upon linear algebra, such as the neuron output function, but we can also use it as a way to simplify computing the derivative of vector dot product and other operations that reduce vectors to scalars.
 
 Let $y = sum( \mathbf{f}(\mathbf{x})) = \Sigma_{i=1}^n f_i(\mathbf{x})$ where we have to be careful to leave the parameter as a vector $\mathbf{x}$ because each function $f_i$ could use all values in the vector not just $x_i$. The sum is over the {\bf results} of the function and not the parameter. The gradient ($1 \times n$ Jacobian) of vector summation is:
 
@@ -431,9 +457,9 @@ $\frac{dy}{d\mathbf{x}} = \vec{1}^T  \frac{d}{d\mathbf{x}} (\mathbf{x}  z) = \ve
 
 \subsection{Derivatives of vector dot product}
 
-Now that we've got the chain rule in mind and we can compute the Jacobians for both element-wise binary operations and vector summation, we can define the gradient of the important vector dot product $y = \mathbf{f(x)} \cdot \mathbf{g(x)}$. (Note we use $y$ not $\mathbf{y}$ as the result is a scalar not a vector.) You will find the derivative of dot product defined as $f(\mathbf{x}) \cdot g'(\mathbf{x}) + f'(\mathbf{x}) \cdot g(\mathbf{x})$, but we'll use the chain rule instead to avoid having to memorize yet another rule.
+Now that we've got the chain rule in mind and we can compute the Jacobians for both element-wise binary operations and vector summation, we can define the gradient of the important vector dot product $y = \mathbf{f(w)} \cdot \mathbf{g(x)}$. (Note we use $y$ not $\mathbf{y}$ as the result is a scalar not a vector.) You will find the derivative of dot product defined as $f(\mathbf{x}) \cdot g'(\mathbf{x}) + f'(\mathbf{x}) \cdot g(\mathbf{x})$, but we'll use the chain rule instead to avoid having to memorize yet another rule.
 
-Notice that dot product $\mathbf{w} \cdot \mathbf{x}$ is just the summation of the element-wise multiplication of the elements: $\Sigma_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$. (You might also find it useful to remember the linear algebra notation $\mathbf{w} \cdot \mathbf{x} = \mathbf{w}^{T} \times \mathbf{x}$.)  To use the chain rule, we perform a quick substitution, $\mathbf{u} = \mathbf{w} \otimes \mathbf{x}$ and $y = sum(\mathbf{u})$, and multiply their partial derivatives:
+Notice that dot product $\mathbf{w} \cdot \mathbf{x}$, such as we used in the neuron output function, is just the summation of the element-wise multiplication of the elements: $\Sigma_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$. (You might also find it useful to remember the linear algebra notation $\mathbf{w} \cdot \mathbf{x} = \mathbf{w}^{T} \times \mathbf{x}$.)  To use the chain rule, we perform a quick substitution, $\mathbf{u} = \mathbf{w} \otimes \mathbf{x}$ and $y = sum(\mathbf{u})$, and multiply their partial derivatives:
 
 $\frac{d \mathbf{u}}{d\mathbf{x}} = \frac{d}{d\mathbf{x}} (\mathbf{w} \otimes \mathbf{x}) = diag(\mathbf{w})$\\
 $\frac{dy}{d\mathbf{u}} = \frac{d}{d\mathbf{u}} sum(\mathbf{u}) = \vec{1}^T$
@@ -451,6 +477,60 @@ $\frac{\partial y}{\partial w_j} = \frac{\partial}{\partial w_j} \Sigma_i (w_i x
 Then:
 
 $\frac{\partial y}{\partial \mathbf{w}} = [ x_1, \ldots, x_n ] = \mathbf{x}^T$
+
+Our results match. 
+
+\section{The punchline}
+
+To train a neuron requires that we take the derivative of our loss  or ``cost'' function $C(\mathbf{w},b) = \frac{1}{n} \Sigma_{\mathbf{x}} ||desiredoutput(\mathbf{x}) - output(\mathbf{x})||_2^2$, with respect to the parameters of our model, $\mathbf{w}$ and $b$.  We won't solve that full problem here but we can apply the rules we've learned to compute partial derivatives of the weighted input to the rectified linear activation function, $z = \mathbf{w} \cdot \mathbf{x} + b$. The partial derivatives are:
+
+$\frac{\partial z}{\partial \mathbf{w}} = \frac{\partial \mathbf{w} \cdot \mathbf{x}}{\partial \mathbf{w}} + \frac{\partial b}{\partial \mathbf{w}} = \mathbf{x}^T + \vec{0}^T = \mathbf{x}^T$
+
+and
+
+$\frac{\partial z}{\partial b} = \frac{\partial \mathbf{w} \cdot \mathbf{x}}{\partial b} + \frac{\partial b}{\partial b} = 0 + 1 = 1$
+
+While we're at it, we can easily take the partials of the entire output function:
+ 
+$output({\mathbf{x}}) = max(0, \mathbf{w} \cdot \mathbf{x} + b)$
+
+The $max(0,z)$ function just says to treat all negative $z$ values as 0, so its derivative is 0 for $z \leq 0$ and $dz/dz = 1$ for $z > 0$. Because $output(\mathbf{x})$ is a nested function, we need the chain rule so let's use $z = \mathbf{w} \cdot \mathbf{x} + b$ to get $output(\mathbf{x}) = max(0,z(\mathbf{x}))$. Then,
+
+$\frac{\partial output}{\partial \mathbf{w}} = \frac{\partial output}{\partial z}\frac{\partial z}{\partial \mathbf{w}}$
+
+where
+
+$\frac{\partial}{\partial z} output(\mathbf{x}) = \frac{\partial}{\partial z} max(z(\mathbf{x})) = \begin{cases}
+	0 & z \leq 0\\
+	1 & z > 0\\
+\end{cases}
+$
+
+and, using $\frac{\partial z}{\partial \mathbf{w}} = \mathbf{x}^T$,
+
+$\frac{\partial output}{\partial \mathbf{w}} = \begin{cases}
+	0 & z \leq 0\\
+	\mathbf{x}^T & z > 0\\
+\end{cases}
+$
+
+Substituting $z = \mathbf{w} \cdot \mathbf{x} + b$, we get:
+
+$\frac{\partial output}{\partial \mathbf{w}} = \begin{cases}
+	\vec{0}^T & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
+	\mathbf{x}^T & \mathbf{w} \cdot \mathbf{x} + b > 0\\
+\end{cases}
+$
+
+which matches our intuition. The change in output when $z \leq 0$ is 0 for any $w_i$ change and the change in output is $x_i$ when $z > 0$ for any $w_i$ change. When $z > 0$, it's as if the $max$ function disappears. 
+
+Turning to the partial with respect to $b$ now, we can use our intuition to jump directly to
+
+$\frac{\partial output}{\partial b} = \begin{cases}
+	0 & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
+	\frac{\partial output}{\partial b} = 1 & \mathbf{w} \cdot \mathbf{x} + b > 0\\
+\end{cases}
+$
 
 \section{Acknowledgements}
 
