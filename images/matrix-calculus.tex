@@ -248,7 +248,7 @@ That's quite a furball, but the Jacobian is very commonly a diagonal matrix, a m
 
 If $f_i(\mathbf{w})$ and $g_i(\mathbf{x})$ are purely functions of at most $w_i$ and $x_i$, respectively, and no other elements of vector $\mathbf{w}$ or $\mathbf{x}$, we can reduce $f_i(\mathbf{w}) \bigcirc g_i(\mathbf{x})$ to $f_i(w_i) \bigcirc g_i(x_i)$. This is technically an abuse of our notation because $f_i$ and $g_i$ are functions of vectors not individual elements. We should really write something like $\hat f_{i}(w_i) = f_{i}(\mathbf{w})$, but that would muddy the equations further (and programmers are comfortable overloading functions) so we'll proceed with the notation anyway.
 
-With the constraint that $f_i(\mathbf{w})$ and $g_i(\mathbf{x})$ can only access $w_i$ and $x_i$, the elements along the diagonal of the Jacobian are $\frac{\partial}{\partial x_i} ( f_i(w_i) \bigcirc g_i(x_i) )$:
+With the constraint that $f_i(\mathbf{w})$ and $g_i(\mathbf{x})$ can only access $w_i$ and $x_i$, the elements along the diagonal of the Jacobian are $\frac{\partial}{\partial w_i} ( f_i(w_i) \bigcirc g_i(x_i) )$:
 
 $
 \frac{\partial \mathbf{y}}{\partial \mathbf{w}}  = \begin{bmatrix}
@@ -271,7 +271,7 @@ where $diag(\mathbf{x})$ constructs a matrix whose diagonal elements are taken f
 
 We know that all off-diagonal entries are 0 because for $j \neq i$:
 
-$\frac{\partial}{\partial w_j} ( f_i(w_i) \bigcirc g_i(x_i) ) = \frac{\partial}{\partial x_j} ( f_i(w_i) \bigcirc g_i(x_i) ) = 0$
+$\frac{\partial}{\partial w_j} ( f_i(w_i) \bigcirc g_i(x_i) ) = \frac{\partial}{\partial x_j} ( f_i(w_i) \bigcirc g_i(x_i) ) = 0$ for $j \neq i$
 
 When $j \neq i$, $f_i(w_i) \bigcirc g_i(x_i)$ looks like a constant to the partial derivative operators $\frac{\partial}{\partial w_j}$ and $\frac{\partial}{\partial x_j}$, and the derivative of any constant is 0.
 
@@ -482,7 +482,7 @@ Our results match.
 
 \section{The punchline}
 
-To train a neuron requires that we take the derivative of our loss  or ``cost'' function $C(\mathbf{w},b) = \frac{1}{n} \Sigma_{\mathbf{x}} ||desiredoutput(\mathbf{x}) - output(\mathbf{x})||_2^2$, with respect to the parameters of our model, $\mathbf{w}$ and $b$.  We won't solve that full problem here but we can apply the rules we've learned to compute partial derivatives of the weighted input to the rectified linear activation function, $z = \mathbf{w} \cdot \mathbf{x} + b$. The partial derivatives are:
+To train a neuron requires that we take the derivative of our loss  or ``cost'' function $C(\mathbf{w},b) = \frac{1}{n} \Sigma_{\mathbf{x}} ||desiredoutput(\mathbf{x}) - output(\mathbf{x})||_2^2$, with respect to the parameters of our model, $\mathbf{w}$ and $b$.  We won't solve that full problem here, but we can apply the rules we've learned to compute partial derivatives of the weighted input to the rectified linear activation function, $z = \mathbf{w} \cdot \mathbf{x} + b$. The partial derivatives are:
 
 $\frac{\partial z}{\partial \mathbf{w}} = \frac{\partial \mathbf{w} \cdot \mathbf{x}}{\partial \mathbf{w}} + \frac{\partial b}{\partial \mathbf{w}} = \mathbf{x}^T + \vec{0}^T = \mathbf{x}^T$
 
@@ -490,7 +490,7 @@ and
 
 $\frac{\partial z}{\partial b} = \frac{\partial \mathbf{w} \cdot \mathbf{x}}{\partial b} + \frac{\partial b}{\partial b} = 0 + 1 = 1$
 
-While we're at it, we can easily take the partials of the entire output function:
+While we're at it, we can easily take the partials of the activation function output:
  
 $output({\mathbf{x}}) = max(0, \mathbf{w} \cdot \mathbf{x} + b)$
 
