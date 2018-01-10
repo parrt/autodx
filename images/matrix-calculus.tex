@@ -21,72 +21,88 @@
 
 \newcommand{\cut}[1]{}
 
-\title{Matrix Calculus Jumpstart}
+\title{The Matrix Calculus You Need For Deep Learning}
 \author{Terence Parr and Jeremy Howard}
 \begin{document}
 \maketitle
 
 \section{Introduction}
 
-Most of us last saw calculus in school, but function derivatives are a critical part of machine learning, particularly deep learning neural networks where we optimize loss functions to train models. Pick up a machine learning paper or the documentation of a library such as PyTorch and calculus comes screeching back into your life like distant relatives around the holidays.  And it's not just any old scalar differential calculus that pops up---we need {\em matrix calculus}. 
+Most of us last saw calculus in school, but derivatives are a critical part of machine learning, particularly deep neural networks, which are trained by optimizing a loss function. Pick up a machine learning paper or the documentation of a library such as [PyTorch](link) and calculus comes screeching back into your life like distant relatives around the holidays.  And it's not just any old scalar calculus that pops up---we need differential {\em matrix calculus}. 
 
-For example, the output function of an artificial neuron (with rectified linear activation function) is typically described using a dot product  (from linear algebra) of an edge weight vector $\mathbf{w}$ with an input vector $\mathbf{x}$ plus a scalar bias (threshold): $output(\mathbf{x}) = max(0, \Sigma_i^n w_i x_i + b) = max(0, \mathbf{w} \cdot \mathbf{x} + b)$. Visually that neuron looks like:
+For example, the activation of a single computation unit in a neural network is typically calculated using the dot product (from linear algebra) of an edge weight vector $\mathbf{w}$ with an input vector $\mathbf{x}$ plus a scalar bias (threshold): $z(\mathbf{x}) = \Sigma_i^n w_i x_i + b = \mathbf{w} \cdot \mathbf{x} + b$. Function $z(\mathbf{x})$ is called the unit's {\em affine function} and is followed by a [rectified linear unit](link), which clips negative values to zero: $max(0, z(\mathbf{x}))$. Such a computational unit is sometimes referred to as an ``artificial neuron'' and looks like:
 
 \begin{center}
 	\includegraphics[scale=.9]{neuron.png}
 \end{center}
 
-Training this neuron means choosing weights $\mathbf{w}$ and bias $b$ so that we get the desired output for all inputs $\mathbf{x}$.  To do that, we minimize a {\em loss function} that compares $output({\mathbf{x}})$ with the desired output for all input $\mathbf{x}$ vectors. To minimize the loss function, we use some variation on gradient  descent, which requires the partial derivative (the gradient) of $output({\mathbf{x}})$ with respect to model parameters $\mathbf{w}$ and $b$. Our goal is to gradually tweak $\mathbf{w}$ and $b$ so that the overall loss function keeps getting smaller across all $\mathbf{x}$ inputs.
+Neural networks consist of many of these units, organized into layers of neurons. The activation of one layer's units become the input to the next layer's units. The activation of the unit in the final layer are called the network output.
 
-If we're careful, we can derive the gradient by differentiating the scalar version of a common loss function (mean squared error), $\frac{1}{n} \Sigma_{\mathbf{x}} ||desiredoutput(\mathbf{x}) - output(\mathbf{x})||_2^2 = \frac{1}{n} \Sigma_{\mathbf{x}} ||desiredoutput(\mathbf{x}) - max(0, \Sigma_i^n w_i x_i + b)||_2^2$. But this is just one neuron and full networks must train the weights and biases of all neurons simultaneously. We really need general rules for the derivative of a function with respect to a vector and even rules for the derivative of a vector-valued function with respect to a vector.
+{\em Training} this neuron means choosing weights $\mathbf{w}$ and bias $b$ so that we get the desired output for all inputs $\mathbf{x}$.  To do that, we minimize a {\em loss function} that compares the network's final $activation({\mathbf{x}})$ with the $target(\mathbf{x})$ (desired output of $\mathbf{x}$) for all input $\mathbf{x}$ vectors. To minimize the loss, we use some variation on gradient descent, such as plain [stochastic gradient descent](link) (SGD), SGD with momentum, [Adam](link).   All of those require the partial derivative (the gradient) of $activation({\mathbf{x}})$ with respect to the model parameters $\mathbf{w}$ and $b$. Our goal is to gradually tweak $\mathbf{w}$ and $b$ so that the overall loss function keeps getting smaller across all $\mathbf{x}$ inputs.
 
-This article walks through the derivation of some important rules for computing partial derivatives with respect to vectors, particularly those useful for training neural networks. There are lots of useful resources on the net, such as https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf and  https://www.comp.nus.edu.sg/~cs5240/lecture/matrix-differentiation.pdf but they mainly provide results. In contrast, we're going to rederive and ``rediscover'' some key matrix calculus rules in an effort to explain them.
+If we're careful, we can derive the gradient by differentiating the scalar version of a common loss function (mean squared error):
+
+$\frac{1}{n} \Sigma_{\mathbf{x}} ||target(\mathbf{x}) - activation(\mathbf{x})||_2^2 = \frac{1}{n} \Sigma_{\mathbf{x}} ||target(\mathbf{x}) - max(0, \Sigma_i^n w_i x_i + b)||_2^2$
+
+But this is just one neuron, and neural networks must train the weights and biases of all neurons in all layers simultaneously.  The really cool part about partial derivatives is that they let us optimize all of these network parameters at once.  Because there are multiple inputs and multiple possible network outputs, we really need general rules for the derivative of a function with respect to a vector and even rules for the derivative of a vector-valued function with respect to a vector.
+
+This article walks through the derivation of some important rules for computing partial derivatives with respect to vectors, particularly those useful for training neural networks. This field is known as {\em matrix calculus}, and the good news is, that we only need a small subset of that field, which we introduce here. We haven't found any other online introductory material of the subset of matrix calculus needed for machine learning and neural networks. While there are lots of useful resources on the net, such as https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf and  https://www.comp.nus.edu.sg/~cs5240/lecture/matrix-differentiation.pdf, they are really just lists of rules, with minimal explanation. In contrast, we're going to rederive and rediscover some key matrix calculus rules in an effort to explain them. It turns out that matrix calculus is really not that hard! There aren't dozens of new rules to learn; just a couple of key concepts.  That said, our intended audience already has many of these pieces in place mentally; it's more of a core dump than a complete textbook. Our hope is that it will get you started quickly in the world of matrix calculus.
 
 \section{Review: Scalar derivative rules}
 
-It's probably a good idea to summarize the main scalar derivative rules just so we have everything in one place.
+Hopefully you remember some of these main scalar derivative rules. If your memory is a bit fuzzy on this, have a look at [khan vid](https://www.khanacademy.org/math/multivariable-calculus/multivariable-derivatives/differentiating-vector-valued-functions/a/multivariable-chain-rule-simple-version).
 
 $
-\begin{array}{lcc}
-Rule & \text{Scalar function } f(x) & \text{Scalar derivative of $f(x)$ with respect to } x\\
+\begin{array}{lccc}
+Rule & f(x) & \text{\parbox[t][0mm][b]{43mm}{Scalar derivative notation with respect to $x$}} & \text{Example}\\
+\\[\dimexpr-\normalbaselineskip+2pt]
 \hline
+\\[\dimexpr-\normalbaselineskip+5pt]
 \vspace{1mm}
-\text{Multiplication by constant} &	cf	&c \frac{df}{dx}\\
+\text{Constant} & c & 0 &  \frac{d}{dx}99 = 0\\
 \vspace{1mm}
-\text{Power Rule}	& x^n	& nx^{n-1}\\
+\text{Multiplication by constant} &	cf	&c \frac{df}{dx} & \frac{d}{dx}3x = 3\\
 \vspace{1mm}
-\text{Sum Rule}	& f + g	& \frac{df}{dx} + \frac{dg}{dx}\\
+\text{Power Rule}	& x^n	& nx^{n-1} & \frac{d}{dx}x^3 = 3x^2\\
 \vspace{1mm}
-\text{Difference Rule}	& f - g	& \frac{df}{dx} - \frac{dg}{dx}\\
+\text{Sum Rule}	& f + g	& \frac{df}{dx} + \frac{dg}{dx} & \frac{d}{dx} (x^2 + 3x) = 2x + 3\\
 \vspace{1mm}
-\text{Product Rule}	& fg & f \frac{dg}{dx} + \frac{df}{dx} g\\
+\text{Difference Rule}	& f - g	& \frac{df}{dx} - \frac{dg}{dx} & \frac{d}{dx}(x^2 - 3x) = 2x - 3\\
 \vspace{1mm}
-\text{Quotient Rule}	& \frac{f}{g} = fg^{-1} & f \frac{dg}{dx}^{-1} + \frac{df}{dx} g^{-1}\\
-\text{Chain Rule}	 & f(g(x)) &   \frac{df(g(x))}{dx}\frac{dg(x)}{dx}\\
+\text{Product Rule}	& fg & f \frac{dg}{dx} + \frac{df}{dx} g & \frac{d}{dx}x^2x = x^2 + x2x = 3x^2\\
+\vspace{1mm}
+\text{Quotient Rule}	& \frac{f}{g} = fg^{-1} & f \frac{dg}{dx}^{-1} + \frac{df}{dx} g^{-1} & \frac{d}{dx}x^2 / 3x = x^2/3 + 2x / 3x\\
+\text{Chain Rule}	 & f(g(x)) &   \frac{df(u)}{du}\frac{du}{dx}, \text{ let } u=g(x) & \frac{d}{dx} ln(x^2) = \frac{1}{x^2}2x = \frac{2}{x}\\
 \end{array}
 $
 
-When a function has a single parameter, $f(x)$, you'll often see $f'$ and $f'(x)$ used as shorthands for $\frac{d}{dx} f(x)$. We recommend against this notation as it does not make clear the variable we're taking the derivative with respect to.
+There are other rules for trigonometry, exponentials, etc., which you can find [Khan Academy differential calculus course](https://www.khanacademy.org/math/differential-calculus).
 
-You can think of $\frac{d}{dx}$ as an operator that maps a function of one parameter to another function. So to take the derivative with respect to $x$ of $cx$, $\frac{d}{dx} cx$, we are really just moving the constant to the left of the operator: $c\frac{d}{dx}x$ or $c\frac{dx}{dx}$, which makes it more clear that the derivative is $c \times 1 = c$.  We are used to this simplification for the usual arithmetic operators. For example, $-2x = 2 \times -x$ where the negation operator is analogous to our derivative operator. We have just moved to the scalar outside of the operation. Thinking of the derivative as an operator is handy when solving complicated derivatives as we can mechanically apply rules of differentiation.
+When a function has a single parameter, $f(x)$, you'll often see $f'$ and $f'(x)$ used as shorthands for $\frac{df(x)}{dx}$. We recommend against this notation as it does not make clear the variable we're taking the derivative with respect to. 
 
-\section{Review: Vector calculus and partial derivatives}
+You can think of $\frac{d}{dx}$ as an operator that maps a function of one parameter to another function.  That means that $\frac{d}{dx} f(x)$ maps $f(x)$ to its derivative with respect to $x$, which is the same thing as $\frac{df(x)}{dx}$. Also, if $y = f(x)$, then $\frac{dy}{dx} = \frac{df(x)}{dx} = \frac{d}{dx}f(x)$. Thinking of the derivative as an operator helps to simplify complicated derivatives because the operator is distributive and lets us pull out constants. For example, in the following equation, we can pull out the constant 9 and distribute the derivative operator across the elements within the parentheses.
 
-Real-world problems are rarely so simple that we can express them as a single function of a single parameter, $f(x)$. Let's move on to functions of multiple parameters such as $f(x,y)$. We compute derivatives with respect to one variable (parameter) at a time, giving us two different {\em partial derivatives} for this two-parameter function.  Instead of using operator $\frac{d}{dx}$, we use $\frac{\partial}{\partial x}$ (a stylized $d$ and not the Greek letter $\delta$). For functions of a single parameter, operator $\frac{\partial}{\partial x}$ is equivalent to $\frac{d}{dx}$ (for sufficiently smooth functions), but you should restrict your use of $\frac{d}{dx}$ to functions of a single parameter.
+$\frac{d}{dx} 9(x + x^2) = 9 \frac{d}{dx}(x + x^2) = 9 (\frac{d}{dx}x + \frac{d}{dx}x^2) = 9(1 + 2x) = 9 + 18x$
 
-The partial derivative with respect to $x$ is just the usual scalar derivative but treating any other variable in the equation as a constant.  Consider function $f(x,y) = 3x^2y$. The partial derivative with respect to $x$ is written $\frac{\partial}{\partial x} 3x^2y$. There are three constants from the perspective of $\frac{\partial}{\partial x}$: 3, 2, and $y$. Therefore, $\frac{\partial}{\partial x} 3yx^2 = 3y\frac{\partial}{\partial x} x^2 = 3y2x = 6yx$. The partial derivative with respect to $y$ treats $x$ like a constant now: $\frac{\partial}{\partial y} 3x^2y = 3x^2\frac{\partial}{\partial y} y = 3x^2\frac{\partial y}{\partial y} = 3x^2 \times 1 = 3x^2$. 
+That procedure reduced the derivative of $9(x + x^2)$ to a bit of arithmetic and the derivatives of $x$ and $x^2$, which are much easier to solve than the original derivative.
+
+\section{Introduction to vector calculus and partial derivatives}
+
+Neural network layers are not single functions of a single parameter, $f(x)$. So, let's move on to functions of multiple parameters such as $f(x,y)$. For example, what is the derivative of $xy$? Well, it depends on whether we are changing $x$ or $y$.  We compute derivatives with respect to one variable (parameter) at a time, giving us two different {\em partial derivatives} for this two-parameter function (one for $x$ and one for $y$).  Instead of using operator $\frac{d}{dx}$, the partial derivative operator is  $\frac{\partial}{\partial x}$ (a stylized $d$ and not the Greek letter $\delta$). So, $\frac{\partial }{\partial x}xy$ and $\frac{\partial }{\partial y}xy$ are the partial derivatives of $xy$; often, these are just called the {\em partials}.  For functions of a single parameter, operator $\frac{\partial}{\partial x}$ is equivalent to $\frac{d}{dx}$ (for sufficiently smooth functions). However, it's better to use to $\frac{d}{dx}$ to make it clear you're referring to a scalar derivative.
+
+The partial derivative with respect to $x$ is just the usual scalar derivative, simply treating any other variable in the equation as a constant.  Consider function $f(x,y) = 3x^2y$. The partial derivative with respect to $x$ is written $\frac{\partial}{\partial x} 3x^2y$. There are three constants from the perspective of $\frac{\partial}{\partial x}$: 3, 2, and $y$. Therefore, $\frac{\partial}{\partial x} 3yx^2 = 3y\frac{\partial}{\partial x} x^2 = 3y2x = 6yx$. The partial derivative with respect to $y$ treats $x$ like a constant: $\frac{\partial}{\partial y} 3x^2y = 3x^2\frac{\partial}{\partial y} y = 3x^2\frac{\partial y}{\partial y} = 3x^2 \times 1 = 3x^2$.  It's a good idea to derive these yourself before continuing otherwise the rest of the article won't make sense.  Here's the [khan Academy video on partials](https://www.khanacademy.org/math/multivariable-calculus/multivariable-derivatives/partial-derivative-and-gradient-articles/a/introduction-to-partial-derivatives) if you need help.
 
 So, partial derivatives use the usual scalar derivative rules while holding all but a single variable, $x$, as constants for the purpose of computing the partial derivative with respect to $x$.
 
-To make it clear we are doing vector calculus and not just multivariate calculus, let's consider what we do with the partial derivatives $\frac{\partial f(x,y)}{\partial x}$ and $\frac{\partial f(x,y)}{\partial y}$ we computed for $f(x,y) = 3x^2y$. Currently they're just kind of floating around and not organized in any way so let's organize them into a horizontal vector. We call this vector the {\em gradient} of $f(x,y)$ and write it as:
+To make it clear we are doing vector calculus and not just multivariate calculus, let's consider what we do with the partial derivatives $\frac{\partial f(x,y)}{\partial x}$ and $\frac{\partial f(x,y)}{\partial y}$ (another way to say $\frac{\partial}{\partial x}f(x,y)$ and $\frac{\partial }{\partial y}f(x,y)$) that we computed for $f(x,y) = 3x^2y$.  Instead of having them just floating around and not organized in any way, let's organize them into a horizontal vector. We call this vector the {\em gradient} of $f(x,y)$ and write it as:
 
-$\nabla f(x,y)  = [ \frac{\partial f(x,y)}{\partial x} ~\frac{\partial f(x,y)}{\partial y}] = [6yx ~3x^2]$
+$\nabla f(x,y)  = [ \frac{\partial f(x,y)}{\partial x}, \frac{\partial f(x,y)}{\partial y}] = [6yx, 3x^2]$
 
-Vector calculus deals with functions mapping $n$ real parameters to a real scalar, $f : \mathbb{R}^n \rightarrow \mathbb{R}$.  Now, let's get crazy and consider multiple functions simultaneously, $\mathbf{f}: \mathbb{R}^n \rightarrow \mathbb{R}^m$.
+So the gradient of $f(x,y)$ is simply a vector of its partials. Gradients are part of the vector calculus world, which deals with functions that map $n$ scalar parameters to a single scalar.  Now, let's get crazy and consider derivatives of multiple functions simultaneously.
 
 \section{Matrix calculus}
 
-Moving from vector calculus to matrix calculus now, let's compute partial derivatives for two functions, both of which take two parameters.  We can keep the same $f(x,y)$ from the last section, but let's add $g(x,y) = 2x + y^8$.  The gradient for $g$ has two entries, a partial derivative for each parameter. The partials are:
+When we move from derivatives of one function to derivatives of many functions, we move from the world of vector calculus two matrix calculus. Let's compute partial derivatives for two functions, both of which take two parameters.  We can keep the same $f(x,y) = 3x^2y$ from the last section, but let's also bring in $g(x,y) = 2x + y^8$.  The gradient for $g$ has two entries, a partial derivative for each parameter:
 
 $\frac{\partial g(x,y)}{\partial x} = \frac{\partial 2x}{\partial x} + \frac{\partial y^8}{\partial x} = 2\frac{\partial x}{\partial x} + 0 = 2 \times 1 = 1$
 
@@ -96,7 +112,7 @@ $\frac{\partial g(x,y)}{\partial y} = \frac{\partial 2x}{\partial y} + \frac{\pa
 
 giving us gradient $\nabla g(x,y) = [1, 8y^7]$.
 
-Gradient vectors organize all of the partial derivatives for a specific scalar function. If we have two functions, we can also organize their gradients into a matrix called the {\em Jacobian matrix} where the gradients are rows:
+Gradient vectors organize all of the partial derivatives for a specific scalar function. If we have two functions, we can also organize their gradients into a matrix. When we do so, we get the {\em Jacobian matrix} (or just the {\em Jacobian}) where the gradients are rows:
 
 $J =
 \begin{bmatrix}
@@ -113,11 +129,18 @@ $
 
 Welcome to matrix calculus!
 
-\includegraphics[scale=.08]{redbang.png} Before moving on, please note that there are multiple ways to represent the Jacobian. We are using the so-called [numerator layout](https://en.wikipedia.org/wiki/Matrix\_calculus\#Layout\_conventions) but many papers and software will use the transpose of this Jacobian (flip it around its diagonal).
+{\bf Note that there are multiple ways to represent the Jacobian.} We are using the so-called [numerator layout](https://en.wikipedia.org/wiki/Matrix\_calculus\#Layout\_conventions) but many papers and software will use the {\em denominator layout}. This is just transpose of the numerator layout Jacobian (flip it around its diagonal):
+
+$
+\begin{bmatrix}
+	6yx & 1\\
+	3x^2 & 8y^7
+\end{bmatrix}
+$
 
 \subsection{Generalization of the Jacobian}
 
-So far, we've looked at a specific example of a Jacobian matrix. To define a Jacobian matrix, let's combine multiple parameters into a single vector argument: $f(x,y,z) \Rightarrow f(\mathbf{x})$. Lowercase letters in bold font such as $\mathbf{x}$ are vectors and math italics font like $x$ are scalars; $x_i$ is the $i{th}$ element of vector $\mathbf{x}$. We also have to define an orientation for vector $\mathbf{x}$. We'll assume that all vectors are vertical by default of size $n \times 1$:
+So far, we've looked at a specific example of a Jacobian matrix. To define a Jacobian matrix more generally, let's combine multiple parameters into a single vector argument: $f(x,y,z) \Rightarrow f(\mathbf{x})$. You will sometimes see notation $\vec{x}$  for vectors in the literature as well. Lowercase letters in bold font such as $\mathbf{x}$ are vectors and those in italics font like $x$ are scalars. $x_i$ is the $i{th}$ element of vector $\mathbf{x}$ and is in italics because a single vector element is a scalar. We also have to define an orientation for vector $\mathbf{x}$. We'll assume that all vectors are vertical by default of size $n \times 1$:
 
 $\mathbf{x} = \begin{bmatrix}
            x_1\\
@@ -126,7 +149,7 @@ $\mathbf{x} = \begin{bmatrix}
            x_n\\
            \end{bmatrix}$
 
-With multiple scalar-valued functions, we can combine them all into a vector just like we did with the parameters. Let $\mathbf{y} = \mathbf{f}(\mathbf{x})$ be a vector of $m$ scalar-valued functions, $\mathbf{f}: \mathbb{R}^n \rightarrow \mathbb{R}^m$ with $n=|\mathbf{x}|$. Each $f_i$ function within $\mathbf{f}$  is a scalar, $f_i : R^n \rightarrow R$ like we had in the previous section:
+With multiple scalar-valued functions, we can combine them all into a vector just like we did with the parameters. Let $\mathbf{y} = \mathbf{f}(\mathbf{x})$ be a vector of $m$ scalar-valued functions that each take a vector $\mathbf{x}$ of length $n=|\mathbf{x}|$ where $|\mathbf{x}|$ is the cardinality (count) of elements in $\mathbf{x}$. Each $f_i$ function within $\mathbf{f}$ returns a scalar just as in the previous section:
 
 $
 \begin{array}{lcl}
@@ -137,7 +160,21 @@ y_m & = & f_m(\mathbf{x})\\
 \end{array}
 $
 
-It's very often the case that $m=n$ because we will have a scalar function result for each element of the vector; this is the case for $\mathbf{y} = \mathbf{x}$, for example.
+For instance, we'd represent $f(x,y) = 3x^2y$ and $g(x,y) = 2x + y^8$ from the last section as
+
+$y_1 = f_1(\mathbf{x}) = 3x_1^2x_2$\\
+$y_2 = f_2(\mathbf{x}) = 2x_1 + x_2^8$
+
+It's very often the case that $m=n$ because we will have a scalar function result for each element of the $\mathbf{x}$ vector.  For example, consider the identity function $\mathbf{y} = \mathbf{f(x)} = \mathbf{x}$:
+
+$
+\begin{array}{lclcc}
+y_1 & = & f_1(\mathbf{x})& = & x_1\\
+y_2 & = & f_2(\mathbf{x})& = & x_2\\
+ & \vdots & \\
+y_n & = & f_n(\mathbf{x})& = & x_n\\
+\end{array}
+$
 
 The Jacobian matrix is the collection of all $m \times n$ possible partial derivatives:
 
@@ -154,7 +191,7 @@ where each $\frac{\partial}{\partial \mathbf{x}} f_i(\mathbf{x})$ is an $n$-vect
 
 \begin{center}
 \begin{tabular}{c|ccl}
-\parbox[b][40pt][c]{40pt}{Jacobian shape table}  & ~\framebox(25,25){$x$} & \framebox(25,60){$\mathbf{x}$}\\
+  & ~\framebox(25,25){$x$} & \framebox(25,60){$\mathbf{x}$}\\
 \hline
 \\[\dimexpr-\normalbaselineskip+5pt]
 \framebox(25,25){$f$} &~\framebox(25,25){$\frac{\partial f}{\partial {x}}$} & \framebox(60,25){$\frac{\partial f}{\partial {\mathbf{x}}}$}&\\
@@ -340,7 +377,7 @@ The partial derivative with respect to single-valued parameter $z$ is a vertical
 
 $\frac{\partial}{\partial z} ( f_i(x_i) \otimes g_i(z) ) = x_i \frac{\partial z}{\partial z} + z \frac{\partial x_i}{\partial z} = x_i + 0 = x_i$
 
-This gives us $\frac{\partial}{\partial z} ( \mathbf{x}s z ) = \mathbf{x}$.
+This gives us $\frac{\partial}{\partial z} ( \mathbf{x} z ) = \mathbf{x}$.
 
 \subsection{Vector sum}
 
@@ -390,6 +427,8 @@ $
 $
 
 \subsection{Vector chain rule}
+
+%https://calculus.subwiki.org/wiki/Proof_of_product_rule_for_differentiation_using_chain_rule_for_partial_differentiation
 
 We can't compute partial derivatives of very complicated functions using just the basic matrix calculus rules we've seen so far. We need to be able to combine them using the so-called {\em chain rule}.  The chain rule is a divide and conquer strategy (like Quicksort) that breaks complicated expressions into subexpressions that are easier to compute derivatives for.  The chain rule comes into play when we need the derivative of an expression with nested subexpressions, such as $\frac{d}{dx} sin(x^2)$.  
 
@@ -480,9 +519,9 @@ $\frac{\partial y}{\partial \mathbf{w}} = [ x_1, \ldots, x_n ] = \mathbf{x}^T$
 
 Our results match. 
 
-\section{The punchline}
+\section{The derivative of the neuron activation function}
 
-To train a neuron requires that we take the derivative of our loss  or ``cost'' function $C(\mathbf{w},b) = \frac{1}{n} \Sigma_{\mathbf{x}} ||desiredoutput(\mathbf{x}) - output(\mathbf{x})||_2^2$, with respect to the parameters of our model, $\mathbf{w}$ and $b$.  We won't solve that full problem here, but we can apply the rules we've learned to compute partial derivatives of the weighted input to the rectified linear activation function, $z = \mathbf{w} \cdot \mathbf{x} + b$. The partial derivatives are:
+After all that, we're ready to actually take the derivative of the neuron activation function we provided in the introduction, $output(\mathbf{x}) = max(0, \mathbf{w} \cdot \mathbf{x} + b)$.  In practice, training a neuron requires that we take the derivative of our loss  or ``cost'' function $C(\mathbf{w},b) = \frac{1}{n} \Sigma_{\mathbf{x}} ||desiredoutput(\mathbf{x}) - output(\mathbf{x})||_2^2$, with respect to the parameters of our model, $\mathbf{w}$ and $b$.  We won't solve that full problem here, but we can apply the rules we've learned to compute partial derivatives of the output of the rectified linear activation function. The partial derivatives are:
 
 $\frac{\partial z}{\partial \mathbf{w}} = \frac{\partial \mathbf{w} \cdot \mathbf{x}}{\partial \mathbf{w}} + \frac{\partial b}{\partial \mathbf{w}} = \mathbf{x}^T + \vec{0}^T = \mathbf{x}^T$
 
@@ -490,11 +529,7 @@ and
 
 $\frac{\partial z}{\partial b} = \frac{\partial \mathbf{w} \cdot \mathbf{x}}{\partial b} + \frac{\partial b}{\partial b} = 0 + 1 = 1$
 
-While we're at it, we can easily take the partials of the activation function output:
- 
-$output({\mathbf{x}}) = max(0, \mathbf{w} \cdot \mathbf{x} + b)$
-
-The $max(0,z)$ function just says to treat all negative $z$ values as 0, so its derivative is 0 for $z \leq 0$ and $dz/dz = 1$ for $z > 0$. Because $output(\mathbf{x})$ is a nested function, we need the chain rule so let's use $z = \mathbf{w} \cdot \mathbf{x} + b$ to get $output(\mathbf{x}) = max(0,z(\mathbf{x}))$. Then,
+And, finally, we can take the partials of the activation function output. The $max(0,z)$ function just says to treat all negative $z$ values as 0, so its derivative is 0 for $z \leq 0$ and $dz/dz = 1$ for $z > 0$. Because $output(\mathbf{x})$ is a nested function, we need the chain rule so let's use $z = \mathbf{w} \cdot \mathbf{x} + b$ to get $output(\mathbf{x}) = max(0,z(\mathbf{x}))$. Then,
 
 $\frac{\partial output}{\partial \mathbf{w}} = \frac{\partial output}{\partial z}\frac{\partial z}{\partial \mathbf{w}}$
 
@@ -532,6 +567,8 @@ $\frac{\partial output}{\partial b} = \begin{cases}
 \end{cases}
 $
 
+At this point, you are well on your way to understanding matrix calculus!  Your next step would be to learn about the partial derivatives of matrices not just vectors.
+ 
 \section{Acknowledgements}
 
 We thank [Yannet Interian](https://www.usfca.edu/faculty/yannet-interian) (Faculty in MS data science program at University of San Francisco) and [David Uminsky](http://www.cs.usfca.edu/~duminsky/) (Faculty/director of MS data science) for their help with the notation presented here..

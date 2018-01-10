@@ -14,7 +14,7 @@
 	<key>BackgroundGraphic</key>
 	<dict>
 		<key>Bounds</key>
-		<string>{{0, 0}, {575.99997520446777, 733}}</string>
+		<string>{{0, 0}, {576, 733}}</string>
 		<key>Class</key>
 		<string>SolidGraphic</string>
 		<key>ID</key>
@@ -53,6 +53,327 @@
 	<integer>8</integer>
 	<key>GraphicsList</key>
 	<array>
+		<dict>
+			<key>Class</key>
+			<string>LineGraphic</string>
+			<key>ID</key>
+			<integer>37787</integer>
+			<key>Points</key>
+			<array>
+				<string>{247.18701553344727, 132.42030334472656}</string>
+				<string>{247.18701553344727, 143.19064903259277}</string>
+			</array>
+			<key>Style</key>
+			<dict>
+				<key>stroke</key>
+				<dict>
+					<key>Color</key>
+					<dict>
+						<key>b</key>
+						<string>0.998363</string>
+						<key>g</key>
+						<string>0.816999</string>
+						<key>r</key>
+						<string>0.480319</string>
+					</dict>
+					<key>HeadArrow</key>
+					<string>FilledArrow</string>
+					<key>HeadScale</key>
+					<real>0.5</real>
+					<key>Legacy</key>
+					<true/>
+					<key>TailArrow</key>
+					<string>0</string>
+					<key>Width</key>
+					<real>0.5</real>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{225.18342590332031, 115.57464599609375}, {47, 23}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>YES</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>FontInfo</key>
+			<dict>
+				<key>Font</key>
+				<string>Helvetica</string>
+				<key>Size</key>
+				<real>11</real>
+			</dict>
+			<key>ID</key>
+			<integer>37786</integer>
+			<key>Shape</key>
+			<string>Rectangle</string>
+			<key>Style</key>
+			<dict>
+				<key>fill</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
+\cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\csgenericrgb\c0\c0\c0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
+
+\f0\fs22 \cf2 function}</string>
+			</dict>
+			<key>Wrap</key>
+			<string>NO</string>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{221.75, 107.54195272802599}, {54, 23}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>YES</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>FontInfo</key>
+			<dict>
+				<key>Font</key>
+				<string>Helvetica</string>
+				<key>Size</key>
+				<real>11</real>
+			</dict>
+			<key>ID</key>
+			<integer>37785</integer>
+			<key>Shape</key>
+			<string>Rectangle</string>
+			<key>Style</key>
+			<dict>
+				<key>fill</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
+\cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\csgenericrgb\c0\c0\c0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
+
+\f0\fs22 \cf2 activation}</string>
+			</dict>
+			<key>Wrap</key>
+			<string>NO</string>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{188.68588256835938, 193.84048807501085}, {47, 23}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>YES</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>FontInfo</key>
+			<dict>
+				<key>Font</key>
+				<string>Helvetica</string>
+				<key>Size</key>
+				<real>11</real>
+			</dict>
+			<key>ID</key>
+			<integer>37784</integer>
+			<key>Shape</key>
+			<string>Rectangle</string>
+			<key>Style</key>
+			<dict>
+				<key>fill</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>RTFD</key>
+				<data>
+				BAtzdHJlYW10eXBlZIHoA4QBQISEhBJOU0F0dHJpYnV0
+				ZWRTdHJpbmcAhIQITlNPYmplY3QAhZKEhIQITlNTdHJp
+				bmcBlIQBKwhmdW5jdGlvboaEAmlJAQiShISEDE5TRGlj
+				dGlvbmFyeQCUhAFpA5KElpYHTlNDb2xvcoaShISEB05T
+				Q29sb3IAlIQBYwGEBGZmZmYAAAABhpKElpYQTlNQYXJh
+				Z3JhcGhTdHlsZYaShISEF05TTXV0YWJsZVBhcmFncmFw
+				aFN0eWxlAISEEE5TUGFyYWdyYXBoU3R5bGUAlIQEQ0NA
+				UwIAhISEB05TQXJyYXkAlJkMkoSEhAlOU1RleHRUYWIA
+				lIQCQ2YAHIaShKOiADiGkoSjogBUhpKEo6IAcIaShKOi
+				AIGMAIaShKOiAIGoAIaShKOiAIHEAIaShKOiAIHgAIaS
+				hKOiAIH8AIaShKOiAIEYAYaShKOiAIE0AYaShKOiAIFQ
+				AYaGgQAIhARbMWZdg83MTD2GkoSWlgZOU0ZvbnSGkoSE
+				hAZOU0ZvbnQelJkshAVbNDRjXQYAAAAkAAAA//5UAGkA
+				bQBlAHMATgBlAHcAUgBvAG0AYQBuAFAAUwBNAFQAhAFm
+				C5sAmwGbAJsAhoaG
+				</data>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
+\cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
+
+\f0\fs22 \cf2 function}</string>
+			</dict>
+			<key>Wrap</key>
+			<string>NO</string>
+		</dict>
+		<dict>
+			<key>AllowConnections</key>
+			<string>NO</string>
+			<key>Bounds</key>
+			<string>{{187.80364227294922, 185.59048807501085}, {51.764503479003906, 23}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>Vertical</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>FontInfo</key>
+			<dict>
+				<key>Color</key>
+				<dict>
+					<key>b</key>
+					<string>0</string>
+					<key>g</key>
+					<string>0</string>
+					<key>r</key>
+					<string>0</string>
+				</dict>
+				<key>Font</key>
+				<string>TimesNewRomanPS-ItalicMT</string>
+				<key>Size</key>
+				<real>11</real>
+			</dict>
+			<key>ID</key>
+			<integer>37783</integer>
+			<key>Shape</key>
+			<string>Rectangle</string>
+			<key>Style</key>
+			<dict>
+				<key>fill</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+					<key>Width</key>
+					<real>0.5</real>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>RTFD</key>
+				<data>
+				BAtzdHJlYW10eXBlZIHoA4QBQISEhBJOU0F0dHJpYnV0
+				ZWRTdHJpbmcAhIQITlNPYmplY3QAhZKEhIQITlNTdHJp
+				bmcBlIQBKwZhZmZpbmWGhAJpSQEGkoSEhAxOU0RpY3Rp
+				b25hcnkAlIQBaQOShJaWB05TQ29sb3KGkoSEhAdOU0Nv
+				bG9yAJSEAWMChARmZmZmAAAAAYaShJaWEE5TUGFyYWdy
+				YXBoU3R5bGWGkoSEhBdOU011dGFibGVQYXJhZ3JhcGhT
+				dHlsZQCEhBBOU1BhcmFncmFwaFN0eWxlAJSEBENDQFMC
+				AISEhAdOU0FycmF5AJSZDJKEhIQJTlNUZXh0VGFiAJSE
+				AkNmAByGkoSjogA4hpKEo6IAVIaShKOiAHCGkoSjogCB
+				jACGkoSjogCBqACGkoSjogCBxACGkoSjogCB4ACGkoSj
+				ogCB/ACGkoSjogCBGAGGkoSjogCBNAGGkoSjogCBUAGG
+				hoEACIQEWzFmXYPNzEw9hpKElpYGTlNGb250hpKEhIQG
+				TlNGb250HpSZLIQFWzQ0Y10GAAAAJAAAAP/+VABpAG0A
+				ZQBzAE4AZQB3AFIAbwBtAGEAbgBQAFMATQBUAIQBZgub
+				AJsBmwCbAIaGhg==
+				</data>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
+\cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
+
+\f0\fs22 \cf2 affine}</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{181.68590371704101, 182.74858281304347}, {60.046824994266615, 9.7627174588855983}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>ID</key>
+			<integer>37780</integer>
+			<key>ImageID</key>
+			<integer>1</integer>
+			<key>Shape</key>
+			<string>Rectangle</string>
+			<key>Style</key>
+			<dict>
+				<key>fill</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+		</dict>
 		<dict>
 			<key>Bounds</key>
 			<string>{{143, 438}, {12, 12}}</string>
@@ -161,9 +482,10 @@
 				AGwAAACEAWYLmwCbAZsAmwCGhoY=
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\ftech\fcharset77 Symbol;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\fs22 \cf2 \uc0\u8594 }</string>
@@ -251,9 +573,10 @@
 				AGwAAACEAWYLmwCbAZsAmwCGhoY=
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\ftech\fcharset77 Symbol;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\fs22 \cf2 \uc0\u8594 }</string>
@@ -341,9 +664,10 @@
 				AGwAAACEAWYLmwCbAZsAmwCGhoY=
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\ftech\fcharset77 Symbol;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\fs22 \cf2 \uc0\u8594 }</string>
@@ -431,9 +755,10 @@
 				AGwAAACEAWYLmwCbAZsAmwCGhoY=
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\ftech\fcharset77 Symbol;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\fs22 \cf2 \uc0\u8594 }</string>
@@ -546,16 +871,16 @@
 				hARbMWZdg83MTD2GkoSWlgZOU0ZvbnSGkoSEhAZOU0Zv
 				bnQelJk8hAVbNjBjXQYAAAAyAAAA//5UAGkAbQBlAHMA
 				TgBlAHcAUgBvAG0AYQBuAFAAUwAtAEkAdABhAGwAaQBj
-				AE0AVAAAAIQBZgybAJsBmwCbAIaGlwIBkoSYmQSShJaW
-				Dk5TT3JpZ2luYWxGb250hpKEsZk4hAVbNTZjXQYAAAAu
-				AAAA//5UAGkAbQBlAHMATgBlAHcAUgBvAG0AYQBuAFAA
-				UwAtAEIAbwBsAGQATQBUAAAApgybAJsBmwCbAIaSnJKd
-				kq+StJKZkpqGhg==
+				AE0AVAAAAIQBZgybAJsBmwCbAIaGlwIBkoSYmQOSmZKa
+				kpySnZKvkoSxmTiEBVs1NmNdBgAAAC4AAAD//lQAaQBt
+				AGUAcwBOAGUAdwBSAG8AbQBhAG4AUABTAC0AQgBvAGwA
+				ZABNAFQAAACmDJsAmwGbAJsAhoaG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 d
@@ -642,20 +967,21 @@
 				gQAIhARbMWZdg83MTD2GkoSWlgZOU0ZvbnSGkoSEhAZO
 				U0ZvbnQelJk8hAVbNjBjXQYAAAAyAAAA//5UAGkAbQBl
 				AHMATgBlAHcAUgBvAG0AYQBuAFAAUwAtAEkAdABhAGwA
-				aQBjAE0AVAAAAIQBZgybAJsBmwCbAIaGlwIBkoSYmQSS
-				hJaWDk5TT3JpZ2luYWxGb250hpKEsZk4hAVbNTZjXQYA
-				AAAuAAAA//5UAGkAbQBlAHMATgBlAHcAUgBvAG0AYQBu
-				AFAAUwAtAEIAbwBsAGQATQBUAAAApgybAJsBmwCbAIaS
-				nJKdkq+StJKZkpqGlwMBkoSYmQOSmZKEm5sCnAAAAAGG
-				kpyShJ6fAgCEoZkMkqKSpJKlkqaSp5KokqmSqpKrkqyS
-				rZKuhoEACKODzcxMPYaSr5KEsZkshAVbNDRjXQYAAAAk
-				AAAA//5UAGkAbQBlAHMATgBlAHcAUgBvAG0AYQBuAFAA
-				UwBNAFQApgybAJsBmwCbAIaGlwEBlwMBhg==
+				aQBjAE0AVAAAAIQBZgybAJsBmwCbAIaGlwIBkoSYmQOS
+				mZKakpySnZKvkoSxmTiEBVs1NmNdBgAAAC4AAAD//lQA
+				aQBtAGUAcwBOAGUAdwBSAG8AbQBhAG4AUABTAC0AQgBv
+				AGwAZABNAFQAAACmDJsAmwGbAJsAhoaXAwGShJiZA5KZ
+				koSbmwKcAAAAAYaSnJKEnp8CAIShmQySopKkkqWSppKn
+				kqiSqZKqkquSrJKtkq6GgQAIo4PNzEw9hpKvkoSxmSyE
+				BVs0NGNdBgAAACQAAAD//lQAaQBtAGUAcwBOAGUAdwBS
+				AG8AbQBhAG4AUABTAE0AVACmDJsAmwGbAJsAhoaXAQGX
+				AwGG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 d
@@ -772,16 +1098,16 @@
 				hARbMWZdg83MTD2GkoSWlgZOU0ZvbnSGkoSEhAZOU0Zv
 				bnQelJk8hAVbNjBjXQYAAAAyAAAA//5UAGkAbQBlAHMA
 				TgBlAHcAUgBvAG0AYQBuAFAAUwAtAEkAdABhAGwAaQBj
-				AE0AVAAAAIQBZgybAJsBmwCbAIaGlwIBkoSYmQSShJaW
-				Dk5TT3JpZ2luYWxGb250hpKEsZk4hAVbNTZjXQYAAAAu
-				AAAA//5UAGkAbQBlAHMATgBlAHcAUgBvAG0AYQBuAFAA
-				UwAtAEIAbwBsAGQATQBUAAAApgybAJsBmwCbAIaSnJKd
-				kq+StJKZkpqGhg==
+				AE0AVAAAAIQBZgybAJsBmwCbAIaGlwIBkoSYmQOSmZKa
+				kpySnZKvkoSxmTiEBVs1NmNdBgAAAC4AAAD//lQAaQBt
+				AGUAcwBOAGUAdwBSAG8AbQBhAG4AUABTAC0AQgBvAGwA
+				ZABNAFQAAACmDJsAmwGbAJsAhoaG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 d
@@ -876,9 +1202,10 @@
 				lwIBhg==
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 df
@@ -1054,9 +1381,10 @@
 				AACEAWYLmwCbAZsAmwCGhoY=
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\b\fs22 \cf2 x}</string>
@@ -1150,9 +1478,10 @@
 				AgGG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 f
@@ -1271,9 +1600,10 @@
 				AE0AVAAAAIQBZgybAJsBmwCbAIaGhg==
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 dx}</string>
@@ -1367,9 +1697,10 @@
 				lwIBhg==
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 df
@@ -1503,24 +1834,24 @@
 				BAtzdHJlYW10eXBlZIHoA4QBQISEhBJOU0F0dHJpYnV0
 				ZWRTdHJpbmcAhIQITlNPYmplY3QAhZKEhIQITlNTdHJp
 				bmcBlIQBKwF4hoQCaUkBAZKEhIQMTlNEaWN0aW9uYXJ5
-				AJSEAWkEkoSWlg5OU09yaWdpbmFsRm9udIaShISEBk5T
-				Rm9udB6UmTiEBVs1NmNdBgAAAC4AAAD//lQAaQBtAGUA
-				cwBOAGUAdwBSAG8AbQBhAG4AUABTAC0AQgBvAGwAZABN
-				AFQAAACEAWYLhAFjAJ0BnQCdAIaShJaWEE5TUGFyYWdy
-				YXBoU3R5bGWGkoSEhBdOU011dGFibGVQYXJhZ3JhcGhT
-				dHlsZQCEhBBOU1BhcmFncmFwaFN0eWxlAJSEBENDQFMC
-				AISEhAdOU0FycmF5AJSZDJKEhIQJTlNUZXh0VGFiAJSE
-				AkNmAByGkoSjowA4hpKEo6MAVIaShKOjAHCGkoSjowCB
-				jACGkoSjowCBqACGkoSjowCBxACGkoSjowCB4ACGkoSj
-				owCB/ACGkoSjowCBGAGGkoSjowCBNAGGkoSjowCBUAGG
-				hoEACIQEWzFmXYPNzEw9hpKElpYGTlNGb250hpKakoSW
-				lgdOU0NvbG9yhpKEhIQHTlNDb2xvcgCUnQKEBGZmZmYA
-				AAABhoaG
+				AJSEAWkDkoSWlgdOU0NvbG9yhpKEhIQHTlNDb2xvcgCU
+				hAFjAoQEZmZmZgAAAAGGkoSWlhBOU1BhcmFncmFwaFN0
+				eWxlhpKEhIQXTlNNdXRhYmxlUGFyYWdyYXBoU3R5bGUA
+				hIQQTlNQYXJhZ3JhcGhTdHlsZQCUhARDQ0BTAgCEhIQH
+				TlNBcnJheQCUmQyShISECU5TVGV4dFRhYgCUhAJDZgAc
+				hpKEo6IAOIaShKOiAFSGkoSjogBwhpKEo6IAgYwAhpKE
+				o6IAgagAhpKEo6IAgcQAhpKEo6IAgeAAhpKEo6IAgfwA
+				hpKEo6IAgRgBhpKEo6IAgTQBhpKEo6IAgVABhoaBAAiE
+				BFsxZl2DzcxMPYaShJaWBk5TRm9udIaShISEBk5TRm9u
+				dB6UmTiEBVs1NmNdBgAAAC4AAAD//lQAaQBtAGUAcwBO
+				AGUAdwBSAG8AbQBhAG4AUABTAC0AQgBvAGwAZABNAFQA
+				AACEAWYLmwCbAZsAmwCGhoY=
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\b\fs22 \cf2 x}</string>
@@ -1595,31 +1926,31 @@
 				BAtzdHJlYW10eXBlZIHoA4QBQISEhBJOU0F0dHJpYnV0
 				ZWRTdHJpbmcAhIQITlNPYmplY3QAhZKEhIQITlNTdHJp
 				bmcBlIQBKwRmKHgphoQCaUkBAZKEhIQMTlNEaWN0aW9u
-				YXJ5AJSEAWkEkoSWlg5OU09yaWdpbmFsRm9udIaShISE
-				Bk5TRm9udB6UmTiEBVs1NmNdBgAAAC4AAAD//lQAaQBt
-				AGUAcwBOAGUAdwBSAG8AbQBhAG4AUABTAC0AQgBvAGwA
-				ZABNAFQAAACEAWYMhAFjAJ0BnQCdAIaShJaWEE5TUGFy
-				YWdyYXBoU3R5bGWGkoSEhBdOU011dGFibGVQYXJhZ3Jh
-				cGhTdHlsZQCEhBBOU1BhcmFncmFwaFN0eWxlAJSEBEND
-				QFMCAISEhAdOU0FycmF5AJSZDJKEhIQJTlNUZXh0VGFi
-				AJSEAkNmAByGkoSjowA4hpKEo6MAVIaShKOjAHCGkoSj
-				owCBjACGkoSjowCBqACGkoSjowCBxACGkoSjowCB4ACG
-				koSjowCB/ACGkoSjowCBGAGGkoSjowCBNAGGkoSjowCB
-				UAGGhoEACIQEWzFmXYPNzEw9hpKElpYGTlNGb250hpKa
-				koSWlgdOU0NvbG9yhpKEhIQHTlNDb2xvcgCUnQKEBGZm
-				ZmYAAAABhoaXAgGShJiZA5KwkoSynQKmAAAAAYaSnJKE
-				nqACAIShmQySopKkkqWSppKnkqiSqZKqkquSrJKtkq6G
-				gQAIpIPNzEw9hpKvkoSbmSyEBVs0NGNdBgAAACQAAAD/
-				/lQAaQBtAGUAcwBOAGUAdwBSAG8AbQBhAG4AUABTAE0A
-				VACcDJ0AnQGdAJ0AhoaXAwGShJiZA5KwkrGSnJKdkq+S
-				hJuZPIQFWzYwY10GAAAAMgAAAP/+VABpAG0AZQBzAE4A
-				ZQB3AFIAbwBtAGEAbgBQAFMALQBJAHQAYQBsAGkAYwBN
-				AFQAAACcDJ0AnQGdAJ0AhoaXAgGG
+				YXJ5AJSEAWkDkoSWlgdOU0NvbG9yhpKEhIQHTlNDb2xv
+				cgCUhAFjAoQEZmZmZgAAAAGGkoSWlhBOU1BhcmFncmFw
+				aFN0eWxlhpKEhIQXTlNNdXRhYmxlUGFyYWdyYXBoU3R5
+				bGUAhIQQTlNQYXJhZ3JhcGhTdHlsZQCUhARDQ0BTAgCE
+				hIQHTlNBcnJheQCUmQyShISECU5TVGV4dFRhYgCUhAJD
+				ZgAchpKEo6IAOIaShKOiAFSGkoSjogBwhpKEo6IAgYwA
+				hpKEo6IAgagAhpKEo6IAgcQAhpKEo6IAgeAAhpKEo6IA
+				gfwAhpKEo6IAgRgBhpKEo6IAgTQBhpKEo6IAgVABhoaB
+				AAiEBFsxZl2DzcxMPYaShJaWBk5TRm9udIaShISEBk5T
+				Rm9udB6UmTiEBVs1NmNdBgAAAC4AAAD//lQAaQBtAGUA
+				cwBOAGUAdwBSAG8AbQBhAG4AUABTAC0AQgBvAGwAZABN
+				AFQAAACEAWYMmwCbAZsAmwCGhpcCAZKEmJkDkpmShJub
+				ApwAAAABhpKckoSenwIAhKGZDJKikqSSpZKmkqeSqJKp
+				kqqSq5Kskq2SroaBAAijg83MTD2Gkq+ShLGZLIQFWzQ0
+				Y10GAAAAJAAAAP/+VABpAG0AZQBzAE4AZQB3AFIAbwBt
+				AGEAbgBQAFMATQBUAKYMmwCbAZsAmwCGhpcDAZKEmJkD
+				kpmSmpKckp2Sr5KEsZk8hAVbNjBjXQYAAAAyAAAA//5U
+				AGkAbQBlAHMATgBlAHcAUgBvAG0AYQBuAFAAUwAtAEkA
+				dABhAGwAaQBjAE0AVAAAAKYMmwCbAZsAmwCGhpcCAYY=
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\b\fs24 \cf2 f
@@ -1766,9 +2097,10 @@
 				AE0AVAAAAIQBZgybAJsBmwCbAIaGhg==
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 dx}</string>
@@ -1854,20 +2186,21 @@
 				gQAIhARbMWZdg83MTD2GkoSWlgZOU0ZvbnSGkoSEhAZO
 				U0ZvbnQelJk8hAVbNjBjXQYAAAAyAAAA//5UAGkAbQBl
 				AHMATgBlAHcAUgBvAG0AYQBuAFAAUwAtAEkAdABhAGwA
-				aQBjAE0AVAAAAIQBZgybAJsBmwCbAIaGlwIBkoSYmQSS
-				hJaWDk5TT3JpZ2luYWxGb250hpKEsZk4hAVbNTZjXQYA
-				AAAuAAAA//5UAGkAbQBlAHMATgBlAHcAUgBvAG0AYQBu
-				AFAAUwAtAEIAbwBsAGQATQBUAAAApgybAJsBmwCbAIaS
-				nJKdkq+StJKZkpqGlwMBkoSYmQOSmZKEm5sCnAAAAAGG
-				kpyShJ6fAgCEoZkMkqKSpJKlkqaSp5KokqmSqpKrkqyS
-				rZKuhoEACKODzcxMPYaSr5KEsZkshAVbNDRjXQYAAAAk
-				AAAA//5UAGkAbQBlAHMATgBlAHcAUgBvAG0AYQBuAFAA
-				UwBNAFQApgybAJsBmwCbAIaGlwEBlwMBhg==
+				aQBjAE0AVAAAAIQBZgybAJsBmwCbAIaGlwIBkoSYmQOS
+				mZKakpySnZKvkoSxmTiEBVs1NmNdBgAAAC4AAAD//lQA
+				aQBtAGUAcwBOAGUAdwBSAG8AbQBhAG4AUABTAC0AQgBv
+				AGwAZABNAFQAAACmDJsAmwGbAJsAhoaXAwGShJiZA5KZ
+				koSbmwKcAAAAAYaSnJKEnp8CAIShmQySopKkkqWSppKn
+				kqiSqZKqkquSrJKtkq6GgQAIo4PNzEw9hpKvkoSxmSyE
+				BVs0NGNdBgAAACQAAAD//lQAaQBtAGUAcwBOAGUAdwBS
+				AG8AbQBhAG4AUABTAE0AVACmDJsAmwGbAJsAhoaXAQGX
+				AwGG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 d
@@ -1988,9 +2321,10 @@
 				TQBUAAAAhAFmDJsAmwGbAJsAhoaG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 x}</string>
@@ -2065,31 +2399,31 @@
 				BAtzdHJlYW10eXBlZIHoA4QBQISEhBJOU0F0dHJpYnV0
 				ZWRTdHJpbmcAhIQITlNPYmplY3QAhZKEhIQITlNTdHJp
 				bmcBlIQBKwRmKHgphoQCaUkBAZKEhIQMTlNEaWN0aW9u
-				YXJ5AJSEAWkEkoSWlg5OU09yaWdpbmFsRm9udIaShISE
-				Bk5TRm9udB6UmTiEBVs1NmNdBgAAAC4AAAD//lQAaQBt
-				AGUAcwBOAGUAdwBSAG8AbQBhAG4AUABTAC0AQgBvAGwA
-				ZABNAFQAAACEAWYMhAFjAJ0BnQCdAIaShJaWEE5TUGFy
-				YWdyYXBoU3R5bGWGkoSEhBdOU011dGFibGVQYXJhZ3Jh
-				cGhTdHlsZQCEhBBOU1BhcmFncmFwaFN0eWxlAJSEBEND
-				QFMCAISEhAdOU0FycmF5AJSZDJKEhIQJTlNUZXh0VGFi
-				AJSEAkNmAByGkoSjowA4hpKEo6MAVIaShKOjAHCGkoSj
-				owCBjACGkoSjowCBqACGkoSjowCBxACGkoSjowCB4ACG
-				koSjowCB/ACGkoSjowCBGAGGkoSjowCBNAGGkoSjowCB
-				UAGGhoEACIQEWzFmXYPNzEw9hpKElpYGTlNGb250hpKa
-				koSWlgdOU0NvbG9yhpKEhIQHTlNDb2xvcgCUnQKEBGZm
-				ZmYAAAABhoaXAgGShJiZA5KwkoSynQKmAAAAAYaSnJKE
-				nqACAIShmQySopKkkqWSppKnkqiSqZKqkquSrJKtkq6G
-				gQAIpIPNzEw9hpKvkoSbmSyEBVs0NGNdBgAAACQAAAD/
-				/lQAaQBtAGUAcwBOAGUAdwBSAG8AbQBhAG4AUABTAE0A
-				VACcDJ0AnQGdAJ0AhoaXAwGShJiZA5KwkrGSnJKdkq+S
-				hJuZPIQFWzYwY10GAAAAMgAAAP/+VABpAG0AZQBzAE4A
-				ZQB3AFIAbwBtAGEAbgBQAFMALQBJAHQAYQBsAGkAYwBN
-				AFQAAACcDJ0AnQGdAJ0AhoaXAgGG
+				YXJ5AJSEAWkDkoSWlgdOU0NvbG9yhpKEhIQHTlNDb2xv
+				cgCUhAFjAoQEZmZmZgAAAAGGkoSWlhBOU1BhcmFncmFw
+				aFN0eWxlhpKEhIQXTlNNdXRhYmxlUGFyYWdyYXBoU3R5
+				bGUAhIQQTlNQYXJhZ3JhcGhTdHlsZQCUhARDQ0BTAgCE
+				hIQHTlNBcnJheQCUmQyShISECU5TVGV4dFRhYgCUhAJD
+				ZgAchpKEo6IAOIaShKOiAFSGkoSjogBwhpKEo6IAgYwA
+				hpKEo6IAgagAhpKEo6IAgcQAhpKEo6IAgeAAhpKEo6IA
+				gfwAhpKEo6IAgRgBhpKEo6IAgTQBhpKEo6IAgVABhoaB
+				AAiEBFsxZl2DzcxMPYaShJaWBk5TRm9udIaShISEBk5T
+				Rm9udB6UmTiEBVs1NmNdBgAAAC4AAAD//lQAaQBtAGUA
+				cwBOAGUAdwBSAG8AbQBhAG4AUABTAC0AQgBvAGwAZABN
+				AFQAAACEAWYMmwCbAZsAmwCGhpcCAZKEmJkDkpmShJub
+				ApwAAAABhpKckoSenwIAhKGZDJKikqSSpZKmkqeSqJKp
+				kqqSq5Kskq2SroaBAAijg83MTD2Gkq+ShLGZLIQFWzQ0
+				Y10GAAAAJAAAAP/+VABpAG0AZQBzAE4AZQB3AFIAbwBt
+				AGEAbgBQAFMATQBUAKYMmwCbAZsAmwCGhpcDAZKEmJkD
+				kpmSmpKckp2Sr5KEsZk8hAVbNjBjXQYAAAAyAAAA//5U
+				AGkAbQBlAHMATgBlAHcAUgBvAG0AYQBuAFAAUwAtAEkA
+				dABhAGwAaQBjAE0AVAAAAKYMmwCbAZsAmwCGhpcCAYY=
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\b\fs24 \cf2 f
@@ -2181,9 +2515,10 @@
 				TQBUAAAAhAFmDJsAmwGbAJsAhoaG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 x}</string>
@@ -2269,22 +2604,24 @@
 				AAiEBFsxZl2DzcxMPYaShJaWBk5TRm9udIaShISEBk5T
 				Rm9udB6UmTyEBVs2MGNdBgAAADIAAAD//lQAaQBtAGUA
 				cwBOAGUAdwBSAG8AbQBhAG4AUABTAC0ASQB0AGEAbABp
-				AGMATQBUAAAAhAFmDJsAmwGbAJsAhoaXAgGShJiZBJKc
-				kp2SmZKakq+ShLGZLIQFWzQ0Y10GAAAAJAAAAP/+VABp
-				AG0AZQBzAE4AZQB3AFIAbwBtAGEAbgBQAFMATQBUAKYM
-				mwCbAZsAmwCGkoSWlg5OU09yaWdpbmFsRm9udIaSs4aX
-				AQGXAgGG
+				AGMATQBUAAAAhAFmDJsAmwGbAJsAhoaXAgGShJiZA5KZ
+				koSbmwKcAAAAAYaSnJKEnp8CAIShmQySopKkkqWSppKn
+				kqiSqZKqkquSrJKtkq6GgQAIo4PNzEw9hpKvkoSxmSyE
+				BVs0NGNdBgAAACQAAAD//lQAaQBtAGUAcwBOAGUAdwBS
+				AG8AbQBhAG4AUABTAE0AVACmDJsAmwGbAJsAhoaXAQGX
+				AgGG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 f
-\i0 (
-\i x
-\i0 )}</string>
+\i0 \cf2 (
+\i \cf2 x
+\i0 \cf2 )}</string>
 			</dict>
 			<key>Wrap</key>
 			<string>NO</string>
@@ -2436,8 +2773,8 @@
 			<integer>170</integer>
 			<key>Points</key>
 			<array>
-				<string>{241.75, 173.66304529057314}</string>
-				<string>{255.75, 173.66304529057314}</string>
+				<string>{241.75, 149.28846264109669}</string>
+				<string>{255.75, 149.28846264109669}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -2460,7 +2797,7 @@
 			<key>AllowConnections</key>
 			<string>NO</string>
 			<key>Bounds</key>
-			<string>{{230.35772705078125, 164.2115436780382}, {16, 20}}</string>
+			<string>{{230.60772705078125, 139.83696102856175}, {16, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -2528,9 +2865,10 @@
 				TQBUAAAAhAFmCJsAmwGbAJsAhoaG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs16 \cf2 +}</string>
@@ -2540,7 +2878,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{234.98272298926173, 170.4379819098078}, {6.7500057220458984, 6.7500057220458984}}</string>
+			<string>{{234.98272298926173, 146.06339926033135}, {6.7500057220458984, 6.7500057220458984}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -2583,8 +2921,8 @@
 					<integer>161</integer>
 					<key>Points</key>
 					<array>
-						<string>{248.25, 170.51487731933594}</string>
-						<string>{252.66748046875, 166.09739685058594}</string>
+						<string>{248.25, 146.14029466985949}</string>
+						<string>{252.66748046875, 141.72281420110949}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -2610,8 +2948,8 @@
 					<integer>162</integer>
 					<key>Points</key>
 					<array>
-						<string>{243.25, 170.51487731933594}</string>
-						<string>{248.25, 170.51487731933594}</string>
+						<string>{243.25, 146.14029466985949}</string>
+						<string>{248.25, 146.14029466985949}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -2638,7 +2976,7 @@
 			<key>AllowConnections</key>
 			<string>NO</string>
 			<key>Bounds</key>
-			<string>{{230.35772705078125, 171.51488286196832}, {16, 25}}</string>
+			<string>{{230.35772705078125, 147.14030021249187}, {16, 25}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -2706,9 +3044,10 @@
 				TQBUAAAAhAFmDJsAmwGbAJsAhoaG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 b}</string>
@@ -2720,7 +3059,7 @@
 			<key>AllowConnections</key>
 			<string>NO</string>
 			<key>Bounds</key>
-			<string>{{178.52842712402344, 170.54208374023438}, {19, 23}}</string>
+			<string>{{178.52842712402344, 146.16750109075792}, {19, 23}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -2788,9 +3127,10 @@
 				YwBNAFQAAACEAWYLmwCbAZsAmwCGhoY=
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs22 \cf2 ...}</string>
@@ -2802,7 +3142,7 @@
 			<key>AllowConnections</key>
 			<string>NO</string>
 			<key>Bounds</key>
-			<string>{{214.35772132873535, 161.96155300706448}, {16, 22}}</string>
+			<string>{{214.35772132873535, 137.58697035758803}, {16, 22}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -2870,9 +3210,10 @@
 				AE0AVAAAAIQBZgqbAJsBmwCbAIaGhg==
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs20 \cf2 \uc0\u931 }</string>
@@ -2889,7 +3230,7 @@
 					<key>AllowConnections</key>
 					<string>NO</string>
 					<key>Bounds</key>
-					<string>{{199.71544641256332, 192.12821451822856}, {14, 20}}</string>
+					<string>{{199.71544641256332, 167.75363186875211}, {14, 20}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -2963,9 +3304,10 @@
 						TQBUAAAAhAFmCJsAmwGbAJsAhoaG
 						</data>
 						<key>Text</key>
-						<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+						<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs16 \cf2 n}</string>
@@ -2977,7 +3319,7 @@
 					<key>AllowConnections</key>
 					<string>NO</string>
 					<key>Bounds</key>
-					<string>{{194.2154438495636, 184.4615478515625}, {19, 25}}</string>
+					<string>{{194.2154438495636, 160.08696520208605}, {19, 25}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -3053,9 +3395,10 @@
 						TQBUAAAAhAFmDJsAmwGbAJsAhoaG
 						</data>
 						<key>Text</key>
-						<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+						<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 w}</string>
@@ -3076,7 +3419,7 @@
 					<key>AllowConnections</key>
 					<string>NO</string>
 					<key>Bounds</key>
-					<string>{{198.50000256299973, 171.47965494791606}, {14, 20}}</string>
+					<string>{{198.50000256299973, 147.10507229843961}, {14, 20}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -3150,9 +3493,10 @@
 						TQBUAAAAhAFmCJsAmwGbAJsAhoaG
 						</data>
 						<key>Text</key>
-						<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+						<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs16 \cf2 2}</string>
@@ -3164,7 +3508,7 @@
 					<key>AllowConnections</key>
 					<string>NO</string>
 					<key>Bounds</key>
-					<string>{{193, 163.81298828125}, {19, 25}}</string>
+					<string>{{193, 139.43840563177355}, {19, 25}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -3240,9 +3584,10 @@
 						TQBUAAAAhAFmDJsAmwGbAJsAhoaG
 						</data>
 						<key>Text</key>
-						<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+						<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 w}</string>
@@ -3263,7 +3608,7 @@
 					<key>AllowConnections</key>
 					<string>NO</string>
 					<key>Bounds</key>
-					<string>{{198.5, 150.54208401718961}, {14, 20}}</string>
+					<string>{{198.5, 126.16750136771316}, {14, 20}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -3337,9 +3682,10 @@
 						TQBUAAAAhAFmCJsAmwGbAJsAhoaG
 						</data>
 						<key>Text</key>
-						<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+						<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs16 \cf2 1}</string>
@@ -3351,7 +3697,7 @@
 					<key>AllowConnections</key>
 					<string>NO</string>
 					<key>Bounds</key>
-					<string>{{192.99999743700027, 142.87541735052355}, {19, 25}}</string>
+					<string>{{192.99999743700027, 118.5008347010471}, {19, 25}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -3427,9 +3773,10 @@
 						TQBUAAAAhAFmDJsAmwGbAJsAhoaG
 						</data>
 						<key>Text</key>
-						<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+						<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 w}</string>
@@ -3445,7 +3792,7 @@
 			<key>AllowConnections</key>
 			<string>NO</string>
 			<key>Bounds</key>
-			<string>{{251, 160.2115429037774}, {55, 25}}</string>
+			<string>{{251.25, 135.83696025430095}, {72, 25}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -3498,37 +3845,39 @@
 				<data>
 				BAtzdHJlYW10eXBlZIHoA4QBQISEhBJOU0F0dHJpYnV0
 				ZWRTdHJpbmcAhIQITlNPYmplY3QAhZKEhIQITlNTdHJp
-				bmcBlIQBKwlvdXRwdXQoeCmGhAJpSQEGkoSEhAxOU0Rp
-				Y3Rpb25hcnkAlIQBaQOShJaWB05TQ29sb3KGkoSEhAdO
-				U0NvbG9yAJSEAWMChARmZmZmAAAAAYaShJaWEE5TUGFy
-				YWdyYXBoU3R5bGWGkoSEhBdOU011dGFibGVQYXJhZ3Jh
-				cGhTdHlsZQCEhBBOU1BhcmFncmFwaFN0eWxlAJSEBEND
-				QFMCAISEhAdOU0FycmF5AJSZDJKEhIQJTlNUZXh0VGFi
-				AJSEAkNmAByGkoSjogA4hpKEo6IAVIaShKOiAHCGkoSj
-				ogCBjACGkoSjogCBqACGkoSjogCBxACGkoSjogCB4ACG
-				koSjogCB/ACGkoSjogCBGAGGkoSjogCBNAGGkoSjogCB
-				UAGGhoEACIQEWzFmXYPNzEw9hpKElpYGTlNGb250hpKE
-				hIQGTlNGb250HpSZPIQFWzYwY10GAAAAMgAAAP/+VABp
-				AG0AZQBzAE4AZQB3AFIAbwBtAGEAbgBQAFMALQBJAHQA
-				YQBsAGkAYwBNAFQAAACEAWYMmwCbAZsAmwCGhpcCAZKE
-				mJkEkpySnZKZkpqSr5KEsZkshAVbNDRjXQYAAAAkAAAA
-				//5UAGkAbQBlAHMATgBlAHcAUgBvAG0AYQBuAFAAUwBN
-				AFQApgybAJsBmwCbAIaShJaWDk5TT3JpZ2luYWxGb250
-				hpKzhpcDAZKEmJkEkrSShLGZOIQFWzU2Y10GAAAALgAA
-				AP/+VABpAG0AZQBzAE4AZQB3AFIAbwBtAGEAbgBQAFMA
-				LQBCAG8AbABkAE0AVAAAAKYMmwCbAZsAmwCGkpySnZKv
-				kraSmZKahpcCAYY=
+				bmcBlIQBKw1hY3RpdmF0aW9uKHgphoQCaUkBCpKEhIQM
+				TlNEaWN0aW9uYXJ5AJSEAWkDkoSWlgdOU0NvbG9yhpKE
+				hIQHTlNDb2xvcgCUhAFjAoQEZmZmZgAAAAGGkoSWlhBO
+				U1BhcmFncmFwaFN0eWxlhpKEhIQXTlNNdXRhYmxlUGFy
+				YWdyYXBoU3R5bGUAhIQQTlNQYXJhZ3JhcGhTdHlsZQCU
+				hARDQ0BTAgCEhIQHTlNBcnJheQCUmQyShISECU5TVGV4
+				dFRhYgCUhAJDZgAchpKEo6IAOIaShKOiAFSGkoSjogBw
+				hpKEo6IAgYwAhpKEo6IAgagAhpKEo6IAgcQAhpKEo6IA
+				geAAhpKEo6IAgfwAhpKEo6IAgRgBhpKEo6IAgTQBhpKE
+				o6IAgVABhoaBAAiEBFsxZl2DzcxMPYaShJaWBk5TRm9u
+				dIaShISEBk5TRm9udB6UmTyEBVs2MGNdBgAAADIAAAD/
+				/lQAaQBtAGUAcwBOAGUAdwBSAG8AbQBhAG4AUABTAC0A
+				SQB0AGEAbABpAGMATQBUAAAAhAFmDJsAmwGbAJsAhoaX
+				AgGShJiZA5KZkoSbmwKcAAAAAYaSnJKEnp8CAIShmQyS
+				opKkkqWSppKnkqiSqZKqkquSrJKtkq6GgQAIo4PNzEw9
+				hpKvkoSxmSyEBVs0NGNdBgAAACQAAAD//lQAaQBtAGUA
+				cwBOAGUAdwBSAG8AbQBhAG4AUABTAE0AVACmDJsAmwGb
+				AJsAhoaXAwGShJiZA5KZkpqSnJKdkq+ShLGZOIQFWzU2
+				Y10GAAAALgAAAP/+VABpAG0AZQBzAE4AZQB3AFIAbwBt
+				AGEAbgBQAFMALQBCAG8AbABkAE0AVAAAAKYMmwCbAZsA
+				mwCGhpcCAYY=
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
-\f0\i\fs24 \cf2 output
-\i0 (
-\b x
-\b0 )}</string>
+\f0\i\fs24 \cf2 activation
+\i0 \cf2 (
+\b \cf2 x
+\b0 \cf2 )}</string>
 			</dict>
 			<key>Wrap</key>
 			<string>NO</string>
@@ -3540,8 +3889,8 @@
 			<integer>133</integer>
 			<key>Points</key>
 			<array>
-				<string>{228.43338012695312, 173.5}</string>
-				<string>{235.18338584899902, 173.5}</string>
+				<string>{228.43338012695312, 149.12541735052355}</string>
+				<string>{235.18338584899902, 149.12541735052355}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -3567,8 +3916,8 @@
 			<integer>132</integer>
 			<key>Points</key>
 			<array>
-				<string>{194.2154438495636, 173.75}</string>
-				<string>{216.4333817874795, 173.75}</string>
+				<string>{194.2154438495636, 149.37541735052355}</string>
+				<string>{216.4333817874795, 149.37541735052355}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -3599,8 +3948,8 @@
 			<integer>131</integer>
 			<key>Points</key>
 			<array>
-				<string>{194.85772448778152, 198}</string>
-				<string>{217.80613508742175, 177.16304529057314}</string>
+				<string>{194.85772448778152, 173.62541735052355}</string>
+				<string>{217.80613508742175, 152.78846264109669}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -3621,7 +3970,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{216.4333817874795, 166.961546040775}, {12, 12}}</string>
+			<string>{{216.4333817874795, 142.58696339129855}, {12, 12}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -3664,8 +4013,8 @@
 			<integer>129</integer>
 			<key>Points</key>
 			<array>
-				<string>{194.85772448778152, 159.25}</string>
-				<string>{216.83557529591346, 170.1781280209515}</string>
+				<string>{194.85772448778152, 134.87541735052355}</string>
+				<string>{216.83557529591346, 145.80354537147505}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -3693,7 +4042,7 @@
 					<key>AllowConnections</key>
 					<string>NO</string>
 					<key>Bounds</key>
-					<string>{{183.36175537109372, 191.628216734315}, {14, 20}}</string>
+					<string>{{183.36175537109372, 167.25363408483855}, {14, 20}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -3776,9 +4125,10 @@
 						TQBUAAAAhAFmCJsAmwGbAJsAhoaG
 						</data>
 						<key>Text</key>
-						<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+						<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs16 \cf2 n}</string>
@@ -3790,7 +4140,7 @@
 					<key>AllowConnections</key>
 					<string>NO</string>
 					<key>Bounds</key>
-					<string>{{179.02842139204324, 183.96155006764866}, {16, 25}}</string>
+					<string>{{179.02842139204324, 159.58696741817221}, {16, 25}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -3875,9 +4225,10 @@
 						TQBUAAAAhAFmDJsAmwGbAJsAhoaG
 						</data>
 						<key>Text</key>
-						<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+						<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 x}</string>
@@ -3898,7 +4249,7 @@
 					<key>AllowConnections</key>
 					<string>NO</string>
 					<key>Bounds</key>
-					<string>{{183.36175537109375, 164.46154644648354}, {14, 20}}</string>
+					<string>{{183.36175537109375, 140.08696379700709}, {14, 20}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -3981,9 +4332,10 @@
 						TQBUAAAAhAFmCJsAmwGbAJsAhoaG
 						</data>
 						<key>Text</key>
-						<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+						<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs16 \cf2 2}</string>
@@ -3995,7 +4347,7 @@
 					<key>AllowConnections</key>
 					<string>NO</string>
 					<key>Bounds</key>
-					<string>{{179.02842139204327, 156.79487977981719}, {16, 25}}</string>
+					<string>{{179.02842139204327, 132.42029713034074}, {16, 25}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -4080,9 +4432,10 @@
 						TQBUAAAAhAFmDJsAmwGbAJsAhoaG
 						</data>
 						<key>Text</key>
-						<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+						<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 x}</string>
@@ -4103,7 +4456,7 @@
 					<key>AllowConnections</key>
 					<string>NO</string>
 					<key>Bounds</key>
-					<string>{{183.028423955043, 151.47937523806945}, {14, 20}}</string>
+					<string>{{183.028423955043, 127.104792588593}, {14, 20}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -4177,9 +4530,10 @@
 						TQBUAAAAhAFmCJsAmwGbAJsAhoaG
 						</data>
 						<key>Text</key>
-						<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+						<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs16 \cf2 1}</string>
@@ -4191,7 +4545,7 @@
 					<key>AllowConnections</key>
 					<string>NO</string>
 					<key>Bounds</key>
-					<string>{{179.02842139204327, 143.81270857140333}, {16, 25}}</string>
+					<string>{{179.02842139204327, 119.43812592192688}, {16, 25}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -4267,9 +4621,10 @@
 						TQBUAAAAhAFmDJsAmwGbAJsAhoaG
 						</data>
 						<key>Text</key>
-						<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+						<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 x}</string>
@@ -4351,9 +4706,10 @@
 				TQBUAAAAhAFmCJsAmwGbAJsAhoaG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs16 \cf2 1}</string>
@@ -4431,9 +4787,10 @@
 				TQBUAAAAhAFmCJsAmwGbAJsAhoaG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs16 \cf2 1}</string>
@@ -4511,9 +4868,10 @@
 				TQBUAAAAhAFmCJsAmwGbAJsAhoaG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs16 \cf2 1}</string>
@@ -4600,9 +4958,10 @@
 				TQBUAAAAhAFmCJsAmwGbAJsAhoaG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs16 \cf2 2}</string>
@@ -4691,9 +5050,10 @@
 				TQBUAAAAhAFmDJsAmwGbAJsAhoaG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 x}</string>
@@ -4771,9 +5131,10 @@
 				TQBUAAAAhAFmCJsAmwGbAJsAhoaG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs16 \cf2 1}</string>
@@ -4853,9 +5214,10 @@
 				TQBUAAAAhAFmDJsAmwGbAJsAhoaG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 x}</string>
@@ -4935,9 +5297,10 @@
 				TQBUAAAAhAFmDJsAmwGbAJsAhoaG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 x}</string>
@@ -4990,9 +5353,10 @@
 			<key>Text</key>
 			<dict>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf0 +}</string>
@@ -5170,9 +5534,10 @@
 			<key>Text</key>
 			<dict>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf0 sin(x )}</string>
@@ -5225,9 +5590,10 @@
 			<key>Text</key>
 			<dict>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf0 *}</string>
@@ -5278,9 +5644,10 @@
 			<key>Text</key>
 			<dict>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red14\green0\blue254;}
+{\*\expandedcolortbl;;\csgenericrgb\c5490\c0\c99608;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs16 \cf2 3}</string>
@@ -5331,9 +5698,10 @@
 			<key>Text</key>
 			<dict>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red14\green0\blue254;}
+{\*\expandedcolortbl;;\csgenericrgb\c5490\c0\c99608;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 t}</string>
@@ -5384,9 +5752,10 @@
 			<key>Text</key>
 			<dict>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red14\green0\blue254;}
+{\*\expandedcolortbl;;\csgenericrgb\c5490\c0\c99608;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs16 \cf2 2}</string>
@@ -5437,9 +5806,10 @@
 			<key>Text</key>
 			<dict>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red14\green0\blue254;}
+{\*\expandedcolortbl;;\csgenericrgb\c5490\c0\c99608;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 t}</string>
@@ -5517,9 +5887,10 @@
 				TQBUAAAAhAFmCJsAmwGbAJsAhoaG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs16 \cf2 1}</string>
@@ -5606,9 +5977,10 @@
 				TQBUAAAAhAFmCJsAmwGbAJsAhoaG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs16 \cf2 2}</string>
@@ -5697,9 +6069,10 @@
 				TQBUAAAAhAFmDJsAmwGbAJsAhoaG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 x}</string>
@@ -5777,9 +6150,10 @@
 				TQBUAAAAhAFmCJsAmwGbAJsAhoaG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs16 \cf2 1}</string>
@@ -5830,9 +6204,10 @@
 			<key>Text</key>
 			<dict>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red14\green0\blue254;}
+{\*\expandedcolortbl;;\csgenericrgb\c5490\c0\c99608;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs16 \cf2 1}</string>
@@ -5924,9 +6299,10 @@
 			<key>Text</key>
 			<dict>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red14\green0\blue254;}
+{\*\expandedcolortbl;;\csgenericrgb\c5490\c0\c99608;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 t}</string>
@@ -5979,9 +6355,10 @@
 			<key>Text</key>
 			<dict>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf0 +}</string>
@@ -6186,9 +6563,10 @@
 				TQBUAAAAhAFmDJsAmwGbAJsAhoaG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 x}</string>
@@ -6268,9 +6646,10 @@
 				TQBUAAAAhAFmDJsAmwGbAJsAhoaG
 				</data>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 x}</string>
@@ -6323,9 +6702,10 @@
 			<key>Text</key>
 			<dict>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf0 sin(x )}</string>
@@ -6378,9 +6758,10 @@
 			<key>Text</key>
 			<dict>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf0 *}</string>
@@ -6440,9 +6821,10 @@
 			<key>Text</key>
 			<dict>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 \cocoascreenfonts1{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
 {\colortbl;\red255\green255\blue255;\red14\green0\blue254;}
+{\*\expandedcolortbl;;\csgenericrgb\c5490\c0\c99608;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\i\fs24 \cf2 f}</string>
@@ -6460,7 +6842,198 @@
 	<key>HPages</key>
 	<integer>1</integer>
 	<key>ImageCounter</key>
-	<integer>1</integer>
+	<integer>2</integer>
+	<key>Images</key>
+	<array>
+		<dict>
+			<key>Extension</key>
+			<string>pdf</string>
+			<key>ID</key>
+			<integer>1</integer>
+			<key>LinkBack</key>
+			<dict>
+				<key>ApplicationURL</key>
+				<string>http://www.omnigroup.com/applications/OmniGraffle</string>
+				<key>appData</key>
+				<dict>
+					<key>Color</key>
+					<dict>
+						<key>w</key>
+						<string>1</string>
+					</dict>
+					<key>DocumentSettings</key>
+					<dict>
+						<key>ApplicationVersion</key>
+						<array>
+							<string>com.omnigroup.OmniGrafflePro</string>
+							<string>137.11.0.108132</string>
+						</array>
+						<key>FileName</key>
+						<string>Base Wireframe Kit.gstencil</string>
+						<key>GraphDocumentVersion</key>
+						<integer>6</integer>
+						<key>ModelCount</key>
+						<integer>1</integer>
+						<key>ModelIndex</key>
+						<integer>0</integer>
+						<key>ModificationDate</key>
+						<string>2009-03-06 10:18:30 -0500</string>
+						<key>Modifier</key>
+						<string>Michael Angeles</string>
+						<key>SheetTitle</key>
+						<string>Canvas 1</string>
+					</dict>
+					<key>GraphicsList</key>
+					<array>
+						<dict>
+							<key>Class</key>
+							<string>LineGraphic</string>
+							<key>ControlPoints</key>
+							<array>
+								<string>{0.331787, 0.0552979}</string>
+								<string>{-80, -1}</string>
+								<string>{31, 0}</string>
+								<string>{0, 0}</string>
+								<string>{0, 0}</string>
+								<string>{-30, 1}</string>
+								<string>{79, 0}</string>
+								<string>{-0.231934, 0.712708}</string>
+							</array>
+							<key>ID</key>
+							<integer>37779</integer>
+							<key>LayerIndex</key>
+							<integer>0</integer>
+							<key>Points</key>
+							<array>
+								<string>{301.717, 414.589}</string>
+								<string>{381.717, 435.589}</string>
+								<string>{421.717, 453.589}</string>
+								<string>{463.717, 434.589}</string>
+								<string>{542.717, 414.589}</string>
+							</array>
+							<key>Style</key>
+							<dict>
+								<key>stroke</key>
+								<dict>
+									<key>Bezier</key>
+									<true/>
+									<key>Color</key>
+									<dict>
+										<key>b</key>
+										<string>0.998718</string>
+										<key>g</key>
+										<string>0.781033</string>
+										<key>r</key>
+										<string>0.424323</string>
+									</dict>
+									<key>HeadArrow</key>
+									<string>0</string>
+									<key>LineType</key>
+									<integer>1</integer>
+									<key>TailArrow</key>
+									<string>0</string>
+									<key>Width</key>
+									<real>2</real>
+								</dict>
+							</dict>
+						</dict>
+					</array>
+					<key>Layers</key>
+					<array>
+						<dict>
+							<key>Lock</key>
+							<string>NO</string>
+							<key>Name</key>
+							<string>Layer 1</string>
+							<key>Print</key>
+							<string>YES</string>
+							<key>View</key>
+							<string>YES</string>
+						</dict>
+					</array>
+					<key>ZoomLevel</key>
+					<real>1</real>
+				</dict>
+				<key>bundleId</key>
+				<string>com.omnigroup.OmniGrafflePro</string>
+				<key>refresh</key>
+				<real>0.0</real>
+				<key>serverAppName</key>
+				<string>OmniGraffle</string>
+				<key>serverName</key>
+				<string>OmniGraffle</string>
+				<key>version</key>
+				<string>A</string>
+			</dict>
+			<key>RawData</key>
+			<data>
+			JVBERi0xLjMKJcTl8uXrp/Og0MTGCjQgMCBvYmoKPDwgL0xlbmd0
+			aCA1IDAgUiAvRmlsdGVyIC9GbGF0ZURlY29kZSA+PgpzdHJlYW0K
+			eAFlkLEOgzAMRHe+4n4AN47t4M5s3RCfwNRKHVCH/n5NCGUgUqTo
+			6e58zooJKzK+YDzivpCopHrwxG38MMY5mHoWkxQvZyteJLTzGFZG
+			QPSMPt+dDGqFrFvekMQ08ABlJXMv2FCmpO6VFZX7KZImEm8userq
+			lhDnPaghaG4akz35AsJ00YhsKZ3+U0oF0GP0AtNjUmuzAXXj6GAU
+			C8kpaVtFvzm+cPoBUDBBIAplbmRzdHJlYW0KZW5kb2JqCjUgMCBv
+			YmoKMTcyCmVuZG9iagoyIDAgb2JqCjw8IC9UeXBlIC9QYWdlIC9Q
+			YXJlbnQgMyAwIFIgL1Jlc291cmNlcyA2IDAgUiAvQ29udGVudHMg
+			NCAwIFIgL01lZGlhQm94IFswIDAgMjQ3IDQ1XQo+PgplbmRvYmoK
+			NiAwIG9iago8PCAvUHJvY1NldCBbIC9QREYgXSAvQ29sb3JTcGFj
+			ZSA8PCAvQ3MxIDcgMCBSID4+ID4+CmVuZG9iago4IDAgb2JqCjw8
+			IC9MZW5ndGggOSAwIFIgL04gMyAvQWx0ZXJuYXRlIC9EZXZpY2VS
+			R0IgL0ZpbHRlciAvRmxhdGVEZWNvZGUgPj4Kc3RyZWFtCngBhZRN
+			SBRhGMf/s40EsQbRlwjF0MEkVCYLUgLT9StTtmXVTAlinX13nRxn
+			p5ndLUUihOiYdYwuVkSHiE7hoUOnOkQEmXWJoKNFEAVeIrb/O5O7
+			Y1S+MDO/eZ7/+3y9wwBVj1KOY0U0YMrOu8nemHZ6dEzb/BpVqEYU
+			XCnDczoSiQGfqZXP9Wv1LRRpWWqUsdb7NnyrdpkQUDQqd2QDPix5
+			PODjki/knTw1ZyQbE6k02SE3uEPJTvIt8tZsiMdDnBaeAVS1U5Mz
+			HJdxIjvILUUjK2M+IOt22rTJ76U97RlT1LDfyDc5C9q48v1A2x5g
+			04uKbcwDHtwDdtdVbPU1wM4RYPFQxfY96c9H2fXKyxxq9sMp0Rhr
+			+lAqfa8DNt8Afl4vlX7cLpV+3mEO1vHUMgpu0deyMOUlENQb7Gb8
+			5Br9i4OefFULsMA5jmwB+q8ANz8C+x8C2x8DiWpgqBWRy2w3uPLi
+			IucCdOacadfMTuS1Zl0/onXwaIXWZxtNDVrKsjTf5Wmu8IRbFOkm
+			TFkFztlf23iPCnt4kE/2F7kkvO7frMylU12cJZrY1qe06OomN5Dv
+			Z8yePnI9r/cZt2c4YOWAme8bCjhyyrbiPBepidTY4/GTZMZXVCcf
+			k/OQPOcVB2VM334udSJBrqU9OZnrl5pd3Ns+MzHEM5KsWDMTnfHf
+			/MYtJGXefdTcdSz/m2dtkWcYhQUBEzbvNjQk0YsYGuHARQ4Zekwq
+			TFqlX9BqwsPkX5UWEuVdFhW9WOGeFX/PeRS4W8Y/hVgccw3lCJr+
+			Tv+iL+sL+l3983xtob7imXPPmsara18ZV2aW1ci4QY0yvqwpiG+w
+			2g56LWRpneIV9OSV9Y3h6jL2fG3Zo8kc4mp8NdSlCGVqxDjjya5l
+			90WyxTfh51vL9q/pUft89klNJdeyunhmKfp8NlwNa/+zq2DSsqvw
+			5I2QLjxroe5VD6p9aovaCk09prarbWoX346qA+Udw5yViQus22X1
+			KfZgY5reyklXZovg38Ivhv+lXmEL1zQ0+Q9NuLmMaQnfEdw2cIeU
+			/8NfswMN3gplbmRzdHJlYW0KZW5kb2JqCjkgMCBvYmoKNzkyCmVu
+			ZG9iago3IDAgb2JqClsgL0lDQ0Jhc2VkIDggMCBSIF0KZW5kb2Jq
+			CjMgMCBvYmoKPDwgL1R5cGUgL1BhZ2VzIC9NZWRpYUJveCBbMCAw
+			IDI0NyA0NV0gL0NvdW50IDEgL0tpZHMgWyAyIDAgUiBdID4+CmVu
+			ZG9iagoxMCAwIG9iago8PCAvVHlwZSAvQ2F0YWxvZyAvUGFnZXMg
+			MyAwIFIgPj4KZW5kb2JqCjEgMCBvYmoKPDwgL1Byb2R1Y2VyIChN
+			YWMgT1MgWCAxMC41LjYgUXVhcnR6IFBERkNvbnRleHQpIC9DcmVh
+			dGlvbkRhdGUgKEQ6MjAwOTAzMDYxNTE4NDJaMDAnMDAnKQovTW9k
+			RGF0ZSAoRDoyMDA5MDMwNjE1MTg0MlowMCcwMCcpID4+CmVuZG9i
+			agp4cmVmCjAgMTEKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAx
+			NTM3IDAwMDAwIG4gCjAwMDAwMDAyODcgMDAwMDAgbiAKMDAwMDAw
+			MTQwNSAwMDAwMCBuIAowMDAwMDAwMDIyIDAwMDAwIG4gCjAwMDAw
+			MDAyNjggMDAwMDAgbiAKMDAwMDAwMDM5MCAwMDAwMCBuIAowMDAw
+			MDAxMzcwIDAwMDAwIG4gCjAwMDAwMDA0NTggMDAwMDAgbiAKMDAw
+			MDAwMTM1MSAwMDAwMCBuIAowMDAwMDAxNDg3IDAwMDAwIG4gCnRy
+			YWlsZXIKPDwgL1NpemUgMTEgL1Jvb3QgMTAgMCBSIC9JbmZvIDEg
+			MCBSIC9JRCBbIDw3YTgyMmE1ZWEyYmE4YTZkZWMzMThkMjdkZWQz
+			NzUyZT4KPDdhODIyYTVlYTJiYThhNmRlYzMxOGQyN2RlZDM3NTJl
+			PiBdID4+CnN0YXJ0eHJlZgoxNjc5CiUlRU9GCjEgMCBvYmoKPDwv
+			QXV0aG9yIChVbmtub3duXG5NaWNoYWVsIEFuZ2VsZXMpL0NyZWF0
+			aW9uRGF0ZSAoRDoyMDA5MDMwNjE1MTg0MlowMCcwMCcpL0NyZWF0
+			b3IgKE9tbmlHcmFmZmxlIFByb2Zlc3Npb25hbCA1LjEuMSkvTW9k
+			RGF0ZSAoRDoyMDA5MDMwNjE1MTgwMFopL1Byb2R1Y2VyIChNYWMg
+			T1MgWCAxMC41LjYgUXVhcnR6IFBERkNvbnRleHQpL1RpdGxlIChC
+			YXNlIFdpcmVmcmFtZSBLaXQuZ3N0ZW5jaWwpPj4KZW5kb2JqCnhy
+			ZWYKMSAxCjAwMDAwMDIwNTYgMDAwMDAgbiAKdHJhaWxlcgo8PC9J
+			RCBbPDdhODIyYTVlYTJiYThhNmRlYzMxOGQyN2RlZDM3NTJlPiA8
+			N2E4MjJhNWVhMmJhOGE2ZGVjMzE4ZDI3ZGVkMzc1MmU+XSAvSW5m
+			byAxIDAgUiAvUHJldiAxNjc5IC9Sb290IDEwIDAgUiAvU2l6ZSAx
+			MT4+CnN0YXJ0eHJlZgoyMjk5CiUlRU9GCg==
+			</data>
+		</dict>
+	</array>
 	<key>KeepToScale</key>
 	<false/>
 	<key>Layers</key>
@@ -6498,7 +7071,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2018-01-09 22:50:30 +0000</string>
+	<string>2018-01-10 21:40:56 +0000</string>
 	<key>Modifier</key>
 	<string>Terence Parr</string>
 	<key>NotesVisible</key>
@@ -6529,7 +7102,7 @@
 		<key>NSPaperSize</key>
 		<array>
 			<string>size</string>
-			<string>{611.99997520446777, 792}</string>
+			<string>{612, 792}</string>
 		</array>
 		<key>NSPrintReverseOrientation</key>
 		<array>
@@ -6579,7 +7152,7 @@
 			</dict>
 		</array>
 		<key>Frame</key>
-		<string>{{778, 47}, {1351, 1170}}</string>
+		<string>{{277, 81}, {1351, 1170}}</string>
 		<key>ListView</key>
 		<true/>
 		<key>OutlineWidth</key>
@@ -6593,7 +7166,7 @@
 		<key>SidebarWidth</key>
 		<integer>120</integer>
 		<key>VisibleRegion</key>
-		<string>{{81.5, 73.5}, {300.5, 253.25}}</string>
+		<string>{{81.5, 73.75}, {300.5, 253.25}}</string>
 		<key>Zoom</key>
 		<real>4</real>
 		<key>ZoomValues</key>
