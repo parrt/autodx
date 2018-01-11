@@ -313,7 +313,7 @@ In a diagonal Jacobian, all elements off the diagonal are zero, $\frac{\partial}
 
 Those partials go to zero when $f_i$ and $g_i$ are not functions of $w_j$. We know that element-wise operations imply that $f_i$ is purely a function of $w_i$ and $g_i$  is purely a function of $x_i$. For example, $\mathbf{w}+\mathbf{x}$ sums $w_i + x_i$. Consequently,  $f_i(\mathbf{w}) \bigcirc g_i(\mathbf{x})$ reduces to $f_i(w_i) \bigcirc g_i(x_i)$ and the goal becomes $\frac{\partial}{\partial w_j} f_i(w_i) = \frac{\partial}{\partial w_j} g_i(x_i) = 0$. $f_i(w_i)$ and $g_i(x_i)$ look like a constants to the partial differentiation operator with respect to $w_j$ when $j \neq i$ so the partials are zero off the diagonal. (Notation $f_i(w_i)$ is technically an abuse of our notation because $f_i$ and $g_i$ are functions of vectors not individual elements. We should really write something like $\hat f_{i}(w_i) = f_{i}(\mathbf{w})$, but that would muddy the equations further, and programmers are comfortable overloading functions, so we'll proceed with the notation anyway.)  
 
-We'll take advantage of this simplification later and refer to the constraint that $f_i(\mathbf{w})$ and $g_i(\mathbf{x})$ access at most $w_i$ and $x_i$ as the {\em element-wise diagonal condition}.
+We'll take advantage of this simplification later and refer to the constraint that $f_i(\mathbf{w})$ and $g_i(\mathbf{x})$ access at most $w_i$ and $x_i$, respectively, as the {\em element-wise diagonal condition}.
 
 Under this condition, the elements along the diagonal of the Jacobian are $\frac{\partial}{\partial w_i} ( f_i(w_i) \bigcirc g_i(x_i) )$:
 
@@ -338,17 +338,10 @@ $\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = diag \left( \frac{\partial}{\
 
 where $diag(\mathbf{x})$ constructs a matrix whose diagonal elements are taken from vector $\mathbf{x}$: $diag(\mathbf{x}) = \mathbf{x}^T I$. $I$ represents the square identity matrix of appropriate dimensions that is zero everywhere but the diagonal, which contains all ones.
 
-We know that all off-diagonal entries are 0 because for $j \neq i$:
-
-$\frac{\partial}{\partial w_j} ( f_i(w_i) \bigcirc g_i(x_i) ) = \frac{\partial}{\partial x_j} ( f_i(w_i) \bigcirc g_i(x_i) ) = 0$ for $j \neq i$
-
-
-
-Because we do lots of simple vector arithmetic, the general function $\mathbf{f(w)}$ in the binary element-wise operation is often just the vector $\mathbf{w}$.  Any time the general function is a vector, we know that $f_i(\mathbf{w})$ reduces to $f_i(w_i) = w_i$. For example, vector addition $\mathbf{w + x}$ fits our general case as $\mathbf{f(w)} + \mathbf{g(x)}$ with scalar equations $y_i = f_i(\mathbf{w}) + g_i(\mathbf{x})$. But, that reduces to just $y_i = f_i(w_i) + g_i(x_i) = w_i + x_i$ and so we get partial derivatives:
+Because we do lots of simple vector arithmetic, the general function $\mathbf{f(w)}$ in the binary element-wise operation is often just the vector $\mathbf{w}$.  Any time the general function is a vector, we know that $f_i(\mathbf{w})$ reduces to $f_i(w_i) = w_i$. For example, vector addition $\mathbf{w + x}$ fits our element-wise diagonal condition because $\mathbf{f(w)} + \mathbf{g(x)}$ has scalar equations $y_i = f_i(\mathbf{w}) + g_i(\mathbf{x})$ that reduce to just $y_i = f_i(w_i) + g_i(x_i) = w_i + x_i$ with partial derivatives:
 
 $\frac{\partial}{\partial w_i} ( f_{i}(w_i) + g_{i}(x_i) ) = \frac{\partial}{\partial w_i}(w_i + x_i) = 1 + 0 = 1$\\
 $\frac{\partial}{\partial x_i} ( f_{i}(w_i) + g_{i}(x_i) ) = \frac{\partial}{\partial x_i}(w_i + x_i) = 0 + 1 = 1$
-
 
 That gives us $\frac{\partial (\mathbf{w+x})}{\partial \mathbf{w}} = \frac{\partial (\mathbf{w+x})}{\partial \mathbf{x}} = I$, the identity matrix, because every element along the diagonal is 1.
 
@@ -370,22 +363,19 @@ $
 \end{array}
 $
 
-The $\otimes$ and $\oslash$ operators are element-wise multiplication and division; $\otimes$ is sometimes called the {\em Hadamard product}.
+The $\otimes$ and $\oslash$ operators are element-wise multiplication and division; $\otimes$ is sometimes called the {\em Hadamard product}. There isn't a standard notation for element-wise multiplication and division so where using an approach consistent with our general binary operation notation.
 
 \subsection{Derivatives involving scalar expansion}
 
-When we add or multiply scalars to vectors, we are implicitly expanding the scalar to a vector and then performing an element-wise operation. For example, adding scalar $z$  to vector $\mathbf{x}$, $\mathbf{y} = \mathbf{x} + z$,
+When we multiply or add scalars to vectors, we're implicitly expanding the scalar to a vector and then performing an element-wise binary operation. For example, adding scalar $z$  to vector $\mathbf{x}$, $\mathbf{y} = \mathbf{x} + z$,
 is really
-$\mathbf{y} = \mathbf{f(x)} + \mathbf{g}(z)$ where $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(z) = \vec{1} z$.  It's okay to think of variable $z$ as a constant for our discussion here, but $z$ is more generally a scalar that doesn't depend on $\mathbf{x}$. We need this condition so that $\frac{\partial z}{\partial x_i} = 0$ for any $x_i$.
-Similarly, multiplying by a scalar, $\mathbf{y} = \mathbf{x} z$,
-is really
-$\mathbf{y} = \mathbf{f(x)} \otimes \mathbf{g}(z)$ where $\otimes$ is the element-wise  multiplication (Hadamard product) of the two vectors.
+$\mathbf{y} = \mathbf{f(x)} + \mathbf{g}(z)$ where $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(z) = \vec{1} z$. Notation $\vec{1}$ represents a vector of ones of appropriate length.  $z$ is any scalar that doesn't depend on $\mathbf{x}$, which is useful because then $\frac{\partial z}{\partial x_i} = 0$ for any $x_i$ and that will simplify our partial derivative computations. (It's okay to think of variable $z$ as a constant for our discussion here.)  Similarly, multiplying by a scalar, $\mathbf{y} = \mathbf{x} z$, is really $\mathbf{y} = \mathbf{f(x)} \otimes \mathbf{g}(z) = \mathbf{x} \otimes \vec{1}z$ where $\otimes$ is the element-wise  multiplication (Hadamard product) of the two vectors.
 
-The partial derivative of vector-scalar addition and multiplication with respect to vector $\mathbf{x}$ fall out from our element-wise rule:
+The partial derivatives of vector-scalar addition and multiplication with, respect to vector $\mathbf{x}$, using our element-wise rule:
 
 $\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = diag \left( \ldots \frac{\partial}{\partial x_i} ( f_i(x_i) \bigcirc g_i(z) ) \ldots \right)$
 
-since we've identified $f_i(x_i) = x_i$ and $g_i(z) = z$ where $z$ doesn't depend on $\mathbf{x}$. Note that functions $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(z) = \vec{1} z$ clearly satisfy our constraint for the special case of diagonal Jacobian (that $f_i(\mathbf{x})$ refer at most to $x_i$ and $g_i(z)$ refers to the $i^{th}$ value of the $\vec{1}z$ vector where $z$ doesn't depend on $\mathbf{x}$). 
+This follows because functions $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(z) = \vec{1} z$ clearly satisfy our element-wise diagonal condition for the Jacobian (that $f_i(\mathbf{x})$ refer at most to $x_i$ and $g_i(z)$ refers to the $i^{th}$ value of the $\vec{1}z$ vector where $z$ doesn't depend on $\mathbf{x}$). 
 
 Using the usual rules for scalar partial derivatives, we arrive at the following diagonal elements of the Jacobian for vector-scalar addition:
  
@@ -393,7 +383,7 @@ $\frac{\partial}{\partial x_i} ( f_i(x_i) + g_i(z) ) = \frac{\partial (x_i + z)}
 
 So, $\frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} + z ) = diag(\vec{1}) = I$.
 
-Computing the partial derivative with respect to the single-valued parameter $z$, however, results in a vertical vector not a diagonal matrix whose elements are:
+Computing the partial derivative with respect to the scalar parameter $z$, however, results in a vertical vector, not a diagonal matrix. The elements of the vector are:
  
 $\frac{\partial}{\partial z} ( f_i(x_i) + g_i(z) ) = \frac{\partial (x_i + z)}{\partial z} = \frac{\partial x_i}{\partial z} + \frac{\partial z}{\partial z} = 0 + 1 = 1$
 
@@ -405,27 +395,27 @@ $\frac{\partial}{\partial x_i} ( f_i(x_i) \otimes g_i(z) ) = x_i  \frac{\partial
 
 So, $\frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} z ) = diag(\vec{1}  z) = I z$. 
 
-The partial derivative with respect to single-valued parameter $z$ is a vertical vector whose elements are:
+The partial derivative with respect to a scalar parameter $z$ is a vertical vector whose elements are:
 
 $\frac{\partial}{\partial z} ( f_i(x_i) \otimes g_i(z) ) = x_i \frac{\partial z}{\partial z} + z \frac{\partial x_i}{\partial z} = x_i + 0 = x_i$
 
 This gives us $\frac{\partial}{\partial z} ( \mathbf{x} z ) = \mathbf{x}$.
 
-\subsection{Vector sum}
+\subsection{Vector sum reduction}
 
-Summing the elements of a vector is an important operation in and of itself in applications based upon linear algebra, such as the neuron output function, but we can also use it as a way to simplify computing the derivative of vector dot product and other operations that reduce vectors to scalars.
+Summing up the elements of a vector is an important operation in deep learning, such as the network loss function, but we can also use it as a way to simplify computing the derivative of vector dot product and other operations that reduce vectors to scalars.
 
-Let $y = sum( \mathbf{f}(\mathbf{x})) = \Sigma_{i=1}^n f_i(\mathbf{x})$ where we have to be careful to leave the parameter as a vector $\mathbf{x}$ because each function $f_i$ could use all values in the vector not just $x_i$. The sum is over the {\bf results} of the function and not the parameter. The gradient ($1 \times n$ Jacobian) of vector summation is:
+Let $y = sum( \mathbf{f}(\mathbf{x})) = \Sigma_{i=1}^n f_i(\mathbf{x})$.  Notice we were careful here to leave the parameter as a vector $\mathbf{x}$ because each function $f_i$ could use all values in the vector, not just $x_i$. The sum is over the {\bf results} of the function and not the parameter. The gradient ($1 \times n$ Jacobian) of vector summation is:
 
 $
 \begin{array}{lcl}
 \frac{\partial y}{\partial \mathbf{x}} & = & \begin{bmatrix} \frac{\partial y}{\partial x_1}, \frac{\partial y}{\partial x_2}, \ldots, \frac{\partial y}{\partial x_n} \end{bmatrix}\\\\
  & = & \begin{bmatrix} \frac{\partial}{\partial x_1} \Sigma_i f_i(\mathbf{x}),~ \frac{\partial}{\partial x_2} \Sigma_i f_i(\mathbf{x}),~ \ldots,~ \frac{\partial}{\partial x_n} \Sigma_i  f_i(\mathbf{x}) \end{bmatrix} \\\\
- & = & \begin{bmatrix} \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_1},~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_2},~ \ldots,~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_n}  \end{bmatrix}(\text{move derivative inside }\Sigma)\\\\
+ & = & \begin{bmatrix} \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_1},~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_2},~ \ldots,~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_n}  \end{bmatrix}~~~~~~~~~~~~~~~(\text{move derivative inside }\Sigma)\\\\
 \end{array}
 $
 
-The summation inside the gradient elements can be tricky so make sure to keep your notation consistent. 
+(The summation inside the gradient elements can be tricky so make sure to keep your notation consistent.)
 
 Let's look at the gradient of the simple $y = sum(\mathbf{x})$. The function inside the summation is just $f_i(\mathbf{x}) = x_i$ and the gradient is then:
 
@@ -435,7 +425,7 @@ Because $\frac{\partial}{\partial x_j} x_i = 0$ for $j \neq i$, we can simplify 
 
 $\nabla y = \begin{bmatrix} \frac{\partial x_1}{\partial x_1},~ \frac{\partial x_2}{\partial x_2},~ \ldots,~ \frac{\partial x_n}{\partial x_n}  \end{bmatrix} = \begin{bmatrix}1, 1, \ldots, 1\end{bmatrix} = \vec{1}^T$
 
-Notice that the result is a horizontal vector full of 1s, not a vertical vector, and so the gradient is $\vec{1}^T$. It's very important to keep the shape of all of your vectors and matrices in order otherwise it's impossible to compute the derivatives of complex functions.
+Notice that the result is a horizontal vector full of 1s, not a vertical vector, and so the gradient is $\vec{1}^T$. (The $T$ exponent represents the transpose of the indicated vector. In this case, it flips a vertical vector of ones to a horizontal vector.) It's very important to keep the shape of all of your vectors and matrices in order otherwise it's impossible to compute the derivatives of complex functions.
 
 As another example, let's sum the result of multiplying a vector by a constant scalar.  If $y = sum(\mathbf{x} z)$ then $f_i(\mathbf{x},z) = x_i z$. The gradient is:
 
