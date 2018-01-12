@@ -448,22 +448,26 @@ $
 \end{array}
 $
 
-\subsection{Vector chain rule}
+\subsection{Single-variable chain rule}
 
 %https://calculus.subwiki.org/wiki/Proof_of_product_rule_for_differentiation_using_chain_rule_for_partial_differentiation
 
-We can't compute partial derivatives of very complicated functions using just the basic matrix calculus rules we've seen so far. We need to be able to combine them using the so-called {\em chain rule}.  The chain rule is a divide and conquer strategy (like Quicksort) that breaks complicated expressions into subexpressions that are easier to compute derivatives for.  The chain rule comes into play when we need the derivative of an expression with nested subexpressions, such as $\frac{d}{dx} sin(x^2)$.  
+We can't compute partial derivatives of very complicated functions using just the basic matrix calculus rules we've seen so far. We need to be able to combine them using the so-called multi-variate or {\em vector chain rule}. To get warmed up, we'll start with the single variable chain rule in this section and then move on to the vector chain rule in the next.
 
-In general, the chain rule is defined in terms of expressions that can be written as $y = f(g(x))$. (You will also see the chain rule defined using function composition $(f \circ g)(x)$ which is the same thing.)  Some sources write the derivative using shorthand notation $f'(g(x))g'(x)$, but that hides the fact that we are performing a variable substitution: $u = g(x)$. It's better to define the chain rule explicitly via the following so we never take the derivative with respect to the wrong variable.
+The chain rule is a divide and conquer strategy (like Quicksort) that breaks complicated expressions into subexpressions that are easier to compute derivatives for.  The (single-variable) chain rule comes into play when we need the derivative of an expression with nested subexpressions, such as $\frac{d}{dx} sin(x^2)$.  In general, the chain rule is defined in terms of expressions that can be written as $y = f(g(x))$. (You will also see the chain rule defined using function composition $(f \circ g)(x)$ which is the same thing.)  Some sources write the derivative using shorthand notation $f'(g(x))g'(x)$, but that hides the fact that we are performing a variable substitution: $u = g(x)$. It's better to define the chain rule explicitly via the following so we never take the derivative with respect to the wrong variable.
 
 $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$.
 
-In this case, we split $sin(x^2)$ into two functions:
+You can think of the chain rule in terms of units canceling. If we let $y$ be gallons of gas, $x$ be the gallons in a gas tank, and $u$ as miles we can interpret $\frac{dy}{dx}$ as $\frac{miles}{tank} = \frac{miles}{gallon} \frac{gallon}{tank}$. The $gallon$ denominator and numerator cancel. This is a convenient way to remember the chain rule but the analogy only goes so far; don't treat $dy$ and $dx$ has separate variables since they are two components in the name of a single operator.
 
-$u = g(x) = x^2$\\
-$y = f(u) = sin(u)$
+In the case of $\frac{d}{dx} sin(x^2)$, we split $sin(x^2)$ into two functions:
 
-Putting the functions $f$ and $g$ and their parameters in there makes it clear which variables we must take the derivative with respect to. The order of these subexpressions does not affect the answer, but we recommend working in the reverse order of operations dictated by the nesting (innermost to outermost). That way, expressions and derivatives are always functions of previously-computed elements. Here are the derivatives of the simplified functions:
+$u(x) = x^2$\\
+$y = f(u(x)) = sin(u(x))$ ~~~~~~~~~~~(or just $y = f(u) = sin(u)$)
+
+The order of these subexpressions does not affect the answer, but we recommend working in the reverse order of operations dictated by the nesting (innermost to outermost). That way, expressions and derivatives are always functions of previously-computed elements. 
+
+Putting the functions $f$ and $g$ and their parameters in there makes it clear which variables we must take the derivative with respect to. The $u$ in $sin(u)$ is really $u(x)$ but think of it as a variable for $\frac{df}{du}$ purposes. That's the whole point of the substitution $u = g(x)$; we've reduced a composite expression down to a single expression. Here are the derivatives of the simplified functions:
 
 $\frac{du}{dx} = \frac{d}{dx} x^2 = 2x$\\
 $\frac{dy}{du} = \frac{d}{du} sin(u) = cos(u)$
@@ -476,8 +480,6 @@ then substituting the intermediate variable back in
 
 $\frac{dy}{dx} = cos(x^2) 2x = 2xcos(x^2)$
 
-You can think of the chain rule in terms of units canceling. If we let $y$ be gallons of gas, $x$ be the gallons in a gas tank, and $u$ as miles we can interpret $\frac{dy}{dx}$ as $\frac{miles}{tank} = \frac{miles}{gallon} \frac{gallon}{tank}$. The $gallon$ denominator and numerator cancel. This is a convenient way to remember the chain rule but the analogy only goes so far; don't treat $dy$ and $dx$ has separate variables since they are two components in the name of a single operator.
-
 When there is only one variable substitution, it's straightforward to directly write the derivative down without explicitly creating and substituting a temporary variable. With deeply nested expressions, however, it's easy to get lost and it's better to carefully track all of the intermediate variables.
 
 It might help to think about deploying the chain rule the way a compiler implementor thinks about generating code for complicated expressions.  The compiler must unravel function call nesting like $f_1(f_2(f_3(f_4(x))))$ into a sequence of calls. The result of calling function $f_i$ is saved to a temporary variable called a register, which is then passed as a parameter to $f_{i-1}$.  Consider a nested equation like $y = f(x) = ln(sin(x^3)^2)$ that breaks down into subexpressions assigned to  intermediate (temporary) variables:
@@ -487,32 +489,38 @@ $r_2 = f_2(r_1) = sin(r_1)$\\
 $r_3 = f_3(r_2) = r_2^2$\\
 $r_4 = f_4(r_3) = ln(r_3)$ ~~~~~~($y = r_4$)
 
-To compute the scalar derivative $\frac{dy}{dx}$, we can treat each of those subexpressions in isolation using just the basic scalar derivative rules.
+It helps to think of the chain of operations as a literal chain (just as a compiler builds a tree of operations):
 
-$
-\begin{array}{lllll}
+\includegraphics{chain-tree.png}
+
+Now, to compute $\frac{dy}{dx}$, we start with $\frac{dy}{dx} = \frac{dr_4}{dx}$ (synonymous with $\frac{df_4}{dx}$). Next, we expand $\frac{dr_4}{dx}$ to $\frac{dr_4}{dr_3}\frac{dr_3}{dx}$, $\frac{dr_3}{dx}$ to $\frac{dr_3}{dr_2}\frac{dr_2}{dx}$, and finally $\frac{dr_2}{dx}$ to $\frac{dr_2}{dr_1}\frac{dr_1}{dx}$.  Substituting in those pieces, we get:
+
+$\frac{dy}{dx} = \frac{d r_4}{dr_3} \frac{dr_3}{d r_2} \frac{dr_2}{dr_1} \frac{dr_1}{dx}$
+
+To compute the scalar derivative $\frac{dy}{dx}$, therefore, we need to compute each of those derivatives.  The power of the chain rule becomes clear when we get to treat each of those $r_i$ subexpressions in isolation using just the basic scalar derivative rules.
+
+$\begin{array}{lllll}
 \vspace{1mm}
 \frac{d}{r_x} r_1 & = & \frac{d}{x} x^3 & = & 3x^2\\
 \vspace{1mm}
 \frac{d}{r_1} r_2 & = & \frac{d}{r_1} sin(r_1) & = & cos(r_1) \\
 \frac{d}{r_2} r_3 & = & \frac{d}{r_2} r_2^2 & =& 2r_2\\
 \frac{d}{r_3} r_4 & = & \frac{d}{r_3} ln(r_3) & =& \frac{1}{r_3}\\
-\end{array}
-$
+\end{array}$
 
-Using the chain rule for 4 intermediate variables,
+Putting it all back together using the chain rule for 4 intermediate variables, we get:
 
-$\frac{dy}{dx} = \frac{dy}{r_4} \frac{d r_4}{r_3} \frac{dr_3}{d r_2} \frac{dr_2}{dr_1} \frac{dr_1}{dx}$
-
-we get
-
-$\frac{dy}{dx} = 1  \frac{1}{r_3}  2r_2  cos(r_1)  3x^2 = \frac{6r_2x^2cos(r_1)}{r_3}$
+$\frac{dy}{dx} = \frac{d r_4}{dr_3} \frac{dr_3}{d r_2} \frac{dr_2}{dr_1} \frac{dr_1}{dx} = \frac{1}{r_3}  2r_2  cos(r_1)  3x^2 = \frac{6r_2x^2cos(r_1)}{r_3}$
 
 Substituting the intermediate variables back in, gives us:
 
 $\frac{dy}{dx} = \frac{6sin(r_1)x^2cos(x^3)}{r_2^2} = \frac{6sin(x^3)x^2cos(x^3)}{sin(r_1)^2} = \frac{6sin(x^3)x^2cos(x^3)}{sin(x^3)^2} = \frac{6x^2cos(x^3)}{sin(x^3)}$
 
-Ok, so much for the scalar chain rule. It turns out that the chain rule also works for computing partial derivatives of vector functions with respect to vectors.  Previously, we manually computed the derivative with respect to $\mathbf{x}$ of $y = sum(\mathbf{x}  z)$ as $[z, z, \ldots, z]$, but we can also use the chain rule. Let vector $\mathbf{u} = \mathbf{x}  z$ then $y = sum(\mathbf{u})$. The vector chain rule tells us that $\frac{dy}{d\mathbf{x}} = \frac{dy}{d\mathbf{u}}  \frac{d\mathbf{u}}{d\mathbf{x}}$, which means 
+Ok, so much for the scalar chain rule. It turns out that the chain rule also works for computing partial derivatives of vector functions with respect to vectors.
+
+\subsection{Vector chain rule}
+
+Previously, we manually computed the derivative with respect to $\mathbf{x}$ of $y = sum(\mathbf{x}  z)$ as $[z, z, \ldots, z]$, but we can also use the chain rule. Let vector $\mathbf{u} = \mathbf{x}  z$ then $y = sum(\mathbf{u})$. The vector chain rule works just like the single-variable chain rule except that our variable is now a vector.  The vector general says that $\frac{dy}{d\mathbf{x}} = \frac{dy}{d\mathbf{u}}  \frac{d\mathbf{u}}{d\mathbf{x}}$, which means 
 
 $\frac{dy}{d\mathbf{x}} = \vec{1}^T  \frac{d}{d\mathbf{x}} (\mathbf{x}  z) = \vec{1}^T  diag(\vec{1}z) = \vec{1}^T  I  z = \vec{1}^T  z = [z, z, \ldots, z]$
 
