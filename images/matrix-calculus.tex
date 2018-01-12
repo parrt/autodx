@@ -28,7 +28,7 @@
 
 \section{Introduction}
 
-Most of us last saw calculus in school, but derivatives are a critical part of machine learning, particularly deep neural networks, which are trained by optimizing a loss function. Pick up a machine learning paper or the documentation of a library such as [PyTorch](link) and calculus comes screeching back into your life like distant relatives around the holidays.  And it's not just any old scalar calculus that pops up---we need differential {\em matrix calculus}. 
+Most of us last saw calculus in school, but derivatives are a critical part of machine learning, particularly deep neural networks, which are trained by optimizing a loss function. Pick up a machine learning paper or the documentation of a library such as [PyTorch](link) and calculus comes screeching back into your life like distant relatives around the holidays.  And it's not just any old scalar calculus that pops up---we need differential {\em matrix calculus}, the shotgun wedding of [linear algebra](https://en.wikipedia.org/wiki/Linear\_algebra) and [multivariate calculus](https://en.wikipedia.org/wiki/Multivariable\_calculus).
 
 For example, the activation of a single computation unit in a neural network is typically calculated using the dot product (from linear algebra) of an edge weight vector $\mathbf{w}$ with an input vector $\mathbf{x}$ plus a scalar bias (threshold): $z(\mathbf{x}) = \Sigma_i^n w_i x_i + b = \mathbf{w} \cdot \mathbf{x} + b$. Function $z(\mathbf{x})$ is called the unit's {\em affine function} and is followed by a [rectified linear unit](link), which clips negative values to zero: $max(0, z(\mathbf{x}))$. Such a computational unit is sometimes referred to as an ``artificial neuron'' and looks like:
 
@@ -44,11 +44,9 @@ If we're careful, we can derive the gradient by differentiating the scalar versi
 
 $\frac{1}{n} \Sigma_{\mathbf{x}} ||target(\mathbf{x}) - activation(\mathbf{x})||_2^2 = \frac{1}{n} \Sigma_{\mathbf{x}} ||target(\mathbf{x}) - max(0, \Sigma_i^n w_i x_i + b)||_2^2$
 
-But this is just one neuron, and neural networks must train the weights and biases of all neurons in all layers simultaneously.  The really cool part about partial derivatives is that they let us optimize all of these network parameters at once.  Because there are multiple inputs and (potentially) multiple network outputs, we really need general rules for the derivative of a function with respect to a vector and even rules for the derivative of a vector-valued function with respect to a vector.
+But this is just one neuron, and neural networks must train the weights and biases of all neurons in all layers simultaneously.  The really cool part about partial derivatives is that they let us optimize all of these network parameters at once. TODO: not sure "all at once" follows... Because there are multiple inputs and (potentially) multiple network outputs, we really need general rules for the derivative of a function with respect to a vector and even rules for the derivative of a vector-valued function with respect to a vector.
 
-This article walks through the derivation of some important rules for computing partial derivatives with respect to vectors, particularly those useful for training neural networks. This field is known as {\em matrix calculus}, and the good news is, that we only need a small subset of that field, which we introduce here. 
-
-We haven't found any other online introductory material of the subset of matrix calculus needed for machine learning and neural networks. While there are lots of useful resources on the net, such as https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf and  https://www.comp.nus.edu.sg/~cs5240/lecture/matrix-differentiation.pdf, they are really just lists of rules, with minimal explanation. In contrast, we're going to rederive and rediscover some key matrix calculus rules in an effort to explain them. It turns out that matrix calculus is really not that hard! There aren't dozens of new rules to learn; just a couple of key concepts.  That said, our intended audience already has many of these pieces in place mentally; it's more of a core dump than a complete textbook. Our hope is that it will get you started quickly in the world of matrix calculus.
+This article walks through the derivation of some important rules for computing partial derivatives with respect to vectors, particularly those useful for training neural networks. This field is known as {\em matrix calculus}, and the good news is, we only need a small subset of that field, which we introduce here.  While there is a lot of online material on multivariate calculus and linear algebra, they are typically taught as to separate undergraduate courses so most material treats them in isolation.  The pages that do discuss matrix calculus often are really just lists of rules with minimal explanation or are just pieces of the story.  In contrast, we're going to rederive and rediscover some key matrix calculus rules in an effort to explain them. It turns out that matrix calculus is really not that hard! There aren't dozens of new rules to learn; just a couple of key concepts.  That said, our intended audience already has many of these pieces in place mentally; it's more of a core dump than a complete textbook. Our hope is that it will get you started quickly in the world of matrix calculus related to training neural networks.
 
 \section{Review: Scalar derivative rules}
 
@@ -452,53 +450,74 @@ $
 
 %https://calculus.subwiki.org/wiki/Proof_of_product_rule_for_differentiation_using_chain_rule_for_partial_differentiation
 
-We can't compute partial derivatives of very complicated functions using just the basic matrix calculus rules we've seen so far. We need to be able to combine them using the so-called multi-variate or {\em vector chain rule}. To get warmed up, we'll start with the single variable chain rule in this section and then move on to the vector chain rule in the next.
+We can't compute partial derivatives of very complicated functions using just the basic matrix calculus rules we've seen so far.  For example, we can't take the derivative of nested expressions like $sum(\mathbf{w}+\mathbf{x})$. We need to be able to combine our basic vector rules using what we can call the {\em vector chain rule}.   Unfortunately, there are a number of rules for differentiation that fall under the name ``chain rule'' so we have to be careful which chain rule we're talking about. Part of our goal here is to clearly define and name three different chain rules, indicating in which situation they are appropriate. To get warmed up, we'll start with what we'll call the {\em single-variable chain rule} in this section, where we want the derivative of a scalar function with respect to a scalar. In the next section, we'll move on to an important concept called the {\em total derivative} and use it to define what we'll pedantically call the {\em single-variable total-derivative chain rule}. Then, we'll be ready for the vector chain rule in its full glory as needed for neural networks.
 
-The chain rule is a divide and conquer strategy (like Quicksort) that breaks complicated expressions into subexpressions that are easier to compute derivatives for.  The (single-variable) chain rule comes into play when we need the derivative of an expression with nested subexpressions, such as $\frac{d}{dx} sin(x^2)$.  In general, the chain rule is defined in terms of expressions that can be written as $y = f(g(x))$. (You will also see the chain rule defined using function composition $(f \circ g)(x)$ which is the same thing.)  Some sources write the derivative using shorthand notation $f'(g(x))g'(x)$, but that hides the fact that we are performing a variable substitution: $u = g(x)$. It's better to define the chain rule explicitly via the following so we never take the derivative with respect to the wrong variable.
+The chain rule in general is a divide and conquer strategy (like Quicksort) that breaks complicated expressions into subexpressions whose derivatives are easier to compute.  Its power derives from the fact that we can process each simple subexpression in isolation yet still combine the  intermediate results to get the correct overall result.
 
-$\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$.
+The chain rule comes into play when we need the derivative of an expression composed of nested subexpressions. So the single-variable chain rule  applies when confronted with expressions like $\frac{d}{dx} sin(x^2)$.  The outermost expression takes the $sin$ of an intermediate result, a nested subexpression that squares $x$. The chain rule is generically defined in terms of nested functions written as $f(g(x))$. (You will also see the chain rule defined using function composition $(f \circ g)(x)$, which is the same thing.)  Some sources write the derivative using shorthand notation $f'(g(x))g'(x)$, but that hides the fact that we are performing a variable substitution: $u = g(x)$, which we'll see shortly. It's better to define the [single-variable chain rule](http://m.wolframalpha.com/input/?i=chain+rule) of $f(g(x))$ explicitly so we never take the derivative with respect to the wrong variable.
 
-You can think of the chain rule in terms of units canceling. If we let $y$ be gallons of gas, $x$ be the gallons in a gas tank, and $u$ as miles we can interpret $\frac{dy}{dx}$ as $\frac{miles}{tank} = \frac{miles}{gallon} \frac{gallon}{tank}$. The $gallon$ denominator and numerator cancel. This is a convenient way to remember the chain rule but the analogy only goes so far; don't treat $dy$ and $dx$ has separate variables since they are two components in the name of a single operator.
+To deploy the single-variable chain rule, follow these steps:
 
-In the case of $\frac{d}{dx} sin(x^2)$, we split $sin(x^2)$ into two functions:
+\begin{enumerate}
+	\item Replace subexpressions with intermediate variables for both binary and unary operators; e.g., $\times$ is binary, squaring an expression is unary because there is a single operand of the square operator.
+	\item Compute derivatives of the intermediate variables.
+	\item Combine all derivatives of intermediate variables by multiplying them together to get the overall result.
+	\item Substitute intermediate variables back in if any are referenced.
+\end{enumerate}
 
-$u(x) = x^2$\\
-$y = f(u(x)) = sin(u(x))$ ~~~~~~~~~~~(or just $y = f(u) = sin(u)$)
+The third step puts the ``chain'' in ``chain rule'' because it chains together intermediate results.
 
+Let's try our process on $y = f(g(x)) = sin(x^2)$:
+
+\begin{enumerate}
+	\item Replace. Let $u = x^2$ represent subexpression $x^2$ (shorthand for $u(x) = x^2$). This gives us:\\
+	$u = x^2$ ~~~~~~~~~~~~~~~~~~~~~~~~~~~(relative to definition $f(g(x))$, $g(x) = x^2$)\\
+	$y = sin(u)$ ~~~~~~~~~~~~~~~~~~~~~~($y = f(u) = sin(u)$)\\
 The order of these subexpressions does not affect the answer, but we recommend working in the reverse order of operations dictated by the nesting (innermost to outermost). That way, expressions and derivatives are always functions of previously-computed elements. 
+	\item Compute derivatives.\\
+	$\frac{du}{dx} = 2x$ ~~~~~~~~~~~~~~~~~~~~~~~~~ (Take derivative with respect to $x$)\\
+	$\frac{dy}{du} = cos(u)$  ~~~~~~~~~~~~~~~~~~~~ (Take derivative with respect to $u$ not $x$)
+	\item Combine.\\
+	$\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx} = cos(u)2x$
+	\item Subtitute.\\
+	$\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx} = cos(x^2)2x = 2xcos(x^2)$	
+\end{enumerate}
 
-Putting the functions $f$ and $g$ and their parameters in there makes it clear which variables we must take the derivative with respect to. The $u$ in $sin(u)$ is really $u(x)$ but think of it as a variable for $\frac{df}{du}$ purposes. That's the whole point of the substitution $u = g(x)$; we've reduced a composite expression down to a single expression. Here are the derivatives of the simplified functions:
+Notice how easy it is to compute the derivatives of the intermediate variables in isolation! The chain rule says it's legal to do that and tells us how to combine the intermediate results to get $2xcos(x^2)$. 
 
-$\frac{du}{dx} = \frac{d}{dx} x^2 = 2x$\\
-$\frac{dy}{du} = \frac{d}{du} sin(u) = cos(u)$
+You can think of the combining step of the chain rule in terms of units canceling. If we let $y$ be gallons of gas, $x$ be the gallons in a gas tank, and $u$ as miles we can interpret $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$ as $\frac{miles}{tank} = \frac{miles}{gallon} \frac{gallon}{tank}$. The $gallon$ denominator and numerator cancel. This is a convenient way to remember the chain rule but the analogy only goes so far; don't treat $dy$ and $dx$ has separate variables since they are two components in the name of a single derivative operator.
 
-Now, we just have to combine the derivatives using the chain rule, which means multiplying the two derivatives together:
+Another way to to think about the single-variable chain rule is to visualize the overall expression as a dataflow diagram (or [abstract syntax tree](link) for compiler people):
 
-$\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx} = cos(u) 2x$
+\includegraphics{sin-square.png}
 
-then substituting the intermediate variable back in
+Changes to function parameter $x$ bubble up through a squaring operation then through a $sin$ operation to change result $y$. You can think of $\frac{du}{dx}$ as ``getting changes from $x$ to $u$ and $\frac{dy}{du}$ as ``getting changes from $u$ to $y$.'' Getting from $x$ to $y$ requires an intermediate hop so we arrive at the single-variable chain rule. The chain rule is usually written from the output variable down to the parameters, $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$. But, the $x$-to-$y$ perspective would be more clear if we used the equivalent $\frac{dy}{dx} = \frac{du}{dx}\frac{dy}{du}$.
 
-$\frac{dy}{dx} = cos(x^2) 2x = 2xcos(x^2)$
+\framebox[\linewidth]{\parbox{0.97\linewidth}{As an aside for those interested in automatic differentiation, papers and library documentation use terminology {\em forward differentiation} and {\em backward differentiation} (for use in the [back-propagation algorithm](link)). From a dataflow perspective, we are computing a forward differentiation because it follows the normal data flow direction.  Backward differentiation, naturally, goes the other direction and we're asking how a change in the output would affect function parameter $x$. Because backward differentiation can determine changes in all function parameters at once, it turns out to be much more efficient for functions with lots of parameters. Forward differentiation, on the other hand, must consider how a change in each parameter, in turn, affects the function output $y$.\\
 
-When there is only one variable substitution, it's straightforward to directly write the derivative down without explicitly creating and substituting a temporary variable. With deeply nested expressions, however, it's easy to get lost and it's better to carefully track all of the intermediate variables.
+\begin{tabular}{cc}
+	Forward differentiation & Backward differentiation\\
+	from $x$ to $y$ & from $y$ to $x$\\
+$\frac{dy}{dx} = \frac{du}{dx}\frac{dy}{du}$ & $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$\\
+\end{tabular}
+\vspace{3mm}
 
-It might help to think about deploying the chain rule the way a compiler implementor thinks about generating code for complicated expressions.  The compiler must unravel function call nesting like $f_1(f_2(f_3(f_4(x))))$ into a sequence of calls. The result of calling function $f_i$ is saved to a temporary variable called a register, which is then passed as a parameter to $f_{i-1}$.  Consider a nested equation like $y = f(x) = ln(sin(x^3)^2)$ that breaks down into subexpressions assigned to  intermediate (temporary) variables:
+Automatic differentiation is beyond the scope of this article, but we're setting the stage for a future article.
+}}
 
+{\bf Conditions under which the single-variable chain rule applies}. Notice that there is a single dataflow path from $x$ to the root $y$. That is the condition under which we can apply the single-variable chain rule: when broken into individual binary and unary subexpressions, at most one subexpression can reference $x$. If there were references to $x$ in multiple subexpressions, even something simple like $x+x^2$, there'd be multiple paths from $x$ to the root.  To handle that situation, we'll learn about the single-variable total-derivative chain rule in the next section.
+	
+Many readers can solve $\frac{d}{dx}sin(x^2)$ in their heads, but our goal is a process that will work even for  very complicated expressions. This process is also how [automatic differentiation](link) works in libraries like PyTorch. So, by solving derivatives manually  in this way, you're also learning how to define functions for custom neural networks in PyTorch.
+
+With deeply nested expressions, it helps to think about deploying the chain rule the way a compiler unravels function call nesting like $f_4(f_3(f_2(f_1(x))))$ into a sequence of calls. The result of calling function $f_i$ is saved to a temporary variable called a register, which is then passed as a parameter to $f_{i+1}$.  Let's see how that looks in practice by using our process on a highly-nested equation like $y = f(x) = ln(sin(x^3)^2)$:
+
+\begin{enumerate}
+	\item Replace.\\
 $r_1 = f_1(x) = x^3$\\
 $r_2 = f_2(r_1) = sin(r_1)$\\
 $r_3 = f_3(r_2) = r_2^2$\\
 $r_4 = f_4(r_3) = ln(r_3)$ ~~~~~~($y = r_4$)
-
-It helps to think of the chain of operations as a literal chain (just as a compiler builds a tree of operations):
-
-\includegraphics{chain-tree.png}
-
-Now, to compute $\frac{dy}{dx}$, we start with $\frac{dy}{dx} = \frac{dr_4}{dx}$ (synonymous with $\frac{df_4}{dx}$). Next, we expand $\frac{dr_4}{dx}$ to $\frac{dr_4}{dr_3}\frac{dr_3}{dx}$, $\frac{dr_3}{dx}$ to $\frac{dr_3}{dr_2}\frac{dr_2}{dx}$, and finally $\frac{dr_2}{dx}$ to $\frac{dr_2}{dr_1}\frac{dr_1}{dx}$.  Substituting in those pieces, we get:
-
-$\frac{dy}{dx} = \frac{d r_4}{dr_3} \frac{dr_3}{d r_2} \frac{dr_2}{dr_1} \frac{dr_1}{dx}$
-
-To compute the scalar derivative $\frac{dy}{dx}$, therefore, we need to compute each of those derivatives.  The power of the chain rule becomes clear when we get to treat each of those $r_i$ subexpressions in isolation using just the basic scalar derivative rules.
-
+	\item Compute derivatives.\\
 $\begin{array}{lllll}
 \vspace{1mm}
 \frac{d}{r_x} r_1 & = & \frac{d}{x} x^3 & = & 3x^2\\
@@ -507,22 +526,75 @@ $\begin{array}{lllll}
 \frac{d}{r_2} r_3 & = & \frac{d}{r_2} r_2^2 & =& 2r_2\\
 \frac{d}{r_3} r_4 & = & \frac{d}{r_3} ln(r_3) & =& \frac{1}{r_3}\\
 \end{array}$
-
-Putting it all back together using the chain rule for 4 intermediate variables, we get:
-
-$\frac{dy}{dx} = \frac{d r_4}{dr_3} \frac{dr_3}{d r_2} \frac{dr_2}{dr_1} \frac{dr_1}{dx} = \frac{1}{r_3}  2r_2  cos(r_1)  3x^2 = \frac{6r_2x^2cos(r_1)}{r_3}$
-
-Substituting the intermediate variables back in, gives us:
-
+	\item Combine four intermediate values.\\
+$\frac{dy}{dx} = \frac{d r_4}{dx} = \frac{d r_4}{dr_3}\frac{dr_3}{d r_2} \frac{dr_2}{dr_1} \frac{dr_1}{dx} = \frac{1}{r_3}  2r_2  cos(r_1)  3x^2 = \frac{6r_2x^2cos(r_1)}{r_3}$
+	\item Subtitute.\\
 $\frac{dy}{dx} = \frac{6sin(r_1)x^2cos(x^3)}{r_2^2} = \frac{6sin(x^3)x^2cos(x^3)}{sin(r_1)^2} = \frac{6sin(x^3)x^2cos(x^3)}{sin(x^3)^2} = \frac{6x^2cos(x^3)}{sin(x^3)}$
+\end{enumerate}
 
-Ok, so much for the scalar chain rule. It turns out that the chain rule also works for computing partial derivatives of vector functions with respect to vectors.
 
+Here is a visualization of the data flow through the chain of operations from $x$ to $y$:
+
+\includegraphics{chain-tree.png}
+
+At this point, we can handle derivatives of nested expressions of a single variable, $x$. Moreover, we can only handle expressions that reference $x$ once and so we need to extend our technique, which we'll do in the next section.
+ 
 \subsection{Vector chain rule}
 
 Previously, we manually computed the derivative with respect to $\mathbf{x}$ of $y = sum(\mathbf{x}  z)$ as $[z, z, \ldots, z]$, but we can also use the chain rule. Let vector $\mathbf{u} = \mathbf{x}  z$ then $y = sum(\mathbf{u})$. The vector chain rule works just like the single-variable chain rule except that our variable is now a vector.  The vector general says that $\frac{dy}{d\mathbf{x}} = \frac{dy}{d\mathbf{u}}  \frac{d\mathbf{u}}{d\mathbf{x}}$, which means 
 
 $\frac{dy}{d\mathbf{x}} = \vec{1}^T  \frac{d}{d\mathbf{x}} (\mathbf{x}  z) = \vec{1}^T  diag(\vec{1}z) = \vec{1}^T  I  z = \vec{1}^T  z = [z, z, \ldots, z]$
+
+\pagebreak
+{\bf NOTES}
+
+Need [law of total derivative](https://en.wikipedia.org/wiki/Total\_derivative)
+
+position $y = distance/time * time$ bump $delta y = distance/time * delta time$
+
+{\bf Ex.} Let $f(x,y) = sin(xy)$. Substitute $u = xy$, giving $f(x,y) = sin(u(x,y))$ or just $sin(u)$. Chain rule says
+
+$\frac{\partial f}{\partial x} = \frac{\partial f}{\partial u}\frac{\partial u}{\partial x} = cos(u)y = cos(xy)y$
+
+and
+
+$\frac{\partial f}{\partial y} = \frac{\partial f}{\partial u}\frac{\partial u}{\partial y} = cos(u)x = cos(xy)x$
+
+General chain rule says $\frac{\partial}{\partial t} f(x(t),y(t)) = \frac{\partial f}{\partial x}\frac{\partial x}{\partial t} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial t}$. Where is $t$ in my $sin(xy)$??? AND, where is the addition it says I need? How do I get partial w.r.t. $x$ or $y$?
+
+{\bf Ex.} Let $f(x,y) = sin(xy)x$. Subst
+
+$u = xy$\\
+$v = sin(u)$\\
+$w = vx$
+
+Chain rule finally shows an addition of $\frac{\partial w}{\partial x}$ at the top level $w$:
+
+$\frac{\partial f(x,y)}{\partial x} = \frac{\partial w(v,x)}{\partial x} = \frac{\partial w}{\partial v}\frac{\partial v}{\partial x} + \frac{\partial w}{\partial x} = x\frac{\partial v}{\partial x} + v$\\
+$\frac{\partial v(u)}{\partial x} = \frac{\partial v}{\partial u}\frac{\partial u}{\partial x} = cos(u)y$
+
+Substituting:
+
+$\frac{\partial f}{\partial x} = x\frac{\partial v}{\partial x} + v = xcos(u)y = xycos(xy) + sin(xy)$
+
+Again, where is $t$ from the general chain rule?
+
+AH! This page http://spot.pcc.edu/math/APEXCalculus/sec\_multi\_chain.html has right way. They are calling it multivar chain rule part II:
+
+(Using vec and my notation) let $z = \mathbf{f(g(x))}$, $m = |\mathbf{f}|$, $n=|\mathbf{x}|$ as usual then $k=|\mathbf{g}|$. Then
+
+$\frac{\partial z}{\partial x_j} = \frac{\partial f}{\partial g_1}\frac{\partial g_1}{\partial x_j} + \frac{\partial f}{\partial g_2}\frac{\partial g_2}{\partial x_j} + \ldots + \frac{\partial f}{\partial g_k}\frac{\partial g_k}{\partial x_j} = \frac{\partial z}{\partial x_j} =  \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_j}$
+
+That would give a gradient of
+
+$\nabla z = \left[ \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_1},~ \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_2}, ~\ldots,~ \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_n} \right]$
+
+For vector functions not scalars
+$\frac{\partial z}{\partial x_j}$
+
+Useful: https://www.colorado.edu/engineering/CAS/courses.d/IFEM.d/IFEM.AppC.d/IFEM.AppC.pdf
+
+\pagebreak
 
 \subsection{Derivatives of vector dot product}
 
@@ -598,6 +670,17 @@ $\frac{\partial output}{\partial b} = \begin{cases}
 $
 
 At this point, you are well on your way to understanding matrix calculus!  Your next step would be to learn about the partial derivatives of matrices not just vectors.
+
+todo: Matrix Differentiation https://atmos.washington.edu/~dennis/MatrixCalculus.pdf
+
+\section{Resources}
+
+as part of this course notes Introduction to Finite Element Methods I believe by Carlos A. Felippa: https://www.colorado.edu/engineering/CAS/courses.d/IFEM.d/, this appendix is useful:
+https://www.colorado.edu/engineering/CAS/courses.d/IFEM.d/IFEM.AppC.d/IFEM.AppC.pdf
+
+true multivar chain rule  This page http://spot.pcc.edu/math/APEXCalculus/sec\_multi\_chain.html has right way. They are calling it multivar chain rule part *II* not part I.
+
+https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf and  https://www.comp.nus.edu.sg/~cs5240/lecture/matrix-differentiation.pdf
  
 \section{Acknowledgements}
 
