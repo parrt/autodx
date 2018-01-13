@@ -448,7 +448,7 @@ $
 
 \subsection{The Chain Rules}
 
-We can't compute partial derivatives of very complicated functions using just the basic matrix calculus rules we've seen so far.  For example, we can't take the derivative of nested expressions like $sum(\mathbf{w}+\mathbf{x})$. We need to be able to combine our basic vector rules using what we can call the {\em vector chain rule}.   Unfortunately, there are a number of rules for differentiation that fall under the name ``chain rule'' so we have to be careful which chain rule we're talking about. Part of our goal here is to clearly define and name three different chain rules, indicating in which situation they are appropriate. To get warmed up, we'll start with what we'll call the {\em single-variable chain rule}, where we want the derivative of a scalar function with respect to a scalar. Then we'll move on to an important concept called the {\em total derivative} and use it to define what we'll pedantically call the {\em single-variable total-derivative chain rule}. Then, we'll be ready for the vector chain rule in its full glory as needed for neural networks.
+We can't compute partial derivatives of very complicated functions using just the basic matrix calculus rules we've seen so far.  For example, we can't take the derivative of nested expressions like $sum(\mathbf{w}+\mathbf{x})$. We need to be able to combine our basic vector rules using what we can call the {\em vector chain rule}.   Unfortunately, there are a number of rules for differentiation that fall under the name ``chain rule'' so we have to be careful which chain rule we're talking about. Part of our goal here is to clearly define and name three different chain rules and indicate in which situation they are appropriate. To get warmed up, we'll start with what we'll call the {\em single-variable chain rule}, where we want the derivative of a scalar function with respect to a scalar. Then we'll move on to an important concept called the {\em total derivative} and use it to define what we'll pedantically call the {\em single-variable total-derivative chain rule}. Then, we'll be ready for the vector chain rule in its full glory as needed for neural networks.
 
 The chain rule is conceptually a divide and conquer strategy (like Quicksort) that breaks complicated expressions into subexpressions whose derivatives are easier to compute.  Its power derives from the fact that we can process each simple subexpression in isolation yet still combine the  intermediate results to get the correct overall result.
 
@@ -456,23 +456,27 @@ The chain rule comes into play when we need the derivative of an expression comp
 
 \subsubsection{Single-variable chain rule}
 
-Chain rules are generically defined in terms of nested functions, such as $f(g(x))$ for single-variable chain rules. (You will also see the chain rule defined using function composition $(f \circ g)(x)$, which is the same thing.)  Some sources write the derivative using shorthand notation $f'(g(x))g'(x)$, but that hides the fact that we are performing a variable substitution: $u = g(x)$, which we'll see shortly. It's better to define the [single-variable chain rule](http://m.wolframalpha.com/input/?i=chain+rule) of $f(g(x))$ explicitly so we never take the derivative with respect to the wrong variable.
+Let's start with the solution to the derivative of our nested expression: $\frac{d}{dx} sin(x^2) = 2xcos(x^2)$.  It doesn't take a mathematical genius to recognize components of the solution that smack of scalar differentiation rules, $\frac{d}{dx}x^2 = 2x$ and $\frac{d}{du} sin(u) = cos(u)$. It looks like the solution is to multiply the derivative of the outer expression by the derivative of the inner expression or ``chain the pieces together,'' which is exactly right. In this section, we'll explore the general principle at work and provide a process that works for highly-nested expressions of a single variable.
+
+Chain rules are typically defined in terms of nested functions, such as $y = f(g(x))$ for single-variable chain rules. (You will also see the chain rule defined using function composition $(f \circ g)(x)$, which is the same thing.)  Some sources write the derivative using shorthand notation $y' = f'(g(x))g'(x)$, but that hides the fact that we are performing a variable substitution: $u = g(x)$, which we'll see shortly. It's better to define the [single-variable chain rule](http://m.wolframalpha.com/input/?i=chain+rule) of $f(g(x))$ explicitly so we never take the derivative with respect to the wrong variable. Here is the formulation of the single-variable chain rule we recommend:
+
+$\frac{dy}{dx} = \frac{dy}{du}\frac{du}{dx}$
 
 To deploy the single-variable chain rule, follow these steps:
 
 \begin{enumerate}
-	\item Replace subexpressions with intermediate variables for both binary and unary operators; e.g., $\times$ is binary, squaring an expression is unary because there is a single operand of the square operator.
+	\item  Introduce intermediate variables for subexpressions, for both binary and unary operators; e.g., $\times$ is binary, squaring an expression is unary because there is a single operand of the square operator.
 	\item Compute derivatives of the intermediate variables.
 	\item Combine all derivatives of intermediate variables by multiplying them together to get the overall result.
 	\item Substitute intermediate variables back in if any are referenced.
 \end{enumerate}
 
-The third step puts the ``chain'' in ``chain rule'' because it chains together intermediate results.
+The third step puts the ``chain'' in ``chain rule'' because it chains together intermediate results. Multiplying the intermediate derivatives together is the common theme among all variations of the chain rule.
 
 Let's try our process on $y = f(g(x)) = sin(x^2)$:
 
 \begin{enumerate}
-	\item Replace. Let $u = x^2$ represent subexpression $x^2$ (shorthand for $u(x) = x^2$). This gives us:\\
+	\item Introduce intermediate variables. Let $u = x^2$ represent subexpression $x^2$ (shorthand for $u(x) = x^2$). This gives us:\\
 	$u = x^2$ ~~~~~~~~~~~~~~~~~~~~~~~~~~~(relative to definition $f(g(x))$, $g(x) = x^2$)\\
 	$y = sin(u)$ ~~~~~~~~~~~~~~~~~~~~~~($y = f(u) = sin(u)$)\\
 The order of these subexpressions does not affect the answer, but we recommend working in the reverse order of operations dictated by the nesting (innermost to outermost). That way, expressions and derivatives are always functions of previously-computed elements. 
@@ -491,13 +495,13 @@ You can think of the combining step of the chain rule in terms of units cancelin
 
 Another way to to think about the single-variable chain rule is to visualize the overall expression as a dataflow diagram or chain of operations (or [abstract syntax tree](link) for compiler people):
 
-\includegraphics{sin-square.png}
+\includegraphics[scale=.9]{sin-square.png}
 
-Changes to function parameter $x$ bubble up through a squaring operation then through a $sin$ operation to change result $y$. You can think of $\frac{du}{dx}$ as ``getting changes from $x$ to $u$ and $\frac{dy}{du}$ as ``getting changes from $u$ to $y$.'' Getting from $x$ to $y$ requires an intermediate hop so we arrive at the single-variable chain rule. The chain rule is, by convention, usually written from the output variable down to the parameter(s), $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$. But, the $x$-to-$y$ perspective would be more clear if we used the equivalent $\frac{dy}{dx} = \frac{du}{dx}\frac{dy}{du}$.
+Changes to function parameter $x$ bubble up through a squaring operation then through a $sin$ operation to change result $y$. You can think of $\frac{du}{dx}$ as ``getting changes from $x$ to $u$ and $\frac{dy}{du}$ as ``getting changes from $u$ to $y$.'' Getting from $x$ to $y$ requires an intermediate hop so we arrive at the single-variable chain rule. The chain rule is, by convention, usually written from the output variable down to the parameter(s), $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$. But, the $x$-to-$y$ perspective would be more clear if we reversed the flow and used the equivalent $\frac{dy}{dx} = \frac{du}{dx}\frac{dy}{du}$.
 
-{\bf Conditions under which the single-variable chain rule applies}. Notice that there is a single dataflow path from $x$ to the root $y$. That is the condition under which we can apply the single-variable chain rule: when broken into individual binary and unary subexpressions, at most one subexpression can reference $x$. If there were references to $x$ in multiple subexpressions, even something simple like $x+x^2$, there'd be multiple paths from $x$ to the root.  To handle that situation, we'll learn about the single-variable total-derivative chain rule in the next section.
+{\bf Conditions under which the single-variable chain rule applies}. Notice that there is a single dataflow path from $x$ to the root $y$.  Changes in $x$ can influence output $y$ in only one way.  That is the condition under which we can apply the single-variable chain rule An easier condition to remember, though one that's a bit looser, is that none of the intermediate subexpression functions, $u(x)$ and $y(u)$, have more than one parameter.  Consider $y(x) = x+x^2$, which would become $y(x,u) = x+u$ after introducing intermediate variable $u$.  As we'll see in the next section, $y(x,u)$ has multiple paths from $x$ to $y$. To handle that situation, we'll deploy the single-variable total-derivative chain rule.
 	
-\framebox[\linewidth]{\parbox{0.97\linewidth}{As an aside for those interested in automatic differentiation, papers and library documentation use terminology {\em forward differentiation} and {\em backward differentiation} (for use in the [back-propagation algorithm](link)). From a dataflow perspective, we are computing a forward differentiation because it follows the normal data flow direction.  Backward differentiation, naturally, goes the other direction and we're asking how a change in the output would affect function parameter $x$. Because backward differentiation can determine changes in all function parameters at once, it turns out to be much more efficient for functions with lots of parameters. Forward differentiation, on the other hand, must consider how a change in each parameter, in turn, affects the function output $y$.\\
+\framebox[\linewidth]{\parbox{0.97\linewidth}{As an aside for those interested in automatic differentiation, papers and library documentation use terminology {\em forward differentiation} and {\em backward differentiation} (for use in the [back-propagation algorithm](link)). From a dataflow perspective, we are computing a forward differentiation because it follows the normal data flow direction.  Backward differentiation, naturally, goes the other direction and we're asking how a change in the output would affect function parameter $x$. Because backward differentiation can determine changes in all function parameters at once, it turns out to be much more efficient for computing the derivative of functions with lots of parameters. Forward differentiation, on the other hand, must consider how a change in each parameter, in turn, affects the function output $y$.\\
 
 \begin{tabular}{cc}
 	Forward differentiation & Backward differentiation\\
@@ -511,10 +515,10 @@ Automatic differentiation is beyond the scope of this article, but we're setting
 
 Many readers can solve $\frac{d}{dx}sin(x^2)$ in their heads, but our goal is a process that will work even for  very complicated expressions. This process is also how [automatic differentiation](link) works in libraries like PyTorch. So, by solving derivatives manually  in this way, you're also learning how to define functions for custom neural networks in PyTorch.
 
-With deeply nested expressions, it helps to think about deploying the chain rule the way a compiler unravels function call nesting like $f_4(f_3(f_2(f_1(x))))$ into a sequence of calls. The result of calling function $f_i$ is saved to a temporary variable called a register, which is then passed as a parameter to $f_{i+1}$.  Let's see how that looks in practice by using our process on a highly-nested equation like $y = f(x) = ln(sin(x^3)^2)$:
+With deeply nested expressions, it helps to think about deploying the chain rule the way a compiler unravels nested function calls like $f_4(f_3(f_2(f_1(x))))$ into a sequence (think chain) of calls. The result of calling function $f_i$ is saved to a temporary variable called a register, which is then passed as a parameter to $f_{i+1}$.  Let's see how that looks in practice by using our process on a highly-nested equation like $y = f(x) = ln(sin(x^3)^2)$:
 
 \begin{enumerate}
-	\item Replace.\\
+	\item Introduce intermediate variables.\\
 $r_1 = f_1(x) = x^3$\\
 $r_2 = f_2(r_1) = sin(r_1)$\\
 $r_3 = f_3(r_2) = r_2^2$\\
@@ -537,15 +541,83 @@ $\frac{dy}{dx} = \frac{6sin(r_1)x^2cos(x^3)}{r_2^2} = \frac{6sin(x^3)x^2cos(x^3)
 
 Here is a visualization of the data flow through the chain of operations from $x$ to $y$:
 
-\includegraphics{chain-tree.png}
+\includegraphics[scale=.9]{chain-tree.png}
 
-At this point, we can handle derivatives of nested expressions of a single variable, $x$, using the chain rule but only if $x$ is referenced within a single subexpression. To handle more complicated expressions, we need to extend our technique, which we'll do next.
+At this point, we can handle derivatives of nested expressions of a single variable, $x$, using the chain rule but only if $x$ can affect $y$ through a single data flow path. To handle more complicated expressions, we need to extend our technique, which we'll do next.
 
 \subsubsection{Single-variable total-derivative chain rule}
 
-prev was basic machine, but this is the general rule for single-param, single func result but multi-var intermediate expressions.
+Our single-variable chain rule has limited applicability because all intermediate variables must be functions of single variables. But, it demonstrates the core mechanism of the chain rule, that of multiplying out derivatives of intermediate subexpressions. To handle more general expressions such as $y(x) = x+x^2$, however, we need to augment that basic chain rule.
+
+Of course, we immediately see $\frac{dy}{dx} = \frac{d}{dx}x + \frac{dy}{dx}x^2 = 1 + 2x$, but that is using the scalar  addition derivative rule, not the chain rule.  Using our chain rule process from the previous section, we introduce $u(x)$ to simplify the expression:
+
+$u(x) = x^2$\\
+$y = f(x,u) = x + u$
+
+If we tried to apply the single-variable chain rule, we'd get the wrong answer. In fact, the previous chain rule is meaningless in this case because derivative operator $\frac{d}{dx}$ does not apply to multivariate functions such as $f(x,u) = x + u$. Let's try it anyway to see what happens. If we pretended that $\frac{df}{du} = 1$ and $\frac{du}{dx} = 2x$, then $\frac{dy}{dx} = \frac{df}{dx} = \frac{df}{du} \frac{du}{dx} = 2x$ instead of the right answer $1 + 2x$.  
+
+Because $f(x,u) = x + u$ has multiple variables, partial derivatives come into play. Let's blindly apply the partial derivative operator to all of our equations and see what we get:
+
+$\frac{\partial u(x)}{\partial x} = 2x$ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(same as $\frac{du(x)}{dx}$)\\
+$\frac{\partial f(x,u)}{\partial u} = \frac{\partial }{\partial u}(x + u) = 0 + 1 = 1$\\
+$\frac{\partial f(x,u)}{\partial x} = \frac{\partial }{\partial x}(x + u) = 1 + 0 = 1$ ~~~~~~~~~\,~~~(something's not quite right here!)\\
+
+Unfortunately, the partial derivative of $y$ with respect to $x$ is wrong because it violates a key assumption for partial derivatives. When taking the partial derivative with respect to $x$, the other variables must not vary as $x$ varies. Otherwise, we could not act as if the other variables were constants. Clearly, though, $u(x)$ is a function of $x$ and therefore varies with $x$. $\frac{\partial f(x,u)}{\partial x} \neq 1$. A quick look at the data flow diagram for $y=f(x,u)$ shows multiple paths from $x$ to $y$, thus, making it clear we need to  consider direct and indirect (through $u(x)$) dependencies on $x$:
+
+\includegraphics[scale=.9]{plus-square.png}
+
+Enter the {\em law of total derivative}, which basically says that to compute $\frac{dy}{dx}$, we need to sum up all possible contributions from changes in $x$ to the change in $y$. The total derivative with respect to $x$ assumes all variables, such as $u$ in our case, are functions of $x$ and potentially vary as $x$ varies.   Paraphrasing [total derivative from Wolfram MathWorld](http://mathworld.wolfram.com/TotalDerivative.html), the total derivative of $f(x,u)$ that depends on $x$ directly and/or indirectly via intermediate variable $u(x)$ is given by:
+
+$\frac{\partial f(x,u)}{\partial x} = \frac{\partial f}{\partial x} + \frac{\partial f}{\partial u}\frac{\partial u}{\partial x}$
+
+That is an instantiation of the {\em single-variable total-derivative chain rule}:
+
+\[
+\frac{\partial f(x,r_1,\ldots,r_n)}{\partial x} = \frac{\partial f}{\partial x} + \frac{\partial f}{\partial r_1}\frac{\partial r_1}{\partial x} + \frac{\partial f}{\partial r_2}\frac{\partial r_2}{\partial x} + \ldots + \frac{\partial f}{\partial r_n}\frac{\partial r_n}{\partial x} = \frac{\partial f}{\partial x} + \sum_{i=1}^n \frac{\partial f}{\partial r_i}\frac{\partial r_i}{\partial x}
+\]
+
+Unfortunately, there is a major confusion point here regarding the notation: Both the total derivative and the partial derivative use the same notation on the left side of the equation, but  the total and partial derivatives are very different! They both use the same notation on the left because $\frac{\partial f(x,r_1,\ldots,r_n)}{\partial x}$ is just how we say ``derivative with respect to just one of several variables.'' On the right side of the equation, however, the total derivative assumes all variables are potentially codependent whereas the partial derivative assumes all variables but $x$ are constants. 
+
+You will also find that some descriptions of the total derivative, such as Wikipedia's, use $\frac{\partial f}{\partial r_i}\frac{d r_i}{dx}$ instead of $\frac{\partial f}{\partial r_i}\frac{\partial r_i}{\partial x}$, but that is less general because it assumes the intermediate variables are functions of a single variable. We also use ${\partial f(x,r_1,\ldots,r_n)}/{\partial x}$ instead of ${df(x,r_1,\ldots,r_n)}/{dx}$ since the partial derivative notation is more general and degenerates to $\frac{df}{dx}$ anyway for the single-variable case.
+
+To make things even more confusing, this chain rule based upon the total derivative, seems to be universally called ``multivariable chain rule'' in calculus discussions, which is highly misleading! Only the intermediate variables are multivariate functions. The overall function, $x + x^2$ is a scalar function comprised of a single parameter $x$. The derivative is a scalar, not a vector as one would expect with a multivariate chain rule. The key distinguishing feature between our single-variable chain rule and this one is of course that we are now taking in consideration the total derivative. That is why we call it the ``single-variable total-derivative chain rule.''
+
+  says, ``The total derivative includes these indirect dependencies define the overall dependency of $f$ on $x$'' 
+
+A change in $x$ effects $y$ both as an operand of the addition and as the operand of the square operator. 
+
+
+
+
+
+
+$\frac{\partial u(x)}{\partial u} = 2x$\\
+$\frac{\partial y(x,u)}{\partial u} = 1$\\
+$\frac{\partial y(x,u)}{\partial x} = 1$\\
+
+$\frac{\partial y(x,u)}{\partial x} = \frac{\partial y}{\partial u} \frac{\partial u}{\partial x}$\\
+
+Now, $y(x) = x+x^2$:
+
+$u(x) = x^2$\\
+$y(x,u) = x \times u$
+
+
+x = 2
+y = 2 + 4 = 6
+
+x = 3
+y = 3 + 9 = 12
+
+
+
+{\em Single-variable total-derivative chain rule}
+
+
 
 \subsubsection{Vector chain rule}
+
+dot product of gradient f and derivative of inside arg of f. %$\frac{\partial}{\partial }$
 
 Previously, we manually computed the derivative with respect to $\mathbf{x}$ of $y = sum(\mathbf{x}  z)$ as $[z, z, \ldots, z]$, but we can also use the chain rule. Let vector $\mathbf{u} = \mathbf{x}  z$ then $y = sum(\mathbf{u})$. The vector chain rule works just like the single-variable chain rule except that our variable is now a vector.  The vector general says that $\frac{dy}{d\mathbf{x}} = \frac{dy}{d\mathbf{u}}  \frac{d\mathbf{u}}{d\mathbf{x}}$, which means 
 
