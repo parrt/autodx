@@ -446,15 +446,17 @@ $
 \end{array}
 $
 
-\subsection{Single-variable chain rule}
+\subsection{The Chain Rules}
 
-%https://calculus.subwiki.org/wiki/Proof_of_product_rule_for_differentiation_using_chain_rule_for_partial_differentiation
+We can't compute partial derivatives of very complicated functions using just the basic matrix calculus rules we've seen so far.  For example, we can't take the derivative of nested expressions like $sum(\mathbf{w}+\mathbf{x})$. We need to be able to combine our basic vector rules using what we can call the {\em vector chain rule}.   Unfortunately, there are a number of rules for differentiation that fall under the name ``chain rule'' so we have to be careful which chain rule we're talking about. Part of our goal here is to clearly define and name three different chain rules, indicating in which situation they are appropriate. To get warmed up, we'll start with what we'll call the {\em single-variable chain rule}, where we want the derivative of a scalar function with respect to a scalar. Then we'll move on to an important concept called the {\em total derivative} and use it to define what we'll pedantically call the {\em single-variable total-derivative chain rule}. Then, we'll be ready for the vector chain rule in its full glory as needed for neural networks.
 
-We can't compute partial derivatives of very complicated functions using just the basic matrix calculus rules we've seen so far.  For example, we can't take the derivative of nested expressions like $sum(\mathbf{w}+\mathbf{x})$. We need to be able to combine our basic vector rules using what we can call the {\em vector chain rule}.   Unfortunately, there are a number of rules for differentiation that fall under the name ``chain rule'' so we have to be careful which chain rule we're talking about. Part of our goal here is to clearly define and name three different chain rules, indicating in which situation they are appropriate. To get warmed up, we'll start with what we'll call the {\em single-variable chain rule} in this section, where we want the derivative of a scalar function with respect to a scalar. In the next section, we'll move on to an important concept called the {\em total derivative} and use it to define what we'll pedantically call the {\em single-variable total-derivative chain rule}. Then, we'll be ready for the vector chain rule in its full glory as needed for neural networks.
+The chain rule is conceptually a divide and conquer strategy (like Quicksort) that breaks complicated expressions into subexpressions whose derivatives are easier to compute.  Its power derives from the fact that we can process each simple subexpression in isolation yet still combine the  intermediate results to get the correct overall result.
 
-The chain rule in general is a divide and conquer strategy (like Quicksort) that breaks complicated expressions into subexpressions whose derivatives are easier to compute.  Its power derives from the fact that we can process each simple subexpression in isolation yet still combine the  intermediate results to get the correct overall result.
+The chain rule comes into play when we need the derivative of an expression composed of nested subexpressions. For example, we need the chain rule when confronted with expressions like $\frac{d}{dx} sin(x^2)$.  The outermost expression takes the $sin$ of an intermediate result, a nested subexpression that squares $x$. Specifically, we need the single-variable chain rule, so let's start by digging into that in more detail.
 
-The chain rule comes into play when we need the derivative of an expression composed of nested subexpressions. So the single-variable chain rule  applies when confronted with expressions like $\frac{d}{dx} sin(x^2)$.  The outermost expression takes the $sin$ of an intermediate result, a nested subexpression that squares $x$. The chain rule is generically defined in terms of nested functions written as $f(g(x))$. (You will also see the chain rule defined using function composition $(f \circ g)(x)$, which is the same thing.)  Some sources write the derivative using shorthand notation $f'(g(x))g'(x)$, but that hides the fact that we are performing a variable substitution: $u = g(x)$, which we'll see shortly. It's better to define the [single-variable chain rule](http://m.wolframalpha.com/input/?i=chain+rule) of $f(g(x))$ explicitly so we never take the derivative with respect to the wrong variable.
+\subsubsection{Single-variable chain rule}
+
+Chain rules are generically defined in terms of nested functions, such as $f(g(x))$ for single-variable chain rules. (You will also see the chain rule defined using function composition $(f \circ g)(x)$, which is the same thing.)  Some sources write the derivative using shorthand notation $f'(g(x))g'(x)$, but that hides the fact that we are performing a variable substitution: $u = g(x)$, which we'll see shortly. It's better to define the [single-variable chain rule](http://m.wolframalpha.com/input/?i=chain+rule) of $f(g(x))$ explicitly so we never take the derivative with respect to the wrong variable.
 
 To deploy the single-variable chain rule, follow these steps:
 
@@ -487,12 +489,14 @@ Notice how easy it is to compute the derivatives of the intermediate variables i
 
 You can think of the combining step of the chain rule in terms of units canceling. If we let $y$ be gallons of gas, $x$ be the gallons in a gas tank, and $u$ as miles we can interpret $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$ as $\frac{miles}{tank} = \frac{miles}{gallon} \frac{gallon}{tank}$. The $gallon$ denominator and numerator cancel. This is a convenient way to remember the chain rule but the analogy only goes so far; don't treat $dy$ and $dx$ has separate variables since they are two components in the name of a single derivative operator.
 
-Another way to to think about the single-variable chain rule is to visualize the overall expression as a dataflow diagram (or [abstract syntax tree](link) for compiler people):
+Another way to to think about the single-variable chain rule is to visualize the overall expression as a dataflow diagram or chain of operations (or [abstract syntax tree](link) for compiler people):
 
 \includegraphics{sin-square.png}
 
-Changes to function parameter $x$ bubble up through a squaring operation then through a $sin$ operation to change result $y$. You can think of $\frac{du}{dx}$ as ``getting changes from $x$ to $u$ and $\frac{dy}{du}$ as ``getting changes from $u$ to $y$.'' Getting from $x$ to $y$ requires an intermediate hop so we arrive at the single-variable chain rule. The chain rule is usually written from the output variable down to the parameters, $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$. But, the $x$-to-$y$ perspective would be more clear if we used the equivalent $\frac{dy}{dx} = \frac{du}{dx}\frac{dy}{du}$.
+Changes to function parameter $x$ bubble up through a squaring operation then through a $sin$ operation to change result $y$. You can think of $\frac{du}{dx}$ as ``getting changes from $x$ to $u$ and $\frac{dy}{du}$ as ``getting changes from $u$ to $y$.'' Getting from $x$ to $y$ requires an intermediate hop so we arrive at the single-variable chain rule. The chain rule is, by convention, usually written from the output variable down to the parameter(s), $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$. But, the $x$-to-$y$ perspective would be more clear if we used the equivalent $\frac{dy}{dx} = \frac{du}{dx}\frac{dy}{du}$.
 
+{\bf Conditions under which the single-variable chain rule applies}. Notice that there is a single dataflow path from $x$ to the root $y$. That is the condition under which we can apply the single-variable chain rule: when broken into individual binary and unary subexpressions, at most one subexpression can reference $x$. If there were references to $x$ in multiple subexpressions, even something simple like $x+x^2$, there'd be multiple paths from $x$ to the root.  To handle that situation, we'll learn about the single-variable total-derivative chain rule in the next section.
+	
 \framebox[\linewidth]{\parbox{0.97\linewidth}{As an aside for those interested in automatic differentiation, papers and library documentation use terminology {\em forward differentiation} and {\em backward differentiation} (for use in the [back-propagation algorithm](link)). From a dataflow perspective, we are computing a forward differentiation because it follows the normal data flow direction.  Backward differentiation, naturally, goes the other direction and we're asking how a change in the output would affect function parameter $x$. Because backward differentiation can determine changes in all function parameters at once, it turns out to be much more efficient for functions with lots of parameters. Forward differentiation, on the other hand, must consider how a change in each parameter, in turn, affects the function output $y$.\\
 
 \begin{tabular}{cc}
@@ -505,8 +509,6 @@ $\frac{dy}{dx} = \frac{du}{dx}\frac{dy}{du}$ & $\frac{dy}{dx} = \frac{dy}{du} \f
 Automatic differentiation is beyond the scope of this article, but we're setting the stage for a future article.
 }}
 
-{\bf Conditions under which the single-variable chain rule applies}. Notice that there is a single dataflow path from $x$ to the root $y$. That is the condition under which we can apply the single-variable chain rule: when broken into individual binary and unary subexpressions, at most one subexpression can reference $x$. If there were references to $x$ in multiple subexpressions, even something simple like $x+x^2$, there'd be multiple paths from $x$ to the root.  To handle that situation, we'll learn about the single-variable total-derivative chain rule in the next section.
-	
 Many readers can solve $\frac{d}{dx}sin(x^2)$ in their heads, but our goal is a process that will work even for  very complicated expressions. This process is also how [automatic differentiation](link) works in libraries like PyTorch. So, by solving derivatives manually  in this way, you're also learning how to define functions for custom neural networks in PyTorch.
 
 With deeply nested expressions, it helps to think about deploying the chain rule the way a compiler unravels function call nesting like $f_4(f_3(f_2(f_1(x))))$ into a sequence of calls. The result of calling function $f_i$ is saved to a temporary variable called a register, which is then passed as a parameter to $f_{i+1}$.  Let's see how that looks in practice by using our process on a highly-nested equation like $y = f(x) = ln(sin(x^3)^2)$:
@@ -537,9 +539,13 @@ Here is a visualization of the data flow through the chain of operations from $x
 
 \includegraphics{chain-tree.png}
 
-At this point, we can handle derivatives of nested expressions of a single variable, $x$. Moreover, we can only handle expressions that reference $x$ once and so we need to extend our technique, which we'll do in the next section.
- 
-\subsection{Vector chain rule}
+At this point, we can handle derivatives of nested expressions of a single variable, $x$, using the chain rule but only if $x$ is referenced within a single subexpression. To handle more complicated expressions, we need to extend our technique, which we'll do next.
+
+\subsubsection{Single-variable total-derivative chain rule}
+
+prev was basic machine, but this is the general rule for single-param, single func result but multi-var intermediate expressions.
+
+\subsubsection{Vector chain rule}
 
 Previously, we manually computed the derivative with respect to $\mathbf{x}$ of $y = sum(\mathbf{x}  z)$ as $[z, z, \ldots, z]$, but we can also use the chain rule. Let vector $\mathbf{u} = \mathbf{x}  z$ then $y = sum(\mathbf{u})$. The vector chain rule works just like the single-variable chain rule except that our variable is now a vector.  The vector general says that $\frac{dy}{d\mathbf{x}} = \frac{dy}{d\mathbf{u}}  \frac{d\mathbf{u}}{d\mathbf{x}}$, which means 
 
