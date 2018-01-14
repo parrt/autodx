@@ -547,12 +547,12 @@ At this point, we can handle derivatives of nested expressions of a single varia
 
 \subsubsection{Single-variable total-derivative chain rule}
 
-Our single-variable chain rule has limited applicability because all intermediate variables must be functions of single variables. But, it demonstrates the core mechanism of the chain rule, that of multiplying out derivatives of intermediate subexpressions. To handle more general expressions such as $y = f(x) = x+x^2$, however, we need to augment that basic chain rule.
+Our single-variable chain rule has limited applicability because all intermediate variables must be functions of single variables. But, it demonstrates the core mechanism of the chain rule, that of multiplying out all derivatives of intermediate subexpressions. To handle more general expressions such as $y = f(x) = x+x^2$, however, we need to augment that basic chain rule.
 
 Of course, we immediately see $\frac{dy}{dx} = \frac{d}{dx}x + \frac{dy}{dx}x^2 = 1 + 2x$, but that is using the scalar  addition derivative rule, not the chain rule.  Using our chain rule process from the previous section, we introduce intermediate variables to simplify the expression:
 
 $u_1(x) = x^2$\\
-$u_2(x,u) = x + u_1$ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ($y = f(x) = u_2(x,u)$)
+$u_2(x,u_1) = x + u_1$ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ($y = f(x) = u_2(x,u_1)$)
 
 If we tried to apply the single-variable chain rule, we'd get the wrong answer. In fact, the previous chain rule is meaningless in this case because derivative operator $\frac{d}{dx}$ does not apply to multivariate functions such as $u_2(x,u_1) = x + u_1$. Let's try it anyway to see what happens. If we pretend that $\frac{du_2}{du_1} = 0 + 1 = 1$ and $\frac{du_1}{dx} = 2x$, then $\frac{dy}{dx} = \frac{du_2}{dx} = \frac{du_2}{du_1} \frac{du_1}{dx} = 2x$ instead of the right answer $1 + 2x$.  
 
@@ -572,16 +572,15 @@ $\Delta y = (x + \Delta x) + (x + \Delta x)^2$
 
 If we let $x=1$, then $y=1+1^2=2$. If we bump $x$ by 1, $\Delta x=1$, then $y = (1+1) + (1+1)^2 = 2 + 4 = 6$. The change in $y$ is not $1$, as $\partial u_2 / u_1$ would lead us to believe, but $6-2 = 4$!
 
+Enter the ``law'' of {\em total derivatives}, which basically says that to compute $\frac{dy}{dx}$, we need to sum up all possible contributions from changes in $x$ to the change in $y$. The total derivative with respect to $x$ assumes all variables, such as $u_1$ in this case, are functions of $x$ and potentially vary as $x$ varies.   The total derivative of $f(x) = u_2(x,u_1)$ that depends on $x$ directly and indirectly via intermediate variable $u_1(x)$ is given by:
 
-Enter the {\em law of total derivative}, which basically says that to compute $\frac{dy}{dx}$, we need to sum up all possible contributions from changes in $x$ to the change in $y$. The total derivative with respect to $x$ assumes all variables, such as $u_1$ in this case, are functions of $x$ and potentially vary as $x$ varies.   The total derivative of $f(x) = u_2(x,u)$ that depends on $x$ directly and indirectly via intermediate variable $u_1(x)$ is given by:
-
-$\frac{dy}{dx} = \frac{df(x)}{dx} = \frac{d u_2(x,u)}{d x} = \frac{\partial u_2}{\partial x}\frac{dx}{dx} + \frac{\partial u_2}{\partial u_1}\frac{d u_1}{d x} = \frac{\partial u_2}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{d u_1}{d x}$
+$\frac{dy}{dx} = \frac{df(x)}{dx} = \frac{d u_2(x,u_1)}{d x} = \frac{\partial u_2}{\partial x}\frac{dx}{dx} + \frac{\partial u_2}{\partial u_1}\frac{d u_1}{d x} = \frac{\partial u_2}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{d u_1}{d x}$
 
 Using this formula, we get the proper answer:
 
 $\frac{dy}{dx} = \frac{\partial u_2}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{d u_1}{d x} = 1 + 1 \times 2x = 1 + 2x$
 
-That forumal is an application of what we are calling the {\em single-variable total-derivative chain rule}:
+That is an application of what we call the {\em single-variable total-derivative chain rule}:
 
 \[
 \frac{d f(x,u_1,\ldots,u_n)}{d x} = \frac{\partial f}{\partial x} + \frac{\partial f}{\partial u_1}\frac{d u_1}{d x} + \frac{\partial f}{\partial u_2}\frac{d u_2}{d x} + \ldots + \frac{\partial f}{\partial u_n}\frac{d u_n}{dx} = \frac{\partial f}{\partial x} + \sum_{i=1}^n \frac{\partial f}{\partial u_i}\frac{d u_i}{d x}
@@ -589,41 +588,22 @@ That forumal is an application of what we are calling the {\em single-variable t
 
 There is something subtle going on here with the notation because we are mixing derivative and partial derivative notation. Although $f(x,u_1,\ldots,u_n)$ is a function of multiple parameters, we are deliberately using notation ${d f(x,u_1,\ldots,u_n)}/{d x}$ rather than ${\partial f(x,u_1,\ldots,u_n)}/{\partial x}$ to emphasize the fact we're computing the total derivative. Similarly, we use ${d u_i}/{d x}$ not ${\partial u_i}/{\partial x}$ for the intermediate variables to indicate total derivative not partial derivative. The total derivative assumes all variables are potentially codependent whereas the partial derivative assumes all variables but $x$ are constants. This notation mirrors that of [Wikipedia](https://en.wikipedia.org/wiki/Total\_derivative). 
 
-Unfortunately, this chain rule based upon the total derivative appears to be universally called ``multivariable chain rule'' in calculus discussions, which is highly misleading! Only the intermediate variables are multivariate functions. The overall function, $f(x) = x + x^2$ is a scalar function comprised of a single parameter $x$. The derivative and parameter are scalars, not vectors, as one would expect with a so-called multivariate chain rule.  (Within the context of a non-matrix calculus class, ``multivariate chain rule'' is likely unambiguous.) To reduce confusion, we use ``single-variable total-derivative chain rule'' to spell out the distinguishing feature between the simple single-variable chain rule, $\frac{dy}{dx} = \frac{dy}{du}\frac{du}{dx}$, and this one. 
+Also notice that the total derivative formula always adds terms $\frac{\partial f}{\partial u_i}\frac{d u_i}{d x}$.  It's tempting to think that adding terms in the derivative makes sense because, for example, $y = x+x^2$ adds two terms. Nope. The total derivative is adding terms because it represents a weighted sum of all $x$ contributions to the change in $y$. For example, if we change the addition to multiplication in $y = x \times x^2$, the derivative formula still adds partial derivative terms. ($x \times x^2$  simplifies to $x^3$ but for this demonstration, do not combine the terms.) Here are the intermediate variables and partial derivatives:
 
+$u_1(x) = x^2$\\
+$u_2(x,u_1) = x \times u_1$ ~~~\,~~~~~~~~~ ($y = f(x) = u_2(x,u_1)$)\\
+$\frac{\partial u_2}{\partial x} = u_1$ ~~~~~~~~~~~~~~~~~~~~~~~~~~(for $u_2 = x + u_1$, $\frac{\partial u_2}{\partial x} = 1$)\\
+$\frac{\partial u_2}{\partial u_1} = x$ \,~~~~~~~~~~~~~~~~~~~~~~~~~~~(for $u_2 = x + u_1$, $\frac{\partial u_2}{\partial u_1} = 1$)
 
-show $x \times x^2$ multiplication also gives addition in derivative!
+The form of the total derivative remains the same, however:
 
+$\frac{dy}{dx} = \frac{\partial u_2}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{d u_1}{d x} = u_1 + x \times 2x = x^2 + 2x^2 = 3x^2$
 
+It's the partials (weights) that change, not the formula.
 
+%\includegraphics[scale=.9]{mult-square.png}
 
-
-
-
-
-$\frac{\partial u(x)}{\partial u} = 2x$\\
-$\frac{\partial y(x,u)}{\partial u} = 1$\\
-$\frac{\partial y(x,u)}{\partial x} = 1$\\
-
-$\frac{\partial y(x,u)}{\partial x} = \frac{\partial y}{\partial u} \frac{\partial u}{\partial x}$\\
-
-Now, $y(x) = x+x^2$:
-
-$u(x) = x^2$\\
-$y(x,u) = x \times u$
-
-
-x = 2
-y = 2 + 4 = 6
-
-x = 3
-y = 3 + 9 = 12
-
-
-
-{\em Single-variable total-derivative chain rule}
-
-
+Before we move on, a word of caution about terminology on the web. Unfortunately, this chain rule based upon the total derivative is universally called ``multivariable chain rule'' in calculus discussions, which is highly misleading! Only the intermediate variables are multivariate functions. The overall function, $f(x) = x + x^2$ is a scalar function comprised of a single parameter $x$. The derivative and parameter are scalars, not vectors, as one would expect with a so-called multivariate chain rule.  (Within the context of a non-matrix calculus class, ``multivariate chain rule'' is likely unambiguous.) To reduce confusion, we use ``single-variable total-derivative chain rule'' to spell out the distinguishing feature between the simple single-variable chain rule, $\frac{dy}{dx} = \frac{dy}{du}\frac{du}{dx}$, and this one. 
 
 \subsubsection{Vector chain rule}
 
