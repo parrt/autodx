@@ -46,7 +46,7 @@ $\frac{1}{n} \Sigma_{\mathbf{x}} ||target(\mathbf{x}) - activation(\mathbf{x})||
 
 But this is just one neuron, and neural networks must train the weights and biases of all neurons in all layers simultaneously.  The really cool part about partial derivatives is that they let us optimize all of these network parameters at once. TODO: not sure "all at once" follows... Because there are multiple inputs and (potentially) multiple network outputs, we really need general rules for the derivative of a function with respect to a vector and even rules for the derivative of a vector-valued function with respect to a vector.
 
-This article walks through the derivation of some important rules for computing partial derivatives with respect to vectors, particularly those useful for training neural networks. This field is known as {\em matrix calculus}, and the good news is, we only need a small subset of that field, which we introduce here.  While there is a lot of online material on multivariate calculus and linear algebra, they are typically taught as to separate undergraduate courses so most material treats them in isolation.  The pages that do discuss matrix calculus often are really just lists of rules with minimal explanation or are just pieces of the story.  In contrast, we're going to rederive and rediscover some key matrix calculus rules in an effort to explain them. It turns out that matrix calculus is really not that hard! There aren't dozens of new rules to learn; just a couple of key concepts.  That said, our intended audience already has many of these pieces in place mentally; it's more of a core dump than a complete textbook. Our hope is that it will get you started quickly in the world of matrix calculus related to training neural networks.
+This article walks through the derivation of some important rules for computing partial derivatives with respect to vectors, particularly those useful for training neural networks. This field is known as {\em matrix calculus}, and the good news is, we only need a small subset of that field, which we introduce here.  While there is a lot of online material on multivariate calculus and linear algebra, they are typically taught as two separate undergraduate courses so most material treats them in isolation.  The pages that do discuss matrix calculus often are really just lists of rules with minimal explanation or are just pieces of the story.  In contrast, we're going to rederive and rediscover some key matrix calculus rules in an effort to explain them. It turns out that matrix calculus is really not that hard! There aren't dozens of new rules to learn; just a couple of key concepts.  That said, our intended audience already has many of these pieces in place mentally; it's more of a core dump than a textbook. Our hope is that it will get you started quickly in the world of matrix calculus as it relates to training neural networks.
 
 \section{Review: Scalar derivative rules}
 
@@ -465,7 +465,7 @@ $\frac{dy}{dx} = \frac{dy}{du}\frac{du}{dx}$
 To deploy the single-variable chain rule, follow these steps:
 
 \begin{enumerate}
-	\item  Introduce intermediate variables for subexpressions, for both binary and unary operators; e.g., $\times$ is binary, squaring an expression is unary because there is a single operand of the square operator.
+	\item  Introduce intermediate variables for subexpressions, for both binary and unary operators; e.g., $\times$ is binary, $sin(x)$ and other trigonometric functions are usually unary because there is a single operand.
 	\item Compute derivatives of the intermediate variables.
 	\item Combine all derivatives of intermediate variables by multiplying them together to get the overall result.
 	\item Substitute intermediate variables back in if any are referenced.
@@ -519,23 +519,23 @@ With deeply nested expressions, it helps to think about deploying the chain rule
 
 \begin{enumerate}
 	\item Introduce intermediate variables.\\
-$r_1 = f_1(x) = x^3$\\
-$r_2 = f_2(r_1) = sin(r_1)$\\
-$r_3 = f_3(r_2) = r_2^2$\\
-$r_4 = f_4(r_3) = ln(r_3)$ ~~~~~~($y = r_4$)
+$u_1 = f_1(x) = x^3$\\
+$u_2 = f_2(u_1) = sin(u_1)$\\
+$u_3 = f_3(u_2) = u_2^2$\\
+$u_4 = f_4(u_3) = ln(u_3)$ ~~~~~~($y = u_4$)
 	\item Compute derivatives.\\
 $\begin{array}{lllll}
 \vspace{1mm}
-\frac{d}{r_x} r_1 & = & \frac{d}{x} x^3 & = & 3x^2\\
+\frac{d}{u_x} u_1 & = & \frac{d}{x} x^3 & = & 3x^2\\
 \vspace{1mm}
-\frac{d}{r_1} r_2 & = & \frac{d}{r_1} sin(r_1) & = & cos(r_1) \\
-\frac{d}{r_2} r_3 & = & \frac{d}{r_2} r_2^2 & =& 2r_2\\
-\frac{d}{r_3} r_4 & = & \frac{d}{r_3} ln(r_3) & =& \frac{1}{r_3}\\
+\frac{d}{u_1} u_2 & = & \frac{d}{u_1} sin(u_1) & = & cos(u_1) \\
+\frac{d}{u_2} u_3 & = & \frac{d}{u_2} u_2^2 & =& 2u_2\\
+\frac{d}{u_3} u_4 & = & \frac{d}{u_3} ln(u_3) & =& \frac{1}{u_3}\\
 \end{array}$
 	\item Combine four intermediate values.\\
-$\frac{dy}{dx} = \frac{d r_4}{dx} = \frac{d r_4}{dr_3}\frac{dr_3}{d r_2} \frac{dr_2}{dr_1} \frac{dr_1}{dx} = \frac{1}{r_3}  2r_2  cos(r_1)  3x^2 = \frac{6r_2x^2cos(r_1)}{r_3}$
+$\frac{dy}{dx} = \frac{d u_4}{dx} = \frac{d u_4}{du_3}\frac{du_3}{d u_2} \frac{du_2}{du_1} \frac{du_1}{dx} = \frac{1}{u_3}  2u_2  cos(u_1)  3x^2 = \frac{6u_2x^2cos(u_1)}{u_3}$
 	\item Subtitute.\\
-$\frac{dy}{dx} = \frac{6sin(r_1)x^2cos(x^3)}{r_2^2} = \frac{6sin(x^3)x^2cos(x^3)}{sin(r_1)^2} = \frac{6sin(x^3)x^2cos(x^3)}{sin(x^3)^2} = \frac{6x^2cos(x^3)}{sin(x^3)}$
+$\frac{dy}{dx} = \frac{6sin(u_1)x^2cos(x^3)}{u_2^2} = \frac{6sin(x^3)x^2cos(x^3)}{sin(u_1)^2} = \frac{6sin(x^3)x^2cos(x^3)}{sin(x^3)^2} = \frac{6x^2cos(x^3)}{sin(x^3)}$
 \end{enumerate}
 
 
@@ -547,44 +547,54 @@ At this point, we can handle derivatives of nested expressions of a single varia
 
 \subsubsection{Single-variable total-derivative chain rule}
 
-Our single-variable chain rule has limited applicability because all intermediate variables must be functions of single variables. But, it demonstrates the core mechanism of the chain rule, that of multiplying out derivatives of intermediate subexpressions. To handle more general expressions such as $y(x) = x+x^2$, however, we need to augment that basic chain rule.
+Our single-variable chain rule has limited applicability because all intermediate variables must be functions of single variables. But, it demonstrates the core mechanism of the chain rule, that of multiplying out derivatives of intermediate subexpressions. To handle more general expressions such as $y = f(x) = x+x^2$, however, we need to augment that basic chain rule.
 
-Of course, we immediately see $\frac{dy}{dx} = \frac{d}{dx}x + \frac{dy}{dx}x^2 = 1 + 2x$, but that is using the scalar  addition derivative rule, not the chain rule.  Using our chain rule process from the previous section, we introduce $u(x)$ to simplify the expression:
+Of course, we immediately see $\frac{dy}{dx} = \frac{d}{dx}x + \frac{dy}{dx}x^2 = 1 + 2x$, but that is using the scalar  addition derivative rule, not the chain rule.  Using our chain rule process from the previous section, we introduce intermediate variables to simplify the expression:
 
-$u(x) = x^2$\\
-$y = f(x,u) = x + u$
+$u_1(x) = x^2$\\
+$u_2(x,u) = x + u_1$ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ($y = f(x) = u_2(x,u)$)
 
-If we tried to apply the single-variable chain rule, we'd get the wrong answer. In fact, the previous chain rule is meaningless in this case because derivative operator $\frac{d}{dx}$ does not apply to multivariate functions such as $f(x,u) = x + u$. Let's try it anyway to see what happens. If we pretended that $\frac{df}{du} = 1$ and $\frac{du}{dx} = 2x$, then $\frac{dy}{dx} = \frac{df}{dx} = \frac{df}{du} \frac{du}{dx} = 2x$ instead of the right answer $1 + 2x$.  
+If we tried to apply the single-variable chain rule, we'd get the wrong answer. In fact, the previous chain rule is meaningless in this case because derivative operator $\frac{d}{dx}$ does not apply to multivariate functions such as $u_2(x,u_1) = x + u_1$. Let's try it anyway to see what happens. If we pretend that $\frac{du_2}{du_1} = 0 + 1 = 1$ and $\frac{du_1}{dx} = 2x$, then $\frac{dy}{dx} = \frac{du_2}{dx} = \frac{du_2}{du_1} \frac{du_1}{dx} = 2x$ instead of the right answer $1 + 2x$.  
 
-Because $f(x,u) = x + u$ has multiple variables, partial derivatives come into play. Let's blindly apply the partial derivative operator to all of our equations and see what we get:
+Because $u_2(x,u) = x + u_1$ has multiple parameters, partial derivatives come into play. Let's blindly apply the partial derivative operator to all of our equations and see what we get:
 
-$\frac{\partial u(x)}{\partial x} = 2x$ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(same as $\frac{du(x)}{dx}$)\\
-$\frac{\partial f(x,u)}{\partial u} = \frac{\partial }{\partial u}(x + u) = 0 + 1 = 1$\\
-$\frac{\partial f(x,u)}{\partial x} = \frac{\partial }{\partial x}(x + u) = 1 + 0 = 1$ ~~~~~~~~~\,~~~(something's not quite right here!)\\
+$\frac{\partial u_1(x)}{\partial x} = 2x$ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(same as $\frac{du_1(x)}{dx}$)\\
+$\frac{\partial u_2(x,u_1)}{\partial u_1} = \frac{\partial }{\partial u_1}(x + u_1) = 0 + 1 = 1$\\
+$\frac{\partial u_2(x,u_1)}{\partial x} = \frac{\partial }{\partial x}(x + u_1) = 1 + 0 = 1$ ~~~~~~~~~~(something's not quite right here!)\\
 
-Unfortunately, the partial derivative of $y$ with respect to $x$ is wrong because it violates a key assumption for partial derivatives. When taking the partial derivative with respect to $x$, the other variables must not vary as $x$ varies. Otherwise, we could not act as if the other variables were constants. Clearly, though, $u(x)$ is a function of $x$ and therefore varies with $x$. $\frac{\partial f(x,u)}{\partial x} \neq 1$. A quick look at the data flow diagram for $y=f(x,u)$ shows multiple paths from $x$ to $y$, thus, making it clear we need to  consider direct and indirect (through $u(x)$) dependencies on $x$:
+Ooops! The partial $\frac{\partial u_2(x,u_1)}{\partial x}$ is wrong because it violates a key assumption for partial derivatives. When taking the partial derivative with respect to $x$, the other variables must not vary as $x$ varies. Otherwise, we could not act as if the other variables were constants. Clearly, though, $u_1(x)=x^2$ is a function of $x$ and therefore varies with $x$. $\frac{\partial u_2(x,u_1)}{\partial x} \neq 1 + 0$ because $\frac{\partial u_1(x)}{\partial x} \neq 0$. A quick look at the data flow diagram for $y=u_2(x,u_1)$ shows multiple paths from $x$ to $y$, thus, making it clear we need to consider direct and indirect (through $u_1(x)$) dependencies on $x$:
 
 \includegraphics[scale=.9]{plus-square.png}
 
-Enter the {\em law of total derivative}, which basically says that to compute $\frac{dy}{dx}$, we need to sum up all possible contributions from changes in $x$ to the change in $y$. The total derivative with respect to $x$ assumes all variables, such as $u$ in our case, are functions of $x$ and potentially vary as $x$ varies.   Paraphrasing [total derivative from Wolfram MathWorld](http://mathworld.wolfram.com/TotalDerivative.html), the total derivative of $f(x,u)$ that depends on $x$ directly and/or indirectly via intermediate variable $u(x)$ is given by:
+A change in $x$ effects $y$ both as an operand of the addition and as the operand of the square operator. Here's an equation that describes how tweaks to $x$ affect the output:
 
-$\frac{\partial f(x,u)}{\partial x} = \frac{\partial f}{\partial x} + \frac{\partial f}{\partial u}\frac{\partial u}{\partial x}$
+$\Delta y = (x + \Delta x) + (x + \Delta x)^2$
 
-That is an instantiation of the {\em single-variable total-derivative chain rule}:
+If we let $x=1$, then $y=1+1^2=2$. If we bump $x$ by 1, $\Delta x=1$, then $y = (1+1) + (1+1)^2 = 2 + 4 = 6$. The change in $y$ is not $1$, as $\partial u_2 / u_1$ would lead us to believe, but $6-2 = 4$!
+
+
+Enter the {\em law of total derivative}, which basically says that to compute $\frac{dy}{dx}$, we need to sum up all possible contributions from changes in $x$ to the change in $y$. The total derivative with respect to $x$ assumes all variables, such as $u_1$ in this case, are functions of $x$ and potentially vary as $x$ varies.   The total derivative of $f(x) = u_2(x,u)$ that depends on $x$ directly and indirectly via intermediate variable $u_1(x)$ is given by:
+
+$\frac{dy}{dx} = \frac{df(x)}{dx} = \frac{d u_2(x,u)}{d x} = \frac{\partial u_2}{\partial x}\frac{dx}{dx} + \frac{\partial u_2}{\partial u_1}\frac{d u_1}{d x} = \frac{\partial u_2}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{d u_1}{d x}$
+
+Using this formula, we get the proper answer:
+
+$\frac{dy}{dx} = \frac{\partial u_2}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{d u_1}{d x} = 1 + 1 \times 2x = 1 + 2x$
+
+That forumal is an application of what we are calling the {\em single-variable total-derivative chain rule}:
 
 \[
-\frac{\partial f(x,r_1,\ldots,r_n)}{\partial x} = \frac{\partial f}{\partial x} + \frac{\partial f}{\partial r_1}\frac{\partial r_1}{\partial x} + \frac{\partial f}{\partial r_2}\frac{\partial r_2}{\partial x} + \ldots + \frac{\partial f}{\partial r_n}\frac{\partial r_n}{\partial x} = \frac{\partial f}{\partial x} + \sum_{i=1}^n \frac{\partial f}{\partial r_i}\frac{\partial r_i}{\partial x}
+\frac{d f(x,u_1,\ldots,u_n)}{d x} = \frac{\partial f}{\partial x} + \frac{\partial f}{\partial u_1}\frac{d u_1}{d x} + \frac{\partial f}{\partial u_2}\frac{d u_2}{d x} + \ldots + \frac{\partial f}{\partial u_n}\frac{d u_n}{dx} = \frac{\partial f}{\partial x} + \sum_{i=1}^n \frac{\partial f}{\partial u_i}\frac{d u_i}{d x}
 \]
 
-Unfortunately, there is a major confusion point here regarding the notation: Both the total derivative and the partial derivative use the same notation on the left side of the equation, but  the total and partial derivatives are very different! They both use the same notation on the left because $\frac{\partial f(x,r_1,\ldots,r_n)}{\partial x}$ is just how we say ``derivative with respect to just one of several variables.'' On the right side of the equation, however, the total derivative assumes all variables are potentially codependent whereas the partial derivative assumes all variables but $x$ are constants. 
+There is something subtle going on here with the notation because we are mixing derivative and partial derivative notation. Although $f(x,u_1,\ldots,u_n)$ is a function of multiple parameters, we are deliberately using notation ${d f(x,u_1,\ldots,u_n)}/{d x}$ rather than ${\partial f(x,u_1,\ldots,u_n)}/{\partial x}$ to emphasize the fact we're computing the total derivative. Similarly, we use ${d u_i}/{d x}$ not ${\partial u_i}/{\partial x}$ for the intermediate variables to indicate total derivative not partial derivative. The total derivative assumes all variables are potentially codependent whereas the partial derivative assumes all variables but $x$ are constants. This notation mirrors that of [Wikipedia](https://en.wikipedia.org/wiki/Total\_derivative). 
 
-You will also find that some descriptions of the total derivative, such as Wikipedia's, use $\frac{\partial f}{\partial r_i}\frac{d r_i}{dx}$ instead of $\frac{\partial f}{\partial r_i}\frac{\partial r_i}{\partial x}$, but that is less general because it assumes the intermediate variables are functions of a single variable. We also use ${\partial f(x,r_1,\ldots,r_n)}/{\partial x}$ instead of ${df(x,r_1,\ldots,r_n)}/{dx}$ since the partial derivative notation is more general and degenerates to $\frac{df}{dx}$ anyway for the single-variable case.
+Unfortunately, this chain rule based upon the total derivative appears to be universally called ``multivariable chain rule'' in calculus discussions, which is highly misleading! Only the intermediate variables are multivariate functions. The overall function, $f(x) = x + x^2$ is a scalar function comprised of a single parameter $x$. The derivative and parameter are scalars, not vectors, as one would expect with a so-called multivariate chain rule.  (Within the context of a non-matrix calculus class, ``multivariate chain rule'' is likely unambiguous.) To reduce confusion, we use ``single-variable total-derivative chain rule'' to spell out the distinguishing feature between the simple single-variable chain rule, $\frac{dy}{dx} = \frac{dy}{du}\frac{du}{dx}$, and this one. 
 
-To make things even more confusing, this chain rule based upon the total derivative, seems to be universally called ``multivariable chain rule'' in calculus discussions, which is highly misleading! Only the intermediate variables are multivariate functions. The overall function, $x + x^2$ is a scalar function comprised of a single parameter $x$. The derivative is a scalar, not a vector as one would expect with a multivariate chain rule. The key distinguishing feature between our single-variable chain rule and this one is of course that we are now taking in consideration the total derivative. That is why we call it the ``single-variable total-derivative chain rule.''
 
-  says, ``The total derivative includes these indirect dependencies define the overall dependency of $f$ on $x$'' 
+show $x \times x^2$ multiplication also gives addition in derivative!
 
-A change in $x$ effects $y$ both as an operand of the addition and as the operand of the square operator. 
+
 
 
 
@@ -616,6 +626,8 @@ y = 3 + 9 = 12
 
 
 \subsubsection{Vector chain rule}
+
+http://spot.pcc.edu/math/APEXCalculus/sec\_multi\_chain.html distinguishes between the total derivative and the gradient as part I and part II.
 
 dot product of gradient f and derivative of inside arg of f. %$\frac{\partial}{\partial }$
 
