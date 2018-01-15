@@ -465,7 +465,7 @@ $\frac{dy}{dx} = \frac{dy}{du}\frac{du}{dx}$
 To deploy the single-variable chain rule, follow these steps:
 
 \begin{enumerate}
-	\item  Introduce intermediate variables for subexpressions, for both binary and unary operators; e.g., $\times$ is binary, $sin(x)$ and other trigonometric functions are usually unary because there is a single operand.
+	\item  TODO: ``factor'' not ``introduce?? Introduce intermediate variables for nested subexpressions and subexpressions for both binary and unary operators; e.g., $\times$ is binary, $sin(x)$ and other trigonometric functions are usually unary because there is a single operand.
 	\item Compute derivatives of the intermediate variables.
 	\item Combine all derivatives of intermediate variables by multiplying them together to get the overall result.
 	\item Substitute intermediate variables back in if any are referenced.
@@ -489,7 +489,7 @@ The order of these subexpressions does not affect the answer, but we recommend w
 	$\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx} = cos(x^2)2x = 2xcos(x^2)$	
 \end{enumerate}
 
-Notice how easy it is to compute the derivatives of the intermediate variables in isolation! The chain rule says it's legal to do that and tells us how to combine the intermediate results to get $2xcos(x^2)$. 
+Notice how easy it is to compute the derivatives of the intermediate variables in isolation! The chain rule says it's legal to do that and tells us how to combine the intermediate results to get $2xcos(x^2)$.
 
 You can think of the combining step of the chain rule in terms of units canceling. If we let $y$ be gallons of gas, $x$ be the gallons in a gas tank, and $u$ as miles we can interpret $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$ as $\frac{miles}{tank} = \frac{miles}{gallon} \frac{gallon}{tank}$. The $gallon$ denominator and numerator cancel. This is a convenient way to remember the chain rule but the analogy only goes so far; don't treat $dy$ and $dx$ has separate variables since they are two components in the name of a single derivative operator.
 
@@ -586,9 +586,9 @@ That is an application of what we call the {\em single-variable total-derivative
 \frac{d f(x,u_1,\ldots,u_n)}{d x} = \frac{\partial f}{\partial x} + \frac{\partial f}{\partial u_1}\frac{d u_1}{d x} + \frac{\partial f}{\partial u_2}\frac{d u_2}{d x} + \ldots + \frac{\partial f}{\partial u_n}\frac{d u_n}{dx} = \frac{\partial f}{\partial x} + \sum_{i=1}^n \frac{\partial f}{\partial u_i}\frac{d u_i}{d x}
 \]
 
-There is something subtle going on here with the notation because we are mixing derivative and partial derivative notation. Although $f(x,u_1,\ldots,u_n)$ is a function of multiple parameters, we are deliberately using notation ${d f(x,u_1,\ldots,u_n)}/{d x}$ rather than ${\partial f(x,u_1,\ldots,u_n)}/{\partial x}$ to emphasize the fact we're computing the total derivative. Similarly, we use ${d u_i}/{d x}$ not ${\partial u_i}/{\partial x}$ for the intermediate variables to indicate total derivative not partial derivative. The total derivative assumes all variables are potentially codependent whereas the partial derivative assumes all variables but $x$ are constants. This notation mirrors that of [Wikipedia](https://en.wikipedia.org/wiki/Total\_derivative). 
+There is something subtle going on here with the notation because we are mixing derivative and partial derivative notation. Although $f(x,u_1,\ldots,u_n)$ is a function of multiple parameters, we are deliberately using notation ${d f(x,u_1,\ldots,u_n)}/{d x}$ rather than ${\partial f(x,u_1,\ldots,u_n)}/{\partial x}$ to emphasize the fact we're computing the total derivative. Similarly, we use ${d u_i}/{d x}$ not ${\partial u_i}/{\partial x}$ for the intermediate variables to indicate total derivative not partial derivative. The total derivative assumes all variables are potentially codependent whereas the partial derivative assumes all variables but $x$ are constants. This notation mirrors that of [Wikipedia](https://en.wikipedia.org/wiki/Total\_derivative) but differs from [Wolfram's notation](http://mathworld.wolfram.com/TotalDerivative.html). Wolfram uses $\frac{\partial f(x,u_1,\ldots,u_n)}{\partial x}$, which is technically more correct but confusing because the partial and total derivatives are different.
 
-Also notice that the total derivative formula always adds terms $\frac{\partial f}{\partial u_i}\frac{d u_i}{d x}$.  It's tempting to think that adding terms in the derivative makes sense because, for example, $y = x+x^2$ adds two terms. Nope. The total derivative is adding terms because it represents a weighted sum of all $x$ contributions to the change in $y$. For example, if we change the addition to multiplication in $y = x \times x^2$, the derivative formula still adds partial derivative terms. ($x \times x^2$  simplifies to $x^3$ but for this demonstration, do not combine the terms.) Here are the intermediate variables and partial derivatives:
+Also notice that the total derivative formula always adds terms $\frac{\partial f}{\partial u_i}\frac{d u_i}{d x}$.  It's tempting to think that adding terms in the derivative makes sense because, for example, $y = x+x^2$ adds two terms. Nope. The total derivative is adding terms because it represents a weighted sum of all $x$ contributions to the change in $y$. For example, if we change the addition to multiplication in $y = x \times x^2$, the derivative formula still adds partial derivative terms. ($x \times x^2$  simplifies to $x^3$ but for this demonstration, let's not combine the terms.) Here are the intermediate variables and partial derivatives:
 
 $u_1(x) = x^2$\\
 $u_2(x,u_1) = x \times u_1$ ~~~\,~~~~~~~~~ ($y = f(x) = u_2(x,u_1)$)\\
@@ -601,19 +601,92 @@ $\frac{dy}{dx} = \frac{\partial u_2}{\partial x} + \frac{\partial u_2}{\partial 
 
 It's the partials (weights) that change, not the formula.
 
+Those readers with a strong calculus background might wonder why we aggressively introduce an intermediate variable for even non-nested subexpressions such as $x^2$ in $x+x^2$. We use this process for two reasons: (i) computing the derivatives for the simplified subexpressions is usually trivial and (ii) the process mirrors how automatic differentiation works in neural network libraries.
+
 %\includegraphics[scale=.9]{mult-square.png}
 
 Before we move on, a word of caution about terminology on the web. Unfortunately, this chain rule based upon the total derivative is universally called ``multivariable chain rule'' in calculus discussions, which is highly misleading! Only the intermediate variables are multivariate functions. The overall function, $f(x) = x + x^2$ is a scalar function comprised of a single parameter $x$. The derivative and parameter are scalars, not vectors, as one would expect with a so-called multivariate chain rule.  (Within the context of a non-matrix calculus class, ``multivariate chain rule'' is likely unambiguous.) To reduce confusion, we use ``single-variable total-derivative chain rule'' to spell out the distinguishing feature between the simple single-variable chain rule, $\frac{dy}{dx} = \frac{dy}{du}\frac{du}{dx}$, and this one. 
 
 \subsubsection{Vector chain rule}
 
+ actually I think it is exactly the same except we replace variables with vectors.
+ 
+Surprisingly, the chain rule for vectors is simpler looking than the chain rules for scalars; we just have to be careful about the orientation and shape of our vectors and matrices (vector multiplication is not commutative). Rather than just present the vector chain rule, let's rediscover it ourselves so we get a firm grip on it. Let's start by computing the derivative of a sample vector function with respect to a scalar to see if we can abstract a general formula.
+
+$
+\begin{bmatrix}
+	y_1(x)\\
+	y_2(x)\\
+\end{bmatrix} =
+\begin{bmatrix}
+	f_1(x)\\
+	f_2(x)\\
+\end{bmatrix} = 
+\begin{bmatrix}
+	ln(x+x^2)\\
+	sin(3x)
+\end{bmatrix}
+$
+
+Intro intermediate variables
+
+$u_1(x) = x^2$\\
+$u_2(x,u_1) = x + u_1$\\
+$v_1(x) = 3x$
+
+gives:
+
+$
+\begin{bmatrix}
+	y_1(x)\\
+	y_2(x)\\
+\end{bmatrix} =
+\begin{bmatrix}
+	f_1(x, u_2)\\
+	f_2(x,v_1)\\
+\end{bmatrix} = 
+\begin{bmatrix}
+	ln(u_2)\\
+	sin(v_1)
+\end{bmatrix}
+$
+
+$\frac{d u_1(x)}{dx} = 2x$\\
+$\frac{d u_2(x,u_1)}{dx} = \frac{\partial u_2(x)}{\partial x} + \frac{du_1}{dx}= 1 + 2x$\\
+$\frac{d v_1(x)}{dx} = 3$
+
+And for the original equation:
+
+$\frac{\partial y_1(x)}{\partial x} = \frac{\partial f_1(x,u_2)}{\partial x} + \frac{\partial f_1(x,u_2)}{\partial u_2}\frac{d u_2}{dx} = 0 + \frac{1}{u_2}(1+2x) = \frac{1+2x}{x+x^2}$\\
+$\frac{\partial y_2(x)}{\partial x} = \frac{\partial f_2(x,v_1)}{\partial x} + \frac{\partial f_2(x,v_1)}{\partial v_1}\frac{d v_1}{dx} = 0 + cos(v_1)3 = 3cos(3x)$\\
+
+\cut{
+$
+\begin{array}{lcl}
+y_1 & = & f_1(\mathbf{x})\\
+y_2 & = & f_2(\mathbf{x})\\
+ & \vdots & \\
+y_m & = & f_m(\mathbf{x})\\
+\end{array}
+$
+}
+
 http://spot.pcc.edu/math/APEXCalculus/sec\_multi\_chain.html distinguishes between the total derivative and the gradient as part I and part II.
+
 
 dot product of gradient f and derivative of inside arg of f. %$\frac{\partial}{\partial }$
 
 Previously, we manually computed the derivative with respect to $\mathbf{x}$ of $y = sum(\mathbf{x}  z)$ as $[z, z, \ldots, z]$, but we can also use the chain rule. Let vector $\mathbf{u} = \mathbf{x}  z$ then $y = sum(\mathbf{u})$. The vector chain rule works just like the single-variable chain rule except that our variable is now a vector.  The vector general says that $\frac{dy}{d\mathbf{x}} = \frac{dy}{d\mathbf{u}}  \frac{d\mathbf{u}}{d\mathbf{x}}$, which means 
 
 $\frac{dy}{d\mathbf{x}} = \vec{1}^T  \frac{d}{d\mathbf{x}} (\mathbf{x}  z) = \vec{1}^T  diag(\vec{1}z) = \vec{1}^T  I  z = \vec{1}^T  z = [z, z, \ldots, z]$
+
+(Using vec and my notation) let $z = \mathbf{f(g(x))}$, $m = |\mathbf{f}|$, $n=|\mathbf{x}|$ as usual then $k=|\mathbf{g}|$. Then
+
+$\frac{\partial z}{\partial x_j} = \frac{\partial f}{\partial g_1}\frac{\partial g_1}{\partial x_j} + \frac{\partial f}{\partial g_2}\frac{\partial g_2}{\partial x_j} + \ldots + \frac{\partial f}{\partial g_k}\frac{\partial g_k}{\partial x_j} = \frac{\partial z}{\partial x_j} =  \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_j}$
+
+That would give a gradient of
+
+$\nabla z = \left[ \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_1},~ \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_2}, ~\ldots,~ \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_n} \right]$
 
 \pagebreak
 {\bf NOTES}
@@ -746,7 +819,7 @@ todo: Matrix Differentiation https://atmos.washington.edu/~dennis/MatrixCalculus
 \section{Resources}
 
 as part of this course notes Introduction to Finite Element Methods I believe by Carlos A. Felippa: https://www.colorado.edu/engineering/CAS/courses.d/IFEM.d/, this appendix is useful:
-https://www.colorado.edu/engineering/CAS/courses.d/IFEM.d/IFEM.AppC.d/IFEM.AppC.pdf
+https://www.colorado.edu/engineering/CAS/courses.d/IFEM.d/IFEM.AppC.d/IFEM.AppC.pdf His Jacobian are transposed.
 
 true multivar chain rule  This page http://spot.pcc.edu/math/APEXCalculus/sec\_multi\_chain.html has right way. They are calling it multivar chain rule part *II* not part I.
 
