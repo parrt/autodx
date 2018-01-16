@@ -568,11 +568,13 @@ Ooops! The partial $\frac{\partial u_2(x,u_1)}{\partial x}$ is wrong because it 
 
 A change in $x$ effects $y$ both as an operand of the addition and as the operand of the square operator. Here's an equation that describes how tweaks to $x$ affect the output:
 
-$\Delta y = (x + \Delta x) + (x + \Delta x)^2$
+$\hat y = (x + \Delta x) + (x + \Delta x)^2$
 
-If we let $x=1$, then $y=1+1^2=2$. If we bump $x$ by 1, $\Delta x=1$, then $y = (1+1) + (1+1)^2 = 2 + 4 = 6$. The change in $y$ is not $1$, as $\partial u_2 / u_1$ would lead us to believe, but $6-2 = 4$!
+Then, $\Delta y = \hat y - y$.
 
-Enter the ``law'' of {\em total derivatives}, which basically says that to compute $\frac{dy}{dx}$, we need to sum up all possible contributions from changes in $x$ to the change in $y$. The total derivative with respect to $x$ assumes all variables, such as $u_1$ in this case, are functions of $x$ and potentially vary as $x$ varies.   The total derivative of $f(x) = u_2(x,u_1)$ that depends on $x$ directly and indirectly via intermediate variable $u_1(x)$ is given by:
+If we let $x=1$, then $y=1+1^2=2$. If we bump $x$ by 1, $\Delta x=1$, then $\hat y = (1+1) + (1+1)^2 = 2 + 4 = 6$. The change in $y$ is not $1$, as $\partial u_2 / u_1$ would lead us to believe, but $6-2 = 4$!
+
+Enter the ``law'' of [{\em total derivatives}](https://en.wikipedia.org/wiki/Total\_derivative), which basically says that to compute $\frac{dy}{dx}$, we need to sum up all possible contributions from changes in $x$ to the change in $y$. The total derivative with respect to $x$ assumes all variables, such as $u_1$ in this case, are functions of $x$ and potentially vary as $x$ varies.   The total derivative of $f(x) = u_2(x,u_1)$ that depends on $x$ directly and indirectly via intermediate variable $u_1(x)$ is given by:
 
 $\frac{dy}{dx} = \frac{\partial f(x)}{\partial x} = \frac{\partial u_2(x,u_1)}{\partial x} = \frac{\partial u_2}{\partial x}\frac{\partial x}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{\partial u_1}{\partial x} = \frac{\partial u_2}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{\partial u_1}{\partial x}$
 
@@ -604,7 +606,7 @@ $\frac{\partial u_1}{\partial x} = 2x$\\
 $\frac{\partial u_2}{\partial x} = \frac{\partial u_2}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{\partial u_1}{\partial x} = 1 + 1 \times 2x = 1+2x$\\
 $\frac{\partial f(x)}{\partial x} = \frac{\partial u_3}{\partial x} + \frac{\partial u_3}{\partial u_2}\frac{\partial u_2}{\partial x} = 0 + cos(u_2)\frac{\partial u_2}{\partial x} = cos(x+x^2)(1+2x)$
 
-where both $\frac{\partial u_2}{\partial x}$ and $\frac{\partial f(x)}{\partial x}$ take into account the total derivative.
+where both $\frac{\partial u_2}{\partial x}$ and $\frac{\partial f(x)}{\partial x}$ have $\frac{\partial u_i}{\partial x}$ terms that take into account the total derivative.
 
 Then $\frac{dy}{dx} = \frac{\partial f(x)}{\partial x} = cos(x+x^2)(1+2x)$, which is the same answer we'd get using the single variable chain rule $\frac{dy}{dx} = \frac{dy}{du}\frac{du}{dx}$ by introducing a single intermediate variable $u=x+x^2$, giving $y = sin(u)$, and differentiating with respect to $x$.
 
@@ -622,8 +624,24 @@ $\frac{dy}{dx} = \frac{\partial u_2}{\partial x} + \frac{\partial u_2}{\partial 
 
 It's the partials (weights) that change, not the formula.
 
-Those readers with a strong calculus background might wonder why we aggressively introduce an intermediate variable for even non-nested subexpressions such as $x^2$ in $x+x^2$. We use this process for two reasons: (i) computing the derivatives for the simplified subexpressions is usually trivial and (ii) the process mirrors how automatic differentiation works in neural network libraries.
+TODO: the simpler chain rule is a special case of this one so you can just keep this one in mind.
 
+Those readers with a strong calculus background might wonder why we aggressively introduce an intermediate variable for even non-nested subexpressions such as $x^2$ in $x+x^2$. We use this process for three reasons: (i) computing the derivatives for the simplified subexpressions is usually trivial, (ii) we can simplify the chain rule, and (iii) the process mirrors how automatic differentiation works in neural network libraries.
+
+Using the intermediate variables even more aggressively, let's see how we can simplify our single-variable total-derivative chain rule to its final form. The goal is to get rid of the the $\frac{\partial f}{\partial x}$ sticking out on the front like a sore thumb:
+
+\[
+\frac{\partial f(x,u_1,\ldots,u_n)}{\partial x} = \frac{\partial f}{\partial x} + \sum_{i=1}^n \frac{\partial f}{\partial u_i}\frac{\partial  u_i}{\partial  x}
+\]
+
+We can achieve that by simply introducing a new temporary variable as an alias for $x$: $u_{n+1} = x$. Then, the formula reduces to our final form (implicitly bumping $n$ up by one):
+
+\[
+\frac{\partial f(u_1,\ldots,u_n)}{\partial x} = \sum_{i=1}^n \frac{\partial f}{\partial u_i}\frac{\partial  u_i}{\partial  x}
+\]
+
+As a bit of dramatic foreshadowing, that summation sure looks like a vector dot product, $\frac{\partial f}{\partial \mathbf{u}} \cdot \frac{\partial \mathbf{u}}{\partial x}$, or  a vector multiply $\frac{\partial f}{\partial \mathbf{u}} \frac{\partial \mathbf{u}}{\partial x}$.
+ 
 %\includegraphics[scale=.9]{mult-square.png}
 
 Before we move on, a word of caution about terminology on the web. Unfortunately, this chain rule based upon the total derivative is universally called ``multivariable chain rule'' in calculus discussions, which is highly misleading! Only the intermediate variables are multivariate functions. The overall function, $f(x) = x + x^2$, is a scalar function that accepts a single parameter $x$. The derivative and parameter are scalars, not vectors, as one would expect with a so-called multivariate chain rule.  (Within the context of a non-matrix calculus class, ``multivariate chain rule'' is likely unambiguous.) To reduce confusion, we use ``single-variable total-derivative chain rule'' to spell out the distinguishing feature between the simple single-variable chain rule, $\frac{dy}{dx} = \frac{dy}{du}\frac{du}{dx}$, and this one. 
@@ -713,9 +731,25 @@ $
 \end{bmatrix} = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial \mathbf{g}}{\partial x}
 $
 
-And then we've arrived at the multiplication of two Jacobians.
+Meaning that we've arrived at the multiplication of two Jacobians.  Let's check our results:
 
-Heh, cool!  That looks pretty familiar as it mirrors the single-variable chain rule. Our first whack at the {\em vector chain rule} is looking pretty good. Compare our vector rule:
+$
+\frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial \mathbf{g}}{\partial x} = \begin{bmatrix}
+	\frac{1}g_1 & 0\\
+	0 & cos(g_2)\\
+\end{bmatrix}\begin{bmatrix}
+2x\\
+3\\
+\end{bmatrix} = \begin{bmatrix}
+	\frac{1}{g_1}2x + 0\\
+	0 + cos(g_2)3\\
+\end{bmatrix} = \begin{bmatrix}
+	\frac{2}{x}\\
+	3cos(3x)\\
+\end{bmatrix}
+$
+
+Heh, cool!  We get the same answer as the scalar approach. This vector chain rule for vectors of functions and a single parameter appears to be correct and, indeed, mirrors the single-variable chain rule. Compare the vector rule:
 
 $\frac{\partial}{\partial x} \mathbf{f}(\mathbf{g}(x)) = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial x}$
 
@@ -723,215 +757,80 @@ to the single-variable chain rule:
 
 $\frac{d}{dx} f(g(x)) = \frac{df}{dg}\frac{dg}{dx}$
 
-But it appears our vector chain rule is missing terms required by the total derivative law, as shown in the single-variable total-derivative chain rule. Let's see. If we replace the intermediate variables $u_i$ with $g_i$, then we get:
+To make this formula work for multiple parameters, we just have to convert $x$ to vector $\mathbf{x}$.  The effect is to that $\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ is now a matrix as is the resulting Jacobian,  $\frac{\partial \mathbf{f}}{\partial \mathbf{x}}$, instead of a vertical vector. Our complete {\em vector chain rule} is:
+
+$\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ ~~~~~~~~~~~~~~~~~~~~~(Note: matrix multiply doesn't commute; order of $\frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ matters)
+
+The beauty of the vector formula over the single-variable chain rule is that it automatically takes into consideration the total derivative while maintaining the same notational simplicity. 
+
+For completeness, here are the two Jacobian components in their full glory:
+
+$
+\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = \begin{bmatrix}
+	\frac{\partial f_1}{\partial g_1} & \frac{\partial f_1}{\partial g_2} & \ldots & \frac{\partial f_1}{\partial g_k}\\
+	\frac{\partial f_2}{\partial g_1} & \frac{\partial f_2}{\partial g_2} & \ldots & 	
+\frac{\partial f_2}{\partial g_k}\\
+	& &\ldots\\
+	\frac{\partial f_m}{\partial g_1} & \frac{\partial f_m}{\partial g_2} & \ldots & \frac{\partial f_m}{\partial g_k}\\
+\end{bmatrix}\begin{bmatrix}
+	\frac{\partial g_1}{\partial x_1} & \frac{\partial g_1}{\partial x_2} & \ldots & \frac{\partial g_1}{\partial x_n}\\
+	\frac{\partial g_2}{\partial x_1} & \frac{\partial g_2}{\partial x_2} & \ldots & 	
+\frac{\partial g_2}{\partial x_n}\\
+	& &\ldots\\
+	\frac{\partial g_k}{\partial x_1} & \frac{\partial g_k}{\partial x_2} & \ldots & \frac{\partial g_k}{\partial x_n}\\
+\end{bmatrix}
+$
+
+where $m=|f|$, $n=|x|$, and $k=|g|$. The resulting Jacobian is $m \times n$ (an $m \times k$ matrix multiplied by a $k \times n$ matrix). 
+
+Even within this $\frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ formula, we can simplify further because, for many applications, the Jacobians are square ($m=n$) and the off-diagonal entries are zero.  It is the nature of neural networks that the associated mathematics deals with functions of vectors not vectors of functions. For example, the affine function has term $sum(\mathbf{w}\otimes\mathbf{x})$ and the activation function is $max(0,\mathbf{x})$; we'll consider derivatives of these functions in a section below.  As we saw above, element-wise operations on vectors yield diagonal vectors with elements $\frac{\partial f_i}{\partial g_i}$ because $f_i$ is a function purely of $g_i$ but not $g_j$ for $j \neq i$.  In this case, the vector chain rule simplifies to:
+
+$\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = diag(\frac{\partial f_i}{\partial g_i})diag(\frac{\partial g_i}{\partial x_i})$
+
+To illustrate the vector chain rule, let's compute the derivative with respect to vector $\mathbf{x}$ for $y = f(\mathbf{x}) = sum(\mathbf{x}  z)$. We know from a previous section that the gradient is $[z, z, \ldots, z]$, but we can also use the chain rule. Let's introduce an intermediate vector variable $\mathbf{u}$ that depends on input $\mathbf{x}$:
+
+$\mathbf{u}(\mathbf{x}) = \mathbf{x} z$\\
+$y = f(\mathbf{u}) = sum(\mathbf{u})$
+
+Now that we've rephrased $y$, we recognize two subexpressions for which we already know the partial derivatives.
+
+$\frac{\partial\mathbf{u}}{\partial \mathbf{x}} = diag(\vec{1}z) = Iz$\\
+$\frac{\partial f}{\partial \mathbf{u}} = \vec{1}^T$\\
+
+The overall derivative with respect to $\mathbf{x}$ follows from the vector chain rule:
 
 \[
-\frac{\partial f(x,g_1,\ldots,g_n)}{\partial x} = \frac{\partial f}{\partial x} + \sum_{i=1}^n \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x}
+\frac{\partial}{\partial \mathbf{x}} f(\mathbf{u}(\mathbf{x})) = \begin{bmatrix}
+	\frac{\partial f}{\partial u_1} & \frac{\partial f}{\partial u_2} & \ldots & \frac{\partial f}{\partial u_n}\end{bmatrix}\begin{bmatrix}
+	\frac{\partial u_1}{\partial x_1} &  & \text{\huge0} & \\
+	 & \frac{\partial u_2}{\partial x_2} & &\\
+	& &\ddots\\
+	& \text{\huge0} &   & \frac{\partial u_n}{\partial x_n}\\
+\end{bmatrix} = \begin{bmatrix}
+	1 & 1 & \ldots & 1\end{bmatrix}\begin{bmatrix}
+	z &  & \text{\huge0} & \\
+	 & z & &\\
+	& &\ddots\\
+	& \text{\huge0} &   & z\\
+\end{bmatrix}
 \]
 
-Since $\frac{\partial f_i(g_i)}{\partial x} = 0$ for our example, the single-variable total-derivative chain rule reduces to:
+because $\frac{\partial}{\partial \mathbf{x}} f(\mathbf{u}(\mathbf{x})) = \frac{\partial f}{\partial \mathbf{u}}\frac{\partial\mathbf{u}}{\partial \mathbf{x}} = [z, z, \ldots, z]$
 
-\[
-\frac{\partial f(x,g_1,\ldots,g_n)}{\partial x} = \sum_{i=1}^n \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x}
-\]
+Just to be sure, let's go through the process
 
-That summation is just the dot product of two vectors, or horizontal vector $\frac{\partial f}{\partial \mathbf{g}}$ multiplied by vertical vector $\frac{\partial\mathbf{g}}{\partial x}$. The beauty of the vector formula we've got so far is that it automatically takes into consideration the total derivative and uses the form of our simplest chain rule.
-
-Now, let's deal with the case where $f_i$ can reference $x$ and so $\frac{\partial f_i(g_i)}{\partial x}$ is not necessarily 0. We can just alter $f_2 = sin(3x)$ to be $f_2 = x + sin(3x)$:
-
-$
-\begin{bmatrix}
-	y_1(x)\\
-	y_2(x)\\
-\end{bmatrix} =
-\begin{bmatrix}
-	f_1(x)\\
-	f_2(x)\\
-\end{bmatrix} = 
-\begin{bmatrix}
-	ln(x^2)\\
-	x + sin(3x)
-\end{bmatrix}
-$
-
-In this case, the $f_i$ take parameters $x$ and $\mathbf{g}$ not just $\mathbf{g}$:
-
-$
-\begin{bmatrix}
-	f_1(x,\mathbf{g})\\
-	f_2(x,\mathbf{g})\\
-\end{bmatrix} = \begin{bmatrix}
-	ln(g_1)\\
-	x+sin(g_2)\\
-\end{bmatrix}
-$
-
-$
-\begin{bmatrix}
-	g_1(x)\\
-	g_2(x)\\
-\end{bmatrix} = \begin{bmatrix}
-	x^2\\
-	3x\\
-\end{bmatrix}
-$
-
-Using scalar rules:
-
-$
-\begin{bmatrix}
-	\frac{\partial f_1(x,\mathbf{g})}{\partial x}\\
-	\frac{\partial f_2(x,\mathbf{g})}{\partial x}\\
-\end{bmatrix} = \begin{bmatrix}
-	\frac{\partial f_1}{\partial x} + \frac{\partial f_1}{\partial g_1}\frac{\partial g_1}{\partial x} + \frac{\partial f_1}{\partial g_2}\frac{\partial g_2}{\partial x}\\
-	\frac{\partial f_2}{\partial x} + \frac{\partial f_2}{\partial g_1}\frac{\partial g_1}{\partial x} + \frac{\partial f_2}{\partial g_2}\frac{\partial g_2}{\partial x}\\
-\end{bmatrix} = \begin{bmatrix}
-	0 + \frac{1}{g_1}2x + 0\\
-	1 + 0 + cos(g_2)3\\
-\end{bmatrix} = \begin{bmatrix}
-	\frac{2x}{x^2}\\
-	1 + 3cos(3x)\\
-\end{bmatrix} = \begin{bmatrix}
-	\frac{2}{x}\\
-	1 + 3cos(3x)\\
-\end{bmatrix}
-$
-
-If we split off the first term in each row as vertical vector $\frac{\partial\mathbf{f}}{\partial x}$, we are left with that vector plus the previous $\frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial x}$:
-
-$
-\frac{\partial}{\partial x} \mathbf{f}(x,\mathbf{g}(x)) = \begin{bmatrix}
-	\frac{\partial f_1}{\partial x} + \frac{\partial f_1}{\partial g_1}\frac{\partial g_1}{\partial x} + \frac{\partial f_1}{\partial g_2}\frac{\partial g_2}{\partial x}\\
-	\frac{\partial f_2}{\partial x} + \frac{\partial f_2}{\partial g_1}\frac{\partial g_1}{\partial x} + \frac{\partial f_2}{\partial g_2}\frac{\partial g_2}{\partial x}\\
-\end{bmatrix} = \begin{bmatrix}
-\frac{\partial f_1}{\partial x}\\
-\frac{\partial f_2}{\partial x}\\
-\end{bmatrix} +
-\begin{bmatrix}
-	\frac{\partial f_1}{\partial g_1}\frac{\partial g_1}{\partial x} + \frac{\partial f_1}{\partial g_2}\frac{\partial g_2}{\partial x}\\
-	\frac{\partial f_2}{\partial g_1}\frac{\partial g_1}{\partial x} + \frac{\partial f_2}{\partial g_2}\frac{\partial g_2}{\partial x}\\
-\end{bmatrix} =\frac{\partial\mathbf{f}}{\partial x} + \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial x}
-$
-
-At this point, we have a correct formula for taking the derivative of a vector function with nested subexpressions but only with respect to a scalar. Augmenting it to handle derivatives with respect to a vector means just converting scalar $x$ to vector $\mathbf{x}$:
-
-$\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{x},\mathbf{g}(\mathbf{x})) = \frac{\partial\mathbf{f}}{\partial \mathbf{x}} + \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$
-
-The effect is to convert vectors to matrices, which makes sense because the result, $\frac{\partial \mathbf{f}}{\partial \mathbf{x}}$ should be a matrix now instead of a vertical vector.
+\begin{enumerate}
+	\item  Introduce intermediate variables for nested subexpressions and subexpressions for both binary and unary operators; e.g., $\times$ is binary, $sin(x)$ and other trigonometric functions are usually unary because there is a single operand.
+	\item Compute derivatives of the intermediate variables.
+	\item Combine all derivatives of intermediate variables by multiplying them together to get the overall result.
+	\item Substitute intermediate variables back in if any are referenced.
+\end{enumerate}
 
 todo: where $f_i$ only accesses $g_i$.
 
-Intro intermediate variables
-
-$u_1(x) = x^2$\\
-$u_2(x,u_1) = x + u_1$\\
-$v_1(x) = 3x$
-
-gives:
-
-$
-\begin{bmatrix}
-	y_1(x)\\
-	y_2(x)\\
-\end{bmatrix} =
-\begin{bmatrix}
-	f_1(x, u_2)\\
-	f_2(x,v_1)\\
-\end{bmatrix} = 
-\begin{bmatrix}
-	ln(u_2)\\
-	sin(v_1)
-\end{bmatrix}
-$
-
-$\frac{d u_1(x)}{dx} = 2x$\\
-$\frac{d u_2(x,u_1)}{dx} = \frac{\partial u_2(x)}{\partial x} + \frac{du_1}{dx}= 1 + 2x$\\
-$\frac{d v_1(x)}{dx} = 3$
-
-And for the original equation:
-
-$\frac{\partial y_1(x)}{\partial x} = \frac{\partial f_1(x,u_2)}{\partial x} + \frac{\partial f_1(x,u_2)}{\partial u_2}\frac{d u_2}{dx} = 0 + \frac{1}{u_2}(1+2x) = \frac{1+2x}{x+x^2}$\\
-$\frac{\partial y_2(x)}{\partial x} = \frac{\partial f_2(x,v_1)}{\partial x} + \frac{\partial f_2(x,v_1)}{\partial v_1}\frac{d v_1}{dx} = 0 + cos(v_1)3 = 3cos(3x)$\\
-
-\cut{
-$
-\begin{array}{lcl}
-y_1 & = & f_1(\mathbf{x})\\
-y_2 & = & f_2(\mathbf{x})\\
- & \vdots & \\
-y_m & = & f_m(\mathbf{x})\\
-\end{array}
-$
-}
-
 show $f_i$ uses just $g_i$ and how it simplifies. we can force this by copying subexpressions, no subexpr elimination. so if $f_1 = g_1$, $f_2 = g_1$ and $g_1 = x^2$, just dup so $g_2 = x^2$ exists and make $f_2 = g_2$. not quite right. say it's common because we do lots of element-wise binary ops like $\mathbf{x \cdot y z}$
 
-where does total derivative come in then?
-
-http://spot.pcc.edu/math/APEXCalculus/sec\_multi\_chain.html distinguishes between the total derivative and the gradient as part I and part II.
-
-
-dot product of gradient f and derivative of inside arg of f. %$\frac{\partial}{\partial }$
-
-Previously, we manually computed the derivative with respect to $\mathbf{x}$ of $y = sum(\mathbf{x}  z)$ as $[z, z, \ldots, z]$, but we can also use the chain rule. Let vector $\mathbf{u} = \mathbf{x}  z$ then $y = sum(\mathbf{u})$. The vector chain rule works just like the single-variable chain rule except that our variable is now a vector.  The vector general says that $\frac{dy}{d\mathbf{x}} = \frac{dy}{d\mathbf{u}}  \frac{d\mathbf{u}}{d\mathbf{x}}$, which means 
-
-$\frac{dy}{d\mathbf{x}} = \vec{1}^T  \frac{d}{d\mathbf{x}} (\mathbf{x}  z) = \vec{1}^T  diag(\vec{1}z) = \vec{1}^T  I  z = \vec{1}^T  z = [z, z, \ldots, z]$
-
-(Using vec and my notation) let $z = \mathbf{f(g(x))}$, $m = |\mathbf{f}|$, $n=|\mathbf{x}|$ as usual then $k=|\mathbf{g}|$. Then
-
-$\frac{\partial z}{\partial x_j} = \frac{\partial f}{\partial g_1}\frac{\partial g_1}{\partial x_j} + \frac{\partial f}{\partial g_2}\frac{\partial g_2}{\partial x_j} + \ldots + \frac{\partial f}{\partial g_k}\frac{\partial g_k}{\partial x_j} = \frac{\partial z}{\partial x_j} =  \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_j}$
-
-That would give a gradient of
-
-$\nabla z = \left[ \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_1},~ \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_2}, ~\ldots,~ \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_n} \right]$
-
-{\bf NOTES}
-
-Need [law of total derivative](https://en.wikipedia.org/wiki/Total\_derivative)
-
-position $y = distance/time * time$ bump $delta y = distance/time * delta time$
-
-{\bf Ex.} Let $f(x,y) = sin(xy)$. Substitute $u = xy$, giving $f(x,y) = sin(u(x,y))$ or just $sin(u)$. Chain rule says
-
-$\frac{\partial f}{\partial x} = \frac{\partial f}{\partial u}\frac{\partial u}{\partial x} = cos(u)y = cos(xy)y$
-
-and
-
-$\frac{\partial f}{\partial y} = \frac{\partial f}{\partial u}\frac{\partial u}{\partial y} = cos(u)x = cos(xy)x$
-
-General chain rule says $\frac{\partial}{\partial t} f(x(t),y(t)) = \frac{\partial f}{\partial x}\frac{\partial x}{\partial t} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial t}$. Where is $t$ in my $sin(xy)$??? AND, where is the addition it says I need? How do I get partial w.r.t. $x$ or $y$?
-
-{\bf Ex.} Let $f(x,y) = sin(xy)x$. Subst
-
-$u = xy$\\
-$v = sin(u)$\\
-$w = vx$
-
-Chain rule finally shows an addition of $\frac{\partial w}{\partial x}$ at the top level $w$:
-
-$\frac{\partial f(x,y)}{\partial x} = \frac{\partial w(v,x)}{\partial x} = \frac{\partial w}{\partial v}\frac{\partial v}{\partial x} + \frac{\partial w}{\partial x} = x\frac{\partial v}{\partial x} + v$\\
-$\frac{\partial v(u)}{\partial x} = \frac{\partial v}{\partial u}\frac{\partial u}{\partial x} = cos(u)y$
-
-Substituting:
-
-$\frac{\partial f}{\partial x} = x\frac{\partial v}{\partial x} + v = xcos(u)y = xycos(xy) + sin(xy)$
-
-Again, where is $t$ from the general chain rule?
-
-AH! This page http://spot.pcc.edu/math/APEXCalculus/sec\_multi\_chain.html has right way. They are calling it multivar chain rule part II:
-
-(Using vec and my notation) let $z = \mathbf{f(g(x))}$, $m = |\mathbf{f}|$, $n=|\mathbf{x}|$ as usual then $k=|\mathbf{g}|$. Then
-
-$\frac{\partial z}{\partial x_j} = \frac{\partial f}{\partial g_1}\frac{\partial g_1}{\partial x_j} + \frac{\partial f}{\partial g_2}\frac{\partial g_2}{\partial x_j} + \ldots + \frac{\partial f}{\partial g_k}\frac{\partial g_k}{\partial x_j} = \frac{\partial z}{\partial x_j} =  \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_j}$
-
-That would give a gradient of
-
-$\nabla z = \left[ \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_1},~ \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_2}, ~\ldots,~ \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_n} \right]$
-
-For vector functions not scalars
-$\frac{\partial z}{\partial x_j}$
-
-Useful: https://www.colorado.edu/engineering/CAS/courses.d/IFEM.d/IFEM.AppC.d/IFEM.AppC.pdf
+ terminology and notation http://spot.pcc.edu/math/APEXCalculus/sec\_multi\_chain.html distinguishes between the total derivative and the gradient as part I and part II.
 
 \subsection{Derivatives of vector dot product}
 
@@ -1022,5 +921,55 @@ https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf and  https://www.comp
 \section{Acknowledgements}
 
 We thank [Yannet Interian](https://www.usfca.edu/faculty/yannet-interian) (Faculty in MS data science program at University of San Francisco) and [David Uminsky](http://www.cs.usfca.edu/~duminsky/) (Faculty/director of MS data science) for their help with the notation presented here..
+
+\cut{
+\section{NOTES}
+
+Need [law of total derivative](https://en.wikipedia.org/wiki/Total\_derivative)
+
+position $y = distance/time * time$ bump $delta y = distance/time * delta time$
+
+{\bf Ex.} Let $f(x,y) = sin(xy)$. Substitute $u = xy$, giving $f(x,y) = sin(u(x,y))$ or just $sin(u)$. Chain rule says
+
+$\frac{\partial f}{\partial x} = \frac{\partial f}{\partial u}\frac{\partial u}{\partial x} = cos(u)y = cos(xy)y$
+
+and
+
+$\frac{\partial f}{\partial y} = \frac{\partial f}{\partial u}\frac{\partial u}{\partial y} = cos(u)x = cos(xy)x$
+
+General chain rule says $\frac{\partial}{\partial t} f(x(t),y(t)) = \frac{\partial f}{\partial x}\frac{\partial x}{\partial t} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial t}$. Where is $t$ in my $sin(xy)$??? AND, where is the addition it says I need? How do I get partial w.r.t. $x$ or $y$?
+
+{\bf Ex.} Let $f(x,y) = sin(xy)x$. Subst
+
+$u = xy$\\
+$v = sin(u)$\\
+$w = vx$
+
+Chain rule finally shows an addition of $\frac{\partial w}{\partial x}$ at the top level $w$:
+
+$\frac{\partial f(x,y)}{\partial x} = \frac{\partial w(v,x)}{\partial x} = \frac{\partial w}{\partial v}\frac{\partial v}{\partial x} + \frac{\partial w}{\partial x} = x\frac{\partial v}{\partial x} + v$\\
+$\frac{\partial v(u)}{\partial x} = \frac{\partial v}{\partial u}\frac{\partial u}{\partial x} = cos(u)y$
+
+Substituting:
+
+$\frac{\partial f}{\partial x} = x\frac{\partial v}{\partial x} + v = xcos(u)y = xycos(xy) + sin(xy)$
+
+Again, where is $t$ from the general chain rule?
+
+AH! This page http://spot.pcc.edu/math/APEXCalculus/sec\_multi\_chain.html has right way. They are calling it multivar chain rule part II:
+
+(Using vec and my notation) let $z = \mathbf{f(g(x))}$, $m = |\mathbf{f}|$, $n=|\mathbf{x}|$ as usual then $k=|\mathbf{g}|$. Then
+
+$\frac{\partial z}{\partial x_j} = \frac{\partial f}{\partial g_1}\frac{\partial g_1}{\partial x_j} + \frac{\partial f}{\partial g_2}\frac{\partial g_2}{\partial x_j} + \ldots + \frac{\partial f}{\partial g_k}\frac{\partial g_k}{\partial x_j} = \frac{\partial z}{\partial x_j} =  \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_j}$
+
+That would give a gradient of
+
+$\nabla z = \left[ \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_1},~ \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_2}, ~\ldots,~ \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_n} \right]$
+
+For vector functions not scalars
+$\frac{\partial z}{\partial x_j}$
+
+Useful: https://www.colorado.edu/engineering/CAS/courses.d/IFEM.d/IFEM.AppC.d/IFEM.AppC.pdf
+}
 
 \end{document}
