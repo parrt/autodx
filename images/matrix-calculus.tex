@@ -197,7 +197,7 @@ $
 \end{bmatrix}
 $
 
-where each $\frac{\partial}{\partial \mathbf{x}} f_i(\mathbf{x})$ is a horizontal $n$-vector because the partial derivative is with respect to a vector, $\mathbf{x}$, whose length is $n = |\mathbf{x}|$.  The width of the Jacobian is $n$ if we're taking the partial derivative with respect to $\mathbf{x}$ because there are $n$ parameters we can wiggle, each potentially changing the function's value. Therefore, the Jacobian is always $m$ rows for $n$ equations.  It helps to think about the possible Jacobian shapes visually:
+where each $\frac{\partial}{\partial \mathbf{x}} f_i(\mathbf{x})$ is a horizontal $n$-vector because the partial derivative is with respect to a vector, $\mathbf{x}$, whose length is $n = |\mathbf{x}|$.  The width of the Jacobian is $n$ if we're taking the partial derivative with respect to $\mathbf{x}$ because there are $n$ parameters we can wiggle, each potentially changing the function's value. Therefore, the Jacobian is always $m$ rows for $m$ equations.  It helps to think about the possible Jacobian shapes visually:
 
 \begin{center}
 \begin{tabular}{c|ccl}
@@ -253,7 +253,7 @@ $
 1 & 0 & \ldots& 0 \\
 0 &1 &\ldots & 0 \\
 & & \ddots\\
-0 & 0 & &1 \\
+0 & 0 & \ldots &1 \\
 \end{bmatrix}\\\\
 & = & I ~~~~(I \text{ is the identity matrix with ones down the diagonal})\\
 \end{array}
@@ -261,7 +261,7 @@ $
 
 Make sure that you can derive each step above before moving on. If you get stuck, just consider each element of the matrix in isolation and apply the usual scalar derivative rules.   That is a generally useful trick: Reduce vector expressions down to a set of scalar expressions and then take all of the partials, combining the results appropriately into vectors and matrices at the end.
  
-Also be careful to track whether a matrix is vertical, $\mathbf{x}$, or horizontal, $\mathbf{x}^T$ where $\mathbf{x}^T$ means $\mathbf{x}$ transpose. Also make sure you pay attention to whether something is a scalar-valued function, $y = \framebox(10,7){}\,$, or a vector of functions (or a vector-valued function), $\mathbf{y} = \framebox(10,7){}\,$.
+Also be careful to track whether a matrix is vertical, $\mathbf{x}$, or horizontal, $\mathbf{x}^T$ where $\mathbf{x}^T$ means $\mathbf{x}$ transpose. Also make sure you pay attention to whether something is a scalar-valued function, $y = ...\,$, or a vector of functions (or a vector-valued function), $\mathbf{y} = ...\,$.
 
 
 
@@ -831,17 +831,55 @@ todo: where $f_i$ only accesses $g_i$.
 show $f_i$ uses just $g_i$ and how it simplifies. we can force this by copying subexpressions, no subexpr elimination. so if $f_1 = g_1$, $f_2 = g_1$ and $g_1 = x^2$, just dup so $g_2 = x^2$ exists and make $f_2 = g_2$. not quite right. say it's common because we do lots of element-wise binary ops like $\mathbf{x \cdot y z}$
 
  terminology and notation http://spot.pcc.edu/math/APEXCalculus/sec\_multi\_chain.html distinguishes between the total derivative and the gradient as part I and part II.
+ 
+All we need is vector chain rule:
+
+ $\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$
+
+as it is completely general.
+
+When $f$ and $x$ scalars, 
+
+\begin{center}
+\begin{tabular}[t]{c|cccc}
+  & 
+\multicolumn{2}{c}{
+  \begin{tabular}[t]{c}
+  scalar\\
+  \framebox(25,25){$x$}\\
+  \end{tabular}} & & \begin{tabular}{c}
+  vector\\
+  \framebox(25,60){$\mathbf{x}$}
+  \end{tabular}\\
+   & scalar $u$ & vector $\mathbf{u}$& \\
+\hline
+\\[\dimexpr-\normalbaselineskip+5pt]
+
+\begin{tabular}[b]{c}
+  scalar\\
+  \framebox(25,25){$f$}\\
+  \end{tabular} &\framebox(25,25){$\frac{\partial f}{\partial {u}}$} \framebox(25,25){$\frac{\partial u}{\partial {x}}$} & \framebox(60,25){$\frac{\partial f}{\partial {\mathbf{u}}}$} \framebox(25,60){$\frac{\partial \mathbf{u}}{\partial x}$} & &
+\framebox(60,25){$\frac{\partial f}{\partial {\mathbf{u}}}$} \framebox(60,60){$\frac{\partial \mathbf{u}}{\partial \mathbf{x}}$}
+\\
+  
+\begin{tabular}[b]{c}
+  vector\\
+  \framebox(25,60){$\mathbf{f}$}\\
+  \end{tabular} & \framebox(25,60){$\frac{\partial \mathbf{f}}{\partial {u}}$} \framebox(25,25){$\frac{\partial u}{\partial {x}}$} & \framebox(60,60){$\frac{\partial \mathbf{f}}{\partial \mathbf{u}}$} \framebox(25,60){$\frac{\partial \mathbf{u}}{\partial x}$} & & \framebox(60,60){$\frac{\partial \mathbf{f}}{\partial \mathbf{u}}$} \framebox(60,60){$\frac{\partial \mathbf{u}}{\partial \mathbf{x}}$}\\
+  
+\end{tabular}
+\end{center}
 
 \subsection{Derivatives of vector dot product}
 
 Now that we've got the chain rule in mind and we can compute the Jacobians for both element-wise binary operations and vector summation, we can define the gradient of the important vector dot product $y = \mathbf{f(w)} \cdot \mathbf{g(x)}$. (Note we use $y$ not $\mathbf{y}$ as the result is a scalar not a vector.) You will find the derivative of dot product defined as $f(\mathbf{x}) \cdot g'(\mathbf{x}) + f'(\mathbf{x}) \cdot g(\mathbf{x})$, but we'll use the chain rule instead to avoid having to memorize yet another rule.
 
-Notice that dot product $\mathbf{w} \cdot \mathbf{x}$, such as we used in the neuron output function, is just the summation of the element-wise multiplication of the elements: $\Sigma_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$. (You might also find it useful to remember the linear algebra notation $\mathbf{w} \cdot \mathbf{x} = \mathbf{w}^{T} \times \mathbf{x}$.)  To use the chain rule, we perform a quick substitution, $\mathbf{u} = \mathbf{w} \otimes \mathbf{x}$ and $y = sum(\mathbf{u})$, and multiply their partial derivatives:
+Notice that dot product $\mathbf{w} \cdot \mathbf{x}$, such as we used in the neuron output function, is just the summation of the element-wise multiplication of the elements: $\Sigma_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$. (You might also find it useful to remember the linear algebra notation $\mathbf{w} \cdot \mathbf{x} = \mathbf{w}^{T} \mathbf{x}$.)  To use the chain rule, we perform a quick substitution, $\mathbf{u} = \mathbf{w} \otimes \mathbf{x}$ and $y = sum(\mathbf{u})$, and multiply their partial derivatives:
 
 $\frac{d \mathbf{u}}{d\mathbf{x}} = \frac{d}{d\mathbf{x}} (\mathbf{w} \otimes \mathbf{x}) = diag(\mathbf{w})$\\
 $\frac{dy}{d\mathbf{u}} = \frac{d}{d\mathbf{u}} sum(\mathbf{u}) = \vec{1}^T$
 
-$\frac{dy}{d\mathbf{x}} = \frac{dy}{d\mathbf{u}} \times \frac{d\mathbf{u}}{d\mathbf{x}} = \vec{1}^T \times diag(\mathbf{w}) = \mathbf{w}^T$
+$\frac{dy}{d\mathbf{x}} = \frac{dy}{d\mathbf{u}} \frac{d\mathbf{u}}{d\mathbf{x}} = \vec{1}^T \times diag(\mathbf{w}) = \mathbf{w}^T$
 
 Similarly, $\frac{dy}{d\mathbf{w}} = \mathbf{x}^T$. Note: the gradient is a horizontal vector (1 output)!
 
@@ -908,6 +946,103 @@ $
 At this point, you are well on your way to understanding matrix calculus!  Your next step would be to learn about the partial derivatives of matrices not just vectors.
 
 todo: Matrix Differentiation https://atmos.washington.edu/~dennis/MatrixCalculus.pdf
+
+\section{Matrix Calculus Reference}
+
+Gradient $\nabla f(x,y)  = [ \frac{\partial f(x,y)}{\partial x}, \frac{\partial f(x,y)}{\partial y}]$
+
+Jacobian $m \times n$ matrix. $
+\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = \begin{bmatrix}
+\nabla f_1(\mathbf{x}) \\
+\nabla f_2(\mathbf{x})\\
+\ldots\\
+\nabla f_m(\mathbf{x})
+\end{bmatrix} = \begin{bmatrix}
+\frac{\partial}{\partial \mathbf{x}} f_1(\mathbf{x}) \\
+\frac{\partial}{\partial \mathbf{x}} f_2(\mathbf{x})\\
+\ldots\\
+\frac{\partial}{\partial \mathbf{x}} f_m(\mathbf{x})
+\end{bmatrix} = \begin{bmatrix}
+\frac{\partial}{\partial {x_1}} f_1(\mathbf{x})~ \frac{\partial}{\partial {x_2}} f_1(\mathbf{x}) ~\ldots~ \frac{\partial}{\partial {x_n}} f_1(\mathbf{x}) \\
+\frac{\partial}{\partial {x_1}} f_2(\mathbf{x})~ \frac{\partial}{\partial {x_2}} f_2(\mathbf{x}) ~\ldots~ \frac{\partial}{\partial {x_n}} f_2(\mathbf{x}) \\
+\ldots\\
+~\frac{\partial}{\partial {x_1}} f_m(\mathbf{x})~ \frac{\partial}{\partial {x_2}} f_m(\mathbf{x}) ~\ldots~ \frac{\partial}{\partial {x_n}} f_m(\mathbf{x}) \\
+\end{bmatrix}
+$
+
+The Jacobian of the identity function $\mathbf{f(x)} = \mathbf{x}$ is $I$.
+
+element wise operations for the constraint that $f_i(\mathbf{w})$ and $g_i(\mathbf{x})$ access at most $w_i$ and $x_i$, respectively, as the {\em element-wise diagonal condition}.
+
+$\frac{\partial \mathbf{y}}{\partial \mathbf{w}} = diag \left( \frac{\partial}{\partial w_1}(f_{1}(w_1) \bigcirc g_{1}(x_1)),~ \frac{\partial}{\partial w_2}(f_{2}(w_2) \bigcirc g_{2}(x_2)),~ \ldots,~ \frac{\partial}{\partial w_n}(f_{n}(w_n) \bigcirc g_{n}(x_n)) \right)$
+
+and
+
+$\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = diag \left( \frac{\partial}{\partial x_1}(f_{1}(w_1) \bigcirc g_{1}(x_1)),~ \frac{\partial}{\partial x_2}(f_{2}(w_2) \bigcirc g_{2}(x_2)),~ \ldots,~ \frac{\partial}{\partial x_n}(f_{n}(w_n) \bigcirc g_{n}(x_n)) \right)$
+
+$
+\begin{array}{lllll}
+\text{Op} & \text{Partial with respect to } \mathbf{w} & \text{Partial with respect to }\mathbf{x}\\
+\hline\\
+
++ & \frac{\partial (\mathbf{w+x})}{\partial \mathbf{w}} = I & \frac{\partial (\mathbf{w+x})}{\partial \mathbf{x}} =  I\\\\
+
+- & \frac{\partial (\mathbf{w-x})}{\partial \mathbf{w}}  = I & \frac{\partial (\mathbf{w-x})}{\partial \mathbf{x}}  = -I \\\\
+
+\otimes & \frac{\partial (\mathbf{w \otimes x})}{\partial \mathbf{w}}  =  diag(\mathbf{x}) & \frac{\partial (\mathbf{w \otimes x})}{\partial \mathbf{x}}  =  diag(\mathbf{w})\\\\
+
+\oslash & \frac{\partial (\mathbf{w \oslash x})}{\partial \mathbf{w}}  =  diag(\ldots \frac{1}{x_i} \ldots) & \frac{\partial (\mathbf{w \oslash x})}{\partial \mathbf{x}}  =  diag(\ldots \frac{-w_i}{x_i^2} \ldots)\\
+
+\end{array}
+$
+
+Scalar expansion. Adding scalar $z$  to vector $\mathbf{x}$, $\mathbf{y} = \mathbf{x} + z$, is really $\mathbf{y} = \mathbf{f(x)} + \mathbf{g}(z)$ where $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(z) = \vec{1} z$.
+
+$\frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} + z ) = diag(\vec{1}) = I$\\
+$\frac{\partial}{\partial z} ( \mathbf{x} + z ) = \vec{1}$
+
+$\frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} z ) = I z$\\
+$\frac{\partial}{\partial z} ( \mathbf{x} z ) = \mathbf{x}$
+
+vector sum reduction. 
+
+$
+\begin{array}{lcl}
+\frac{\partial y}{\partial \mathbf{x}} & = & \begin{bmatrix} \frac{\partial y}{\partial x_1}, \frac{\partial y}{\partial x_2}, \ldots, \frac{\partial y}{\partial x_n} \end{bmatrix} = \begin{bmatrix} \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_1},~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_2},~ \ldots,~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_n}  \end{bmatrix}~~~~~~~~~~~~~~~(\text{move derivative inside }\Sigma)\\\\
+\end{array}
+$
+
+For $y = sum(\mathbf{x})$: $\nabla y\mathbf{x} = \vec{1}^T$
+
+For $y = sum(\mathbf{x}z)$: 
+
+$\nabla y_\mathbf{x} = [z, z, \ldots, z]$\\
+$\nabla y_z = n$ where $n = |x|$
+
+the single-variable chain rule:
+
+\[
+\frac{dy}{dx} = \frac{dy}{du}\frac{du}{dx}
+\]
+
+the single-variable total-derivative chain rule:
+
+\[
+\frac{\partial f(u_1,\ldots,u_n)}{\partial x} = \sum_{i=1}^n \frac{\partial f}{\partial u_i}\frac{\partial  u_i}{\partial  x} = \frac{\partial f}{\partial \mathbf{u}} \frac{\partial \mathbf{u}}{\partial x}
+\]
+
+vector chain rule is:
+
+$\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ ~~~~~~~~~~~~~~~~~~~~~(Note: matrix multiply doesn't commute; order of $\frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ matters)
+
+vector dot product $y = \mathbf{f(w)} \cdot \mathbf{g(x)}$. $\Sigma_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$.
+
+$\frac{d \mathbf{u}}{d\mathbf{x}} = \frac{d}{d\mathbf{x}} (\mathbf{w} \otimes \mathbf{x}) = diag(\mathbf{w})$\\
+$\frac{dy}{d\mathbf{u}} = \frac{d}{d\mathbf{u}} sum(\mathbf{u}) = \vec{1}^T$
+
+$\frac{dy}{d\mathbf{x}} = \frac{dy}{d\mathbf{u}} \times \frac{d\mathbf{u}}{d\mathbf{x}} = \vec{1}^T \times diag(\mathbf{w}) = \mathbf{w}^T$
+
+Similarly, $\frac{dy}{d\mathbf{w}} = \mathbf{x}^T$.
 
 \section{Resources}
 
