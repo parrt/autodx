@@ -26,6 +26,8 @@
 \begin{document}
 \maketitle
 
+\allowdisplaybreaks
+
 \section{Introduction}
 
 Most of us last saw calculus in school, but derivatives are a critical part of machine learning, particularly deep neural networks, which are trained by optimizing a loss function. Pick up a machine learning paper or the documentation of a library such as [PyTorch](link) and calculus comes screeching back into your life like distant relatives around the holidays.  And it's not just any old scalar calculus that pops up---we need differential {\em matrix calculus}, the shotgun wedding of [linear algebra](https://en.wikipedia.org/wiki/Linear\_algebra) and [multivariate calculus](https://en.wikipedia.org/wiki/Multivariable\_calculus).
@@ -42,15 +44,17 @@ Neural networks consist of many of these units, organized into multiple collecti
 
 If we're careful, we can derive the gradient by differentiating the scalar version of a common loss function (mean squared error):
 
-$\frac{1}{n} \Sigma_{\mathbf{x}} (target(\mathbf{x}) - activation(\mathbf{x}))^2 = \frac{1}{n} \Sigma_{\mathbf{x}} (target(\mathbf{x}) - max(0, \Sigma_i^n w_i x_i + b))^2$
+\[\frac{1}{n} \sum_{\mathbf{x}} (target(\mathbf{x}) - activation(\mathbf{x}))^2 = \frac{1}{n} \sum_{\mathbf{x}} (target(\mathbf{x}) - max(0, \sum_i^n w_i x_i + b))^2\]
 
 But this is just one neuron, and neural networks must train the weights and biases of all neurons in all layers simultaneously.  The really cool part about partial derivatives is that they let us optimize all of these network parameters at once. TODO: not sure "all at once" follows... Because there are multiple inputs and (potentially) multiple network outputs, we really need general rules for the derivative of a function with respect to a vector and even rules for the derivative of a vector-valued function with respect to a vector.
 
-This article walks through the derivation of some important rules for computing partial derivatives with respect to vectors, particularly those useful for training neural networks. This field is known as {\em matrix calculus}, and the good news is, we only need a small subset of that field, which we introduce here.  While there is a lot of online material on multivariate calculus and linear algebra, they are typically taught as two separate undergraduate courses so most material treats them in isolation.  The pages that do discuss matrix calculus often are really just lists of rules with minimal explanation or are just pieces of the story.  In contrast, we're going to rederive and rediscover some key matrix calculus rules in an effort to explain them. It turns out that matrix calculus is really not that hard! There aren't dozens of new rules to learn; just a couple of key concepts.  That said, our intended audience already has many of these pieces in place mentally; it's more of a core dump than a textbook. Our hope is that it will get you started quickly in the world of matrix calculus as it relates to training neural networks.
+This article walks through the derivation of some important rules for computing partial derivatives with respect to vectors, particularly those useful for training neural networks. This field is known as {\em matrix calculus}, and the good news is, we only need a small subset of that field, which we introduce here.  While there is a lot of online material on multivariate calculus and linear algebra, they are typically taught as two separate undergraduate courses so most material treats them in isolation.  The pages that do discuss matrix calculus often are really just lists of rules with minimal explanation or are just pieces of the story. (See the annotated list of resources at the end.)
+
+In contrast, we're going to rederive and rediscover some key matrix calculus rules in an effort to explain them. It turns out that matrix calculus is really not that hard! There aren't dozens of new rules to learn; just a couple of key concepts.  That said, our intended audience already has many of these pieces in place mentally; it's more of a core dump than a textbook. Our hope is that it will get you started quickly in the world of matrix calculus as it relates to training neural networks.
 
 \section{Review: Scalar derivative rules}
 
-Hopefully you remember some of these main scalar derivative rules. If your memory is a bit fuzzy on this, have a look at [khan vid](https://www.khanacademy.org/math/multivariable-calculus/multivariable-derivatives/differentiating-vector-valued-functions/a/multivariable-chain-rule-simple-version).
+Hopefully you remember some of these main scalar derivative rules. If your memory is a bit fuzzy on this, have a look at [khan vid](https://www.khanacademy.org/math/ap-calculus-ab/ab-derivative-rules).
 
 $
 \begin{array}{lccc}
@@ -203,28 +207,27 @@ where each $\frac{\partial}{\partial \mathbf{x}} f_i(\mathbf{x})$ is a horizonta
 \begin{tabular}{c|ccl}
   & \begin{tabular}[t]{c}
   scalar\\
-  \framebox(25,25){$x$}\\
+  \framebox(18,18){$x$}\\
   \end{tabular} & \begin{tabular}{c}
   vector\\
-  \framebox(25,60){$\mathbf{x}$}
+  \framebox(18,40){$\mathbf{x}$}
   \end{tabular}\\
 \hline
 \\[\dimexpr-\normalbaselineskip+5pt]
 \begin{tabular}[b]{c}
   scalar\\
-  \framebox(25,25){$f$}\\
-  \end{tabular} &\framebox(25,25){$\frac{\partial f}{\partial {x}}$} & \framebox(60,25){$\frac{\partial f}{\partial {\mathbf{x}}}$}&\\
+  \framebox(18,18){$f$}\\
+  \end{tabular} &\framebox(18,18){$\frac{\partial f}{\partial {x}}$} & \framebox(40,18){$\frac{\partial f}{\partial {\mathbf{x}}}$}&\\
 \begin{tabular}[b]{c}
   vector\\
-  \framebox(25,60){$\mathbf{f}$}\\
-  \end{tabular} & \framebox(25,60){$\frac{\partial \mathbf{f}}{\partial {x}}$} & \framebox(60,60){$\frac{\partial \mathbf{f}}{\partial \mathbf{x}}$}\\
+  \framebox(18,40){$\mathbf{f}$}\\
+  \end{tabular} & \framebox(18,40){$\frac{\partial \mathbf{f}}{\partial {x}}$} & \framebox(40,40){$\frac{\partial \mathbf{f}}{\partial \mathbf{x}}$}\\
 \end{tabular}
 \end{center}
 
 The Jacobian of the identity function $\mathbf{f(x)} = \mathbf{x}$, with $f_i(\mathbf{x}) = x_i$, has $n$ functions and each function has $n$ parameters held in a single vector $\mathbf{x}$. The Jacobian is, therefore, a square matrix since $m=n$:
 
-$
-\begin{array}{lll}
+\begin{eqnarray*}
 \frac{\partial \mathbf{y}}{\partial \mathbf{x}} = \begin{bmatrix}
 \frac{\partial}{\partial {x}} f_1(\mathbf{x}) \\
 \frac{\partial}{\partial {x}} f_2(\mathbf{x})\\
@@ -256,8 +259,8 @@ $
 0 & 0 & \ldots &1 \\
 \end{bmatrix}\\\\
 & = & I ~~~~(I \text{ is the identity matrix with ones down the diagonal})\\
-\end{array}
-$
+\end{eqnarray*}
+
 
 Make sure that you can derive each step above before moving on. If you get stuck, just consider each element of the matrix in isolation and apply the usual scalar derivative rules.   That is a generally useful trick: Reduce vector expressions down to a set of scalar expressions and then take all of the partials, combining the results appropriately into vectors and matrices at the end.
  
@@ -465,7 +468,7 @@ $\frac{dy}{dx} = \frac{dy}{du}\frac{du}{dx}$
 To deploy the single-variable chain rule, follow these steps:
 
 \begin{enumerate}
-	\item  TODO: ``factor'' not ``introduce?? Introduce intermediate variables for nested subexpressions and subexpressions for both binary and unary operators; e.g., $\times$ is binary, $sin(x)$ and other trigonometric functions are usually unary because there is a single operand.
+	\item  Introduce intermediate variables for nested subexpressions and subexpressions for both binary and unary operators; e.g., $\times$ is binary, $sin(x)$ and other trigonometric functions are usually unary because there is a single operand.
 	\item Compute derivatives of the intermediate variables.
 	\item Combine all derivatives of intermediate variables by multiplying them together to get the overall result.
 	\item Substitute intermediate variables back in if any are referenced.
@@ -624,8 +627,6 @@ $\frac{dy}{dx} = \frac{\partial u_2}{\partial x} + \frac{\partial u_2}{\partial 
 
 It's the partials (weights) that change, not the formula.
 
-TODO: the simpler chain rule is a special case of this one so you can just keep this one in mind.
-
 Those readers with a strong calculus background might wonder why we aggressively introduce an intermediate variable for even non-nested subexpressions such as $x^2$ in $x+x^2$. We use this process for three reasons: (i) computing the derivatives for the simplified subexpressions is usually trivial, (ii) we can simplify the chain rule, and (iii) the process mirrors how automatic differentiation works in neural network libraries.
 
 Using the intermediate variables even more aggressively, let's see how we can simplify our single-variable total-derivative chain rule to its final form. The goal is to get rid of the the $\frac{\partial f}{\partial x}$ sticking out on the front like a sore thumb:
@@ -640,10 +641,8 @@ We can achieve that by simply introducing a new temporary variable as an alias f
 \frac{\partial f(u_1,\ldots,u_n)}{\partial x} = \sum_{i=1}^n \frac{\partial f}{\partial u_i}\frac{\partial  u_i}{\partial  x}
 \]
 
-As a bit of dramatic foreshadowing, that summation sure looks like a vector dot product, $\frac{\partial f}{\partial \mathbf{u}} \cdot \frac{\partial \mathbf{u}}{\partial x}$, or  a vector multiply $\frac{\partial f}{\partial \mathbf{u}} \frac{\partial \mathbf{u}}{\partial x}$.
+This chain rule that takes into consideration the total derivative degenerates to the single-variable chain rule when all intermediate variables are functions of a single variable.   Consequently, you can remember this more general formula to cover both cases.  As a bit of dramatic foreshadowing, that summation sure looks like a vector dot product, $\frac{\partial f}{\partial \mathbf{u}} \cdot \frac{\partial \mathbf{u}}{\partial x}$, or  a vector multiply $\frac{\partial f}{\partial \mathbf{u}} \frac{\partial \mathbf{u}}{\partial x}$. 
  
-%\includegraphics[scale=.9]{mult-square.png}
-
 Before we move on, a word of caution about terminology on the web. Unfortunately, this chain rule based upon the total derivative is universally called ``multivariable chain rule'' in calculus discussions, which is highly misleading! Only the intermediate variables are multivariate functions. The overall function, $f(x) = x + x^2$, is a scalar function that accepts a single parameter $x$. The derivative and parameter are scalars, not vectors, as one would expect with a so-called multivariate chain rule.  (Within the context of a non-matrix calculus class, ``multivariate chain rule'' is likely unambiguous.) To reduce confusion, we use ``single-variable total-derivative chain rule'' to spell out the distinguishing feature between the simple single-variable chain rule, $\frac{dy}{dx} = \frac{dy}{du}\frac{du}{dx}$, and this one. 
 
 \subsubsection{Vector chain rule}
@@ -953,17 +952,17 @@ Let's use these partial derivatives now to handle the entire loss function.
 
 \section{The derivative of the neural network loss function}
 
-Training a neuron requires that we take the derivative of our loss  or ``cost'' function with respect to the parameters of our model, $\mathbf{w}$ and $b$. Because we train with multiple inputs and targets, we need some notation. Let $X = [\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_k]^T$, $k=|X|$, and $\mathbf{y} = [target(\mathbf{x}_1), target(\mathbf{x}_2), \ldots, target(\mathbf{x}_k)]^T$ where $y_i$ is a scalar. Then the cost equation becomes:
+Training a neuron requires that we take the derivative of our loss  or ``cost'' function with respect to the parameters of our model, $\mathbf{w}$ and $b$. Because we train with multiple inputs and targets, we need some notation. Let $X = [\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_N]^T$, $N=|X|$, and $\mathbf{y} = [target(\mathbf{x}_1), target(\mathbf{x}_2), \ldots, target(\mathbf{x}_N)]^T$ where $y_i$ is a scalar. Then the cost equation becomes:
 
 \[
-C(\mathbf{w},b,X,\mathbf{y}) = \frac{1}{k} \sum_{i=1}^{k} (y_i - activation(\mathbf{x}_i))^2 = \frac{1}{k} \sum_{i=1}^{k} (y_i - max(0, \mathbf{w}\cdot\mathbf{x}_i+b))^2
+C(\mathbf{w},b,X,\mathbf{y}) = \frac{1}{N} \sum_{i=1}^{N} (y_i - activation(\mathbf{x}_i))^2 = \frac{1}{N} \sum_{i=1}^{N} (y_i - max(0, \mathbf{w}\cdot\mathbf{x}_i+b))^2
 \]
 
 Following our chain rule process introduces these intermediate variables:
  
 $u(\mathbf{w},b,\mathbf{x}) = max(0, \mathbf{w}\cdot\mathbf{x}+b)$\\
 $v(y,u) = y - u$\\
-$C(v) = \frac{1}{k} \sum_{i=1}^k v^2$
+$C(v) = \frac{1}{N} \sum_{i=1}^N v^2$
 
 In order to optimize this function, we need to know the partial derivatives with respect to the model parameters, $\mathbf{w}$ and $b$. Let's start with the weights. 
 
@@ -985,45 +984,44 @@ $\frac{\partial v(y,u)}{\partial \mathbf{w}} = \frac{\partial}{\partial \mathbf{
 
 then, for the overall gradient, we get:
 
-\allowdisplaybreaks
 \begin{eqnarray*}
-\frac{\partial C(v)}{\partial \mathbf{w}} & = & \frac{\partial }{\partial \mathbf{w}}\frac{1}{k} \sum_{i=1}^k v^2\\\\
- & = & \frac{1}{k} \sum_{i=1}^k \frac{\partial}{\partial \mathbf{w}} v^2\\\\
- & = & \frac{1}{k} \sum_{i=1}^k \frac{\partial v^2}{\partial v} \frac{\partial v}{\partial \mathbf{w}} \\\\
- & = & \frac{1}{k} \sum_{i=1}^k 2v \frac{\partial v}{\partial \mathbf{w}} \\\\
- & = & \frac{1}{k} \sum_{i=1}^k \begin{cases}
+\frac{\partial C(v)}{\partial \mathbf{w}} & = & \frac{\partial }{\partial \mathbf{w}}\frac{1}{N} \sum_{i=1}^N v^2\\\\
+ & = & \frac{1}{N} \sum_{i=1}^N \frac{\partial}{\partial \mathbf{w}} v^2\\\\
+ & = & \frac{1}{N} \sum_{i=1}^N \frac{\partial v^2}{\partial v} \frac{\partial v}{\partial \mathbf{w}} \\\\
+ & = & \frac{1}{N} \sum_{i=1}^N 2v \frac{\partial v}{\partial \mathbf{w}} \\\\
+ & = & \frac{1}{N} \sum_{i=1}^N \begin{cases}
 	2v\vec{0}^T = \vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
 	-2v\mathbf{x}^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
 \end{cases}\\\\
- & = & \frac{1}{k} \sum_{i=1}^k \begin{cases}
+ & = & \frac{1}{N} \sum_{i=1}^N \begin{cases}
 	\vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
 	-2(y_i-u)\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
 \end{cases}\\\\
- & = & \frac{1}{k} \sum_{i=1}^k \begin{cases}
+ & = & \frac{1}{N} \sum_{i=1}^N \begin{cases}
 	\vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
 	-2(y_i-max(0, \mathbf{w}\cdot\mathbf{x}_i+b))\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
 \end{cases}\\\\
-\phantom{\frac{\partial C(v)}{\partial \mathbf{w}}} & = & \frac{1}{k} \sum_{i=1}^k \begin{cases}
+\phantom{\frac{\partial C(v)}{\partial \mathbf{w}}} & = & \frac{1}{N} \sum_{i=1}^N \begin{cases}
 	\vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
 	-2(y_i-(\mathbf{w}\cdot\mathbf{x}_i+b))\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
 \end{cases}\\\\
  & = & \begin{cases}
 	\vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
-	\frac{-2}{k} \sum_{i=1}^k (y_i-(\mathbf{w}\cdot\mathbf{x}_i+b))\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
+	\frac{-2}{N} \sum_{i=1}^N (y_i-(\mathbf{w}\cdot\mathbf{x}_i+b))\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
 \end{cases}\\\\
  & = & \begin{cases}
 	\vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
-	\frac{2}{k} \sum_{i=1}^k (\mathbf{w}\cdot\mathbf{x}_i+b-y_i)\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
+	\frac{2}{N} \sum_{i=1}^N (\mathbf{w}\cdot\mathbf{x}_i+b-y_i)\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
 \end{cases}
 \end{eqnarray*}
 
 To interpret that equation, we can substitute an error term $e_i = \mathbf{w}\cdot\mathbf{x}_i+b-y_i$ for the nonzero case yielding:
 
 \[
-\frac{\partial C}{\partial \mathbf{w}} = \frac{2}{k} \sum_{i=1}^k e_i\mathbf{x}_i^T
+\frac{\partial C}{\partial \mathbf{w}} = \frac{2}{N} \sum_{i=1}^N e_i\mathbf{x}_i^T
 \]
 
-Then notice that this computation is a weighted average across all $\mathbf{x}_i$ in $X$. The weights are the error terms, the difference between the target output and the actual neuron output for each $\mathbf{x}_i$ input. The resulting gradient will, on average, point in the direction of higher cost or loss because large $e_i$ emphasize their associated $\mathbf{x}_i$. Imagine we only had one input vector, $k=|X|=1$, then the gradient is just $2e_1\mathbf{x}_1^T$.  If the error is 0, then the gradient is zero and we have arrived at the minimum loss. If $e_1$ is some small difference, the gradient is a small step in the direction of $\mathbf{x}_1$. If $e_1$ is large, the gradient is a large step in that direction.
+Then notice that this computation is a weighted average across all $\mathbf{x}_i$ in $X$. The weights are the error terms, the difference between the target output and the actual neuron output for each $\mathbf{x}_i$ input. The resulting gradient will, on average, point in the direction of higher cost or loss because large $e_i$ emphasize their associated $\mathbf{x}_i$. Imagine we only had one input vector, $N=|X|=1$, then the gradient is just $2e_1\mathbf{x}_1^T$.  If the error is 0, then the gradient is zero and we have arrived at the minimum loss. If $e_1$ is some small difference, the gradient is a small step in the direction of $\mathbf{x}_1$. If $e_1$ is large, the gradient is a large step in that direction.
 
 Of course, we want to reduce not increase the loss, which is why the standard [gradient descent](link) recurrence relation takes the negative of the gradient to update the current position (for scalar learning rate  $\eta$):
 
@@ -1040,7 +1038,7 @@ To optimize the bias, $b$, we need the partial with respect to $b$ also.  Here a
 
 $u(\mathbf{w},b,\mathbf{x}) = max(0, \mathbf{w}\cdot\mathbf{x}+b)$\\
 $v(y,u) = y - u$\\
-$C(v) = \frac{1}{k} \sum_{i=1}^k v^2$
+$C(v) = \frac{1}{N} \sum_{i=1}^N v^2$
 
 We computed the partial with respect to the bias for equation $u(\mathbf{w},b,\mathbf{x})$ previously:
 
@@ -1063,32 +1061,32 @@ And for the partial of the cost function itself we get:
 
 \allowdisplaybreaks
 \begin{eqnarray*}
-\frac{\partial C(v)}{\partial b} & = & \frac{\partial }{\partial b}\frac{1}{k} \sum_{i=1}^k v^2\\\\
- & = & \frac{1}{k} \sum_{i=1}^k \frac{\partial}{\partial b} v^2\\\\
- & = & \frac{1}{k} \sum_{i=1}^k \frac{\partial v^2}{\partial v} \frac{\partial v}{\partial b} \\\\
- & = & \frac{1}{k} \sum_{i=1}^k 2v \frac{\partial v}{\partial b} \\\\
- & = & \frac{1}{k} \sum_{i=1}^k \begin{cases}
+\frac{\partial C(v)}{\partial b} & = & \frac{\partial }{\partial b}\frac{1}{N} \sum_{i=1}^N v^2\\\\
+ & = & \frac{1}{N} \sum_{i=1}^N \frac{\partial}{\partial b} v^2\\\\
+ & = & \frac{1}{N} \sum_{i=1}^N \frac{\partial v^2}{\partial v} \frac{\partial v}{\partial b} \\\\
+ & = & \frac{1}{N} \sum_{i=1}^N 2v \frac{\partial v}{\partial b} \\\\
+ & = & \frac{1}{N} \sum_{i=1}^N \begin{cases}
  	0 & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
  	-2v & \mathbf{w} \cdot \mathbf{x} + b > 0\\
  \end{cases}\\\\
- & = & \frac{1}{k} \sum_{i=1}^k \begin{cases}
+ & = & \frac{1}{N} \sum_{i=1}^N \begin{cases}
  	0 & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
  	-2(y_i-max(0, \mathbf{w}\cdot\mathbf{x}_i+b)) & \mathbf{w} \cdot \mathbf{x} + b > 0\\
  \end{cases}\\\\
- & = & \frac{1}{k} \sum_{i=1}^k \begin{cases}
+ & = & \frac{1}{N} \sum_{i=1}^N \begin{cases}
  	0 & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
  	2(\mathbf{w}\cdot\mathbf{x}_i+b-y_i) & \mathbf{w} \cdot \mathbf{x} + b > 0\\
  \end{cases}\\\\
  & = & \begin{cases}
 	0 & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
-	\frac{2}{k} \sum_{i=1}^k (\mathbf{w}\cdot\mathbf{x}_i+b-y_i) & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
+	\frac{2}{N} \sum_{i=1}^N (\mathbf{w}\cdot\mathbf{x}_i+b-y_i) & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
 \end{cases}
 \end{eqnarray*}
 
 As before, we can substitute an error term for the nonzero case:
 
 \[
-\frac{\partial C}{\partial b} = \frac{2}{k} \sum_{i=1}^k e_i
+\frac{\partial C}{\partial b} = \frac{2}{N} \sum_{i=1}^N e_i
 \]
 
 The partial derivative is then just the average error. To update the neuron bias, we nudge it in the opposite direction of increased cost:
@@ -1097,20 +1095,33 @@ The partial derivative is then just the average error. To update the neuron bias
 b_{t+1} = b_{t} - \eta \frac{\partial C}{\partial b}
 \]
  
-In practice, it is convenient to combine $\mathbf{w}$ and $b$ into a single vector parameter rather than having to deal with two different partials: $\hat{\mathbf{w}} = [\mathbf{w}, b]^T$. This requires a tweak to the input vector $\mathbf{x}$ as well but simplifies the activation function. By tacking a 1 onto the end of $\mathbf{x}$, $\hat{\mathbf{x}} = [\mathbf{x},1]$, $\mathbf{w} \cdot \mathbf{x} + b$ becomes $\hat{\mathbf{w}} \cdot \hat{\mathbf{x}}$.  Also notice that $2/k$ is fixed for a fixed number of inputs. Because this value will not change as we update the weights and biases, we can ignore this term because all we need is a direction not the actual gradient. This observation simplifies our equations further:
+In practice, it is convenient to combine $\mathbf{w}$ and $b$ into a single vector parameter rather than having to deal with two different partials: $\hat{\mathbf{w}} = [\mathbf{w}^T, b]^T$. This requires a tweak to the input vector $\mathbf{x}$ as well but simplifies the activation function. By tacking a 1 onto the end of $\mathbf{x}$, $\hat{\mathbf{x}} = [\mathbf{x}^T,1]$, $\mathbf{w} \cdot \mathbf{x} + b$ becomes $\hat{\mathbf{w}} \cdot \hat{\mathbf{x}}$.  Also notice that $2/N$ is fixed for a fixed number of training exemplars. Because this value will not change as we update the weights and biases, we can ignore this term because all we need is a direction not the actual gradient. (That constant could be folded into the learning rate $\eta$ anyway.) This observation simplifies our equations further:
 
-$\frac{\partial C}{\partial \mathbf{w}} = \sum_{i=1}^k e_i\mathbf{x}_i^T$\\
-$\frac{\partial C}{\partial b} = \sum_{i=1}^k e_i$
+\[\frac{\partial C}{\partial \mathbf{w}} = \sum_{i=1}^N e_i\mathbf{x}_i^T\]
+\[\frac{\partial C}{\partial b} = \sum_{i=1}^N e_i\]
+
+This finishes off the optimization of the neural network loss function because we have the two partials necessary to perform a gradient descent.
 
 \section{Summary}
 
-At this point, you are well on your way to understanding matrix calculus!  Your next step would be to learn about the partial derivatives of matrices not just vectors. For example, you can take a look at the matrix differentiation section of [Matrix calculus](https://atmos.washington.edu/\verb|~|dennis/MatrixCalculus.pdf).
+Hopefully you've made it all the way through to this point.  You're well on your way to understanding matrix calculus!  Your next step would be to learn about the partial derivatives of matrices not just vectors. For example, you can take a look at the matrix differentiation section of [Matrix calculus](https://atmos.washington.edu/\verb|~|dennis/MatrixCalculus.pdf). We've included a reference that summarizes all of the rules from this article in the next section. Also check out the annotated resource link below.
+
+{\bf Acknowledgements}. We thank [Yannet Interian](https://www.usfca.edu/faculty/yannet-interian) (Faculty in MS data science program at University of San Francisco) and [David Uminsky](http://www.cs.usfca.edu/~duminsky/) (Faculty/director of MS data science) for their help with the notation presented here..
+
 
 \section{Matrix Calculus Reference}
 
-Gradient $\nabla f(x,y)  = [ \frac{\partial f(x,y)}{\partial x}, \frac{\partial f(x,y)}{\partial y}]$
+\subsection{Gradients and Jacobians}
 
-Jacobian $m \times n$ matrix. $
+The {\em gradient} of a function of two variables is a horizontal 2-vector:
+
+\[
+\nabla f(x,y)  = [ \frac{\partial f(x,y)}{\partial x}, \frac{\partial f(x,y)}{\partial y}]
+\]
+
+The {\em Jacobian} of a vector-valued function that is a function of a vector is an $m \times n$ ($m=|\mathbf{f}|$ and $n=|\mathbf{x}|$) matrix containing all possible scalar partial derivatives:
+
+\[
 \frac{\partial \mathbf{y}}{\partial \mathbf{x}} = \begin{bmatrix}
 \nabla f_1(\mathbf{x}) \\
 \nabla f_2(\mathbf{x})\\
@@ -1127,143 +1138,139 @@ Jacobian $m \times n$ matrix. $
 \ldots\\
 ~\frac{\partial}{\partial {x_1}} f_m(\mathbf{x})~ \frac{\partial}{\partial {x_2}} f_m(\mathbf{x}) ~\ldots~ \frac{\partial}{\partial {x_n}} f_m(\mathbf{x}) \\
 \end{bmatrix}
-$
+\]
 
 The Jacobian of the identity function $\mathbf{f(x)} = \mathbf{x}$ is $I$.
 
-element wise operations for the constraint that $f_i(\mathbf{w})$ and $g_i(\mathbf{x})$ access at most $w_i$ and $x_i$, respectively, as the {\em element-wise diagonal condition}.
 
-$\frac{\partial \mathbf{y}}{\partial \mathbf{w}} = diag \left( \frac{\partial}{\partial w_1}(f_{1}(w_1) \bigcirc g_{1}(x_1)),~ \frac{\partial}{\partial w_2}(f_{2}(w_2) \bigcirc g_{2}(x_2)),~ \ldots,~ \frac{\partial}{\partial w_n}(f_{n}(w_n) \bigcirc g_{n}(x_n)) \right)$
+\subsection{Element-wise operations on vectors}		 
 
-and
+Define generic {\em element-wise operations} on vectors $\mathbf{w}$ and $\mathbf{x}$ using operator $\bigcirc$ such as $+$:
 
-$\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = diag \left( \frac{\partial}{\partial x_1}(f_{1}(w_1) \bigcirc g_{1}(x_1)),~ \frac{\partial}{\partial x_2}(f_{2}(w_2) \bigcirc g_{2}(x_2)),~ \ldots,~ \frac{\partial}{\partial x_n}(f_{n}(w_n) \bigcirc g_{n}(x_n)) \right)$
+\[
+\begin{bmatrix}
+           y_1\\
+           y_2\\
+           \vdots \\
+           y_n\\
+           \end{bmatrix} = \begin{bmatrix}
+           f_{1}(\mathbf{w}) \bigcirc g_{1}(\mathbf{x})\\
+           f_{n}(\mathbf{w}) \bigcirc g_{2}(\mathbf{x})\\
+           \vdots \\
+           f_{n}(\mathbf{w}) \bigcirc g_{n}(\mathbf{x})\\
+         \end{bmatrix}\]
 
-$
-\begin{array}{lllll}
+The Jacobian with respect to $\mathbf{w}$ (similar for $\mathbf{x}$) is:
+
+\[
+J_{\mathbf{w}} = \frac{\partial \mathbf{y}}{\partial \mathbf{w}}  = \begin{bmatrix}
+\frac{\partial}{\partial w_1} ( f_{1}(\mathbf{w}) \bigcirc g_{1}(\mathbf{x}) ) & \frac{\partial}{\partial w_2} ( f_{1}(\mathbf{w}) \bigcirc g_{1}(\mathbf{x}) ) & \ldots & \frac{\partial}{\partial w_n} ( f_{1}(\mathbf{w}) \bigcirc g_{1}(\mathbf{x}) )\\\\
+\frac{\partial}{\partial w_1} ( f_{2}(\mathbf{w}) \bigcirc g_{2}(\mathbf{x}) ) & \frac{\partial}{\partial w_2} ( f_{2}(\mathbf{w}) \bigcirc g_{2}(\mathbf{x}) ) & \ldots & \frac{\partial}{\partial w_n} ( f_{2}(\mathbf{w}) \bigcirc g_{2}(\mathbf{x}) )\\\\
+& \ldots\\\\
+\frac{\partial}{\partial w_1} ( f_{n}(\mathbf{w}) \bigcirc g_{n}(\mathbf{x}) ) & \frac{\partial}{\partial w_2} ( f_{n}(\mathbf{w}) \bigcirc g_{n}(\mathbf{x}) ) & \ldots & \frac{\partial}{\partial w_n} ( f_{n}(\mathbf{w}) \bigcirc g_{n}(\mathbf{x}) )\\
+\end{bmatrix}
+\]
+
+Given the constraint ({\em element-wise diagonal condition}) that $f_i(\mathbf{w})$ and $g_i(\mathbf{x})$ access at most $w_i$ and $x_i$, respectively, the Jacobian simplifies to a diagonal matrix:
+
+\[
+\frac{\partial \mathbf{y}}{\partial \mathbf{w}} = diag \left( \frac{\partial}{\partial w_1}(f_{1}(w_1) \bigcirc g_{1}(x_1)),~ \frac{\partial}{\partial w_2}(f_{2}(w_2) \bigcirc g_{2}(x_2)),~ \ldots,~ \frac{\partial}{\partial w_n}(f_{n}(w_n) \bigcirc g_{n}(x_n)) \right)
+\]
+
+Here are some sample element-wise  operators:
+
+\[
+\begin{array}{lll}
 \text{Op} & \text{Partial with respect to } \mathbf{w} & \text{Partial with respect to }\mathbf{x}\\
 \hline\\
-
 + & \frac{\partial (\mathbf{w+x})}{\partial \mathbf{w}} = I & \frac{\partial (\mathbf{w+x})}{\partial \mathbf{x}} =  I\\\\
-
 - & \frac{\partial (\mathbf{w-x})}{\partial \mathbf{w}}  = I & \frac{\partial (\mathbf{w-x})}{\partial \mathbf{x}}  = -I \\\\
-
 \otimes & \frac{\partial (\mathbf{w \otimes x})}{\partial \mathbf{w}}  =  diag(\mathbf{x}) & \frac{\partial (\mathbf{w \otimes x})}{\partial \mathbf{x}}  =  diag(\mathbf{w})\\\\
-
 \oslash & \frac{\partial (\mathbf{w \oslash x})}{\partial \mathbf{w}}  =  diag(\ldots \frac{1}{x_i} \ldots) & \frac{\partial (\mathbf{w \oslash x})}{\partial \mathbf{x}}  =  diag(\ldots \frac{-w_i}{x_i^2} \ldots)\\
-
 \end{array}
-$
+\]
 
-Scalar expansion. Adding scalar $z$  to vector $\mathbf{x}$, $\mathbf{y} = \mathbf{x} + z$, is really $\mathbf{y} = \mathbf{f(x)} + \mathbf{g}(z)$ where $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(z) = \vec{1} z$.
+\subsection{Scalar expansion}
 
-$\frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} + z ) = diag(\vec{1}) = I$\\
-$\frac{\partial}{\partial z} ( \mathbf{x} + z ) = \vec{1}$
+Adding scalar $z$  to vector $\mathbf{x}$, $\mathbf{y} = \mathbf{x} + z$, is really $\mathbf{y} = \mathbf{f(x)} + \mathbf{g}(z)$ where $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(z) = \vec{1} z$.
 
-$\frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} z ) = I z$\\
-$\frac{\partial}{\partial z} ( \mathbf{x} z ) = \mathbf{x}$
+\[
+\frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} + z ) = diag(\vec{1}) = I
+\]
+\[
+\frac{\partial}{\partial z} ( \mathbf{x} + z ) = \vec{1}
+\]
 
-vector sum reduction. 
+Scalar multiplication yields:
 
-$
+\[\frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} z ) = I z\]
+\[\frac{\partial}{\partial z} ( \mathbf{x} z ) = \mathbf{x}\]
+
+\subsection{Vector reductions}
+
+The partial derivative of a vector sum with respect to one of the vectors is:
+
+\[
 \begin{array}{lcl}
-\frac{\partial y}{\partial \mathbf{x}} & = & \begin{bmatrix} \frac{\partial y}{\partial x_1}, \frac{\partial y}{\partial x_2}, \ldots, \frac{\partial y}{\partial x_n} \end{bmatrix} = \begin{bmatrix} \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_1},~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_2},~ \ldots,~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_n}  \end{bmatrix}~~~~~~~~~~~~~~~(\text{move derivative inside }\Sigma)\\\\
+\frac{\partial y}{\partial \mathbf{x}} & = & \begin{bmatrix} \frac{\partial y}{\partial x_1}, \frac{\partial y}{\partial x_2}, \ldots, \frac{\partial y}{\partial x_n} \end{bmatrix} = \begin{bmatrix} \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_1},~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_2},~ \ldots,~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_n}  \end{bmatrix}\\\\
 \end{array}
-$
-
-For $y = sum(\mathbf{x})$: $\nabla y\mathbf{x} = \vec{1}^T$
-
-For $y = sum(\mathbf{x}z)$: 
-
-$\nabla y_\mathbf{x} = [z, z, \ldots, z]$\\
-$\nabla y_z = n$ where $n = |x|$
-
-the single-variable chain rule:
-
-\[
-\frac{dy}{dx} = \frac{dy}{du}\frac{du}{dx}
 \]
 
-the single-variable total-derivative chain rule:
+For $y = sum(\mathbf{x})$:
+
+\[\nabla y_\mathbf{x} = \vec{1}^T\]
+
+For $y = sum(\mathbf{x}z)$ and $n = |x|$, we get:
+
+\[\nabla y_\mathbf{x} = [z, z, \ldots, z]\]
+\[\nabla y_z = n \]
+
+Vector dot product $y = \mathbf{f(w)} \cdot \mathbf{g(x)} = \Sigma_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$.  Substituting $\mathbf{u} = \mathbf{w} \otimes \mathbf{x}$ and using the vector chain rule, we get:
 
 \[
-\frac{\partial f(u_1,\ldots,u_n)}{\partial x} = \sum_{i=1}^n \frac{\partial f}{\partial u_i}\frac{\partial  u_i}{\partial  x} = \frac{\partial f}{\partial \mathbf{u}} \frac{\partial \mathbf{u}}{\partial x}
+\begin{array}{lcl}
+\frac{d \mathbf{u}}{d\mathbf{x}} = \frac{d}{d\mathbf{x}} (\mathbf{w} \otimes \mathbf{x}) = diag(\mathbf{w})\\\\
+\frac{dy}{d\mathbf{u}} = \frac{d}{d\mathbf{u}} sum(\mathbf{u}) = \vec{1}^T\\\\
+\frac{dy}{d\mathbf{x}} = \frac{dy}{d\mathbf{u}} \times \frac{d\mathbf{u}}{d\mathbf{x}} = \vec{1}^T \times diag(\mathbf{w}) = \mathbf{w}^T
+\end{array}
 \]
-
-vector chain rule is:
-
-$\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ ~~~~~~~~~~~~~~~~~~~~~(Note: matrix multiply doesn't commute; order of $\frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ matters)
-
-vector dot product $y = \mathbf{f(w)} \cdot \mathbf{g(x)}$. $\Sigma_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$.
-
-$\frac{d \mathbf{u}}{d\mathbf{x}} = \frac{d}{d\mathbf{x}} (\mathbf{w} \otimes \mathbf{x}) = diag(\mathbf{w})$\\
-$\frac{dy}{d\mathbf{u}} = \frac{d}{d\mathbf{u}} sum(\mathbf{u}) = \vec{1}^T$
-
-$\frac{dy}{d\mathbf{x}} = \frac{dy}{d\mathbf{u}} \times \frac{d\mathbf{u}}{d\mathbf{x}} = \vec{1}^T \times diag(\mathbf{w}) = \mathbf{w}^T$
 
 Similarly, $\frac{dy}{d\mathbf{w}} = \mathbf{x}^T$.
 
+
+\subsection{Chain rules}
+
+The {\em vector chain rule} is the general form as it degenerates to the others. When $f$ is a function of a single variable $x$ and all intermediate variables $u$ are functions of a single variable, the single-variable chain rule applies. When some or all of the intermediate variables are functions of multiple variables, the single-variable total-derivative chain rule applies. In all other cases, the vector chain rule applies.
+
+\begin{tabular}{ccc}
+\bf{Single-variable rule} & \bf{Single-variable total-derivative rule} & \bf{Vector  rule}\\\\
+
+$\frac{df}{dx} = \frac{df}{du}\frac{du}{dx}$ &
+
+$\frac{\partial f(u_1,\ldots,u_n)}{\partial x} = \frac{\partial f}{\partial \mathbf{u}} \frac{\partial \mathbf{u}}{\partial x}$ &
+
+$\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$
+\end{tabular}
+
+
 \section{Resources}
 
-as part of this course notes Introduction to Finite Element Methods I believe by Carlos A. Felippa: https://www.colorado.edu/engineering/CAS/courses.d/IFEM.d/, this appendix is useful:
-https://www.colorado.edu/engineering/CAS/courses.d/IFEM.d/IFEM.AppC.d/IFEM.AppC.pdf His Jacobian are transposed.
+When looking for resources on the web, search for ``matrix calculus'' not ``vector calculus.''  Here are some comments on the top links that come up from a [Google search](https://www.google.com/search?q=matrix+calculus\&oq=matrix+calculus):
 
-true multivar chain rule  This page http://spot.pcc.edu/math/APEXCalculus/sec\_multi\_chain.html has right way. They are calling it multivar chain rule part *II* not part I.
+https://en.wikipedia.org/wiki/Matrix\_calculus The Wikipedia entry is actually quite good and they have a good description of the different layout conventions. Recall that we use the numerator layout where the variables go horizontally and the functions go vertically in the Jacobian. Wikipedia also has a good description of [total derivatives](https://en.wikipedia.org/wiki/Total\_derivative), but be careful that they use slightly different notation than we do. We always use the $\partial x$ notation not $dx$.
 
-https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf and  https://www.comp.nus.edu.sg/~cs5240/lecture/matrix-differentiation.pdf
- 
-\section{Acknowledgements}
+http://www.ee.ic.ac.uk/hp/staff/dmb/matrix/calculus.html This page has a section on matrix differentiation with some useful identities; this person uses numerator layout. This might be a good place to start after reading this article to learn about matrix versus vector differentiation.
 
-We thank [Yannet Interian](https://www.usfca.edu/faculty/yannet-interian) (Faculty in MS data science program at University of San Francisco) and [David Uminsky](http://www.cs.usfca.edu/~duminsky/) (Faculty/director of MS data science) for their help with the notation presented here..
+https://www.colorado.edu/engineering/CAS/courses.d/IFEM.d/IFEM.AppC.d/IFEM.AppC.pdf This is part of the course notes for ``Introduction to Finite Element Methods'' I believe by [Carlos A. Felippa](https://www.colorado.edu/engineering/CAS/courses.d/IFEM.d).  His Jacobians are transposed from our notation because he uses denominator layout.
 
-\cut{
-\section{NOTES}
+http://www.ee.ic.ac.uk/hp/staff/dmb/matrix/calculus.html  This page has a huge number of useful derivatives computed for a variety of vectors and matrices. A great cheat sheet. There is no discussion to speak of, just a set of rules.
 
-Need [law of total derivative](https://en.wikipedia.org/wiki/Total\_derivative)
+https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf Another cheat sheet that focuses on matrix operations in general with more discussion than the previous item.
 
-position $y = distance/time * time$ bump $delta y = distance/time * delta time$
+Further down in the list, you'll run into a useful set of slides:  https://www.comp.nus.edu.sg/~cs5240/lecture/matrix-differentiation.pdf
 
-{\bf Ex.} Let $f(x,y) = sin(xy)$. Substitute $u = xy$, giving $f(x,y) = sin(u(x,y))$ or just $sin(u)$. Chain rule says
+To learn more about neural networks and the mathematics behind optimization and back propagation, we highly recommend Michael Nielsen's book http://neuralnetworksanddeeplearning.com/chap1.html
 
-$\frac{\partial f}{\partial x} = \frac{\partial f}{\partial u}\frac{\partial u}{\partial x} = cos(u)y = cos(xy)y$
-
-and
-
-$\frac{\partial f}{\partial y} = \frac{\partial f}{\partial u}\frac{\partial u}{\partial y} = cos(u)x = cos(xy)x$
-
-General chain rule says $\frac{\partial}{\partial t} f(x(t),y(t)) = \frac{\partial f}{\partial x}\frac{\partial x}{\partial t} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial t}$. Where is $t$ in my $sin(xy)$??? AND, where is the addition it says I need? How do I get partial w.r.t. $x$ or $y$?
-
-{\bf Ex.} Let $f(x,y) = sin(xy)x$. Subst
-
-$u = xy$\\
-$v = sin(u)$\\
-$w = vx$
-
-Chain rule finally shows an addition of $\frac{\partial w}{\partial x}$ at the top level $w$:
-
-$\frac{\partial f(x,y)}{\partial x} = \frac{\partial w(v,x)}{\partial x} = \frac{\partial w}{\partial v}\frac{\partial v}{\partial x} + \frac{\partial w}{\partial x} = x\frac{\partial v}{\partial x} + v$\\
-$\frac{\partial v(u)}{\partial x} = \frac{\partial v}{\partial u}\frac{\partial u}{\partial x} = cos(u)y$
-
-Substituting:
-
-$\frac{\partial f}{\partial x} = x\frac{\partial v}{\partial x} + v = xcos(u)y = xycos(xy) + sin(xy)$
-
-Again, where is $t$ from the general chain rule?
-
-AH! This page http://spot.pcc.edu/math/APEXCalculus/sec\_multi\_chain.html has right way. They are calling it multivar chain rule part II:
-
-(Using vec and my notation) let $z = \mathbf{f(g(x))}$, $m = |\mathbf{f}|$, $n=|\mathbf{x}|$ as usual then $k=|\mathbf{g}|$. Then
-
-$\frac{\partial z}{\partial x_j} = \frac{\partial f}{\partial g_1}\frac{\partial g_1}{\partial x_j} + \frac{\partial f}{\partial g_2}\frac{\partial g_2}{\partial x_j} + \ldots + \frac{\partial f}{\partial g_k}\frac{\partial g_k}{\partial x_j} = \frac{\partial z}{\partial x_j} =  \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_j}$
-
-That would give a gradient of
-
-$\nabla z = \left[ \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_1},~ \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_2}, ~\ldots,~ \sum_{i=1}^{|\mathbf{g}|} \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_n} \right]$
-
-For vector functions not scalars
-$\frac{\partial z}{\partial x_j}$
-
-Useful: https://www.colorado.edu/engineering/CAS/courses.d/IFEM.d/IFEM.AppC.d/IFEM.AppC.pdf
-}
+We reference the law of [total derivative](https://en.wikipedia.org/wiki/Total\_derivative), which is an important concept that just means derivatives with respect to $x$ must take into consideration the derivative with respect $x$ of all variables that are a function of $x$.
 
 \end{document}
