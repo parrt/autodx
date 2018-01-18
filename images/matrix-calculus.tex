@@ -42,7 +42,7 @@ Neural networks consist of many of these units, organized into multiple collecti
 
 If we're careful, we can derive the gradient by differentiating the scalar version of a common loss function (mean squared error):
 
-$\frac{1}{n} \Sigma_{\mathbf{x}} ||target(\mathbf{x}) - activation(\mathbf{x})||_2^2 = \frac{1}{n} \Sigma_{\mathbf{x}} ||target(\mathbf{x}) - max(0, \Sigma_i^n w_i x_i + b)||_2^2$
+$\frac{1}{n} \Sigma_{\mathbf{x}} (target(\mathbf{x}) - activation(\mathbf{x}))^2 = \frac{1}{n} \Sigma_{\mathbf{x}} (target(\mathbf{x}) - max(0, \Sigma_i^n w_i x_i + b))^2$
 
 But this is just one neuron, and neural networks must train the weights and biases of all neurons in all layers simultaneously.  The really cool part about partial derivatives is that they let us optimize all of these network parameters at once. TODO: not sure "all at once" follows... Because there are multiple inputs and (potentially) multiple network outputs, we really need general rules for the derivative of a function with respect to a vector and even rules for the derivative of a vector-valued function with respect to a vector.
 
@@ -648,9 +648,7 @@ Before we move on, a word of caution about terminology on the web. Unfortunately
 
 \subsubsection{Vector chain rule}
 
- actually I think it is exactly the same except we replace variables with vectors.
- 
-Surprisingly, the chain rule for vectors is simpler looking than the chain rules for scalars; we just have to be careful about the orientation and shape of our vectors and matrices (vector multiplication is not commutative). Rather than just present the vector chain rule, let's rediscover it ourselves so we get a firm grip on it. Let's start by computing the derivative of a sample vector function with respect to a scalar to see if we can abstract a general formula. $\mathbf{y} = \mathbf{f}(x)$  
+Now that we've got a good handle on the total-derivative chain rule, we're ready to tackle the chain rule for vectors of functions and vector variables. Surprisingly, this more general chain rule is just as simple looking as the single-variable chain rule for scalars. Rather than just present the vector chain rule, let's rediscover it ourselves so we get a firm grip on it. We can start by computing the derivative of a sample vector function with respect to a scalar, $\mathbf{y} = \mathbf{f}(x)$, to see if we can abstract a general formula.   
 
 $
 \begin{bmatrix}
@@ -667,7 +665,7 @@ $
 \end{bmatrix}
 $
 
-Let's introduce two intermediate variables, $g_1$ and $g_2$, one for each $f_i$ so that it looks more like $\mathbf{y} = \mathbf{f}(\mathbf{g}(x))$:
+Let's introduce two intermediate variables, $g_1$ and $g_2$, one for each $f_i$ so that $y$ looks more like $\mathbf{y} = \mathbf{f}(\mathbf{g}(x))$:
 
 $
 \begin{bmatrix}
@@ -710,7 +708,7 @@ $
 \end{bmatrix}
 $
 
-Ok, so now we have the answer using just the scalar rules. Let's try to abstract from that what it looks like in vector form.  The goal is to convert the following vector of scalar operations to a vector operation. 
+Ok, so now we have the answer using just the scalar rules, albeit with the derivatives grouped into a vector. Let's try to abstract from that result what it looks like in vector form.  The goal is to convert the following vector of scalar operations to a vector operation. 
 
 $
 \begin{bmatrix}
@@ -719,7 +717,7 @@ $
 \end{bmatrix}
 $
 
-If we split the $\frac{\partial f_i}{\partial g_j}\frac{\partial g_j}{\partial x}$ terms and put $\frac{\partial g_j}{\partial x}$ into a vector, we get a matrix by vector multiplication:
+If we split the $\frac{\partial f_i}{\partial g_j}\frac{\partial g_j}{\partial x}$ terms, putting $\frac{\partial g_j}{\partial x}$ into a vector, we get a matrix by vector multiplication:
 
 $
 \begin{bmatrix}
@@ -757,7 +755,7 @@ to the single-variable chain rule:
 
 $\frac{d}{dx} f(g(x)) = \frac{df}{dg}\frac{dg}{dx}$
 
-To make this formula work for multiple parameters, we just have to convert $x$ to vector $\mathbf{x}$.  The effect is to that $\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ is now a matrix as is the resulting Jacobian,  $\frac{\partial \mathbf{f}}{\partial \mathbf{x}}$, instead of a vertical vector. Our complete {\em vector chain rule} is:
+To make this formula work for multiple parameters or vector $\mathbf{x}$, we just have to change $x$ to vector $\mathbf{x}$ in the equation.  The effect is  that $\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ and the resulting Jacobian,  $\frac{\partial \mathbf{f}}{\partial \mathbf{x}}$, are now matrices instead of  vertical vectors. Our complete {\em vector chain rule} is:
 
 $\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ ~~~~~~~~~~~~~~~~~~~~~(Note: matrix multiply doesn't commute; order of $\frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ matters)
 
@@ -783,62 +781,20 @@ $
 
 where $m=|f|$, $n=|x|$, and $k=|g|$. The resulting Jacobian is $m \times n$ (an $m \times k$ matrix multiplied by a $k \times n$ matrix). 
 
-Even within this $\frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ formula, we can simplify further because, for many applications, the Jacobians are square ($m=n$) and the off-diagonal entries are zero.  It is the nature of neural networks that the associated mathematics deals with functions of vectors not vectors of functions. For example, the affine function has term $sum(\mathbf{w}\otimes\mathbf{x})$ and the activation function is $max(0,\mathbf{x})$; we'll consider derivatives of these functions in a section below.  As we saw above, element-wise operations on vectors yield diagonal vectors with elements $\frac{\partial f_i}{\partial g_i}$ because $f_i$ is a function purely of $g_i$ but not $g_j$ for $j \neq i$.  In this case, the vector chain rule simplifies to:
+Even within this $\frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ formula, we can simplify further because, for many applications, the Jacobians are square ($m=n$) and the off-diagonal entries are zero.  It is the nature of neural networks that the associated mathematics deals with functions of vectors not vectors of functions. For example, the neuron affine function has term $sum(\mathbf{w}\otimes\mathbf{x})$ and the activation function is $max(0,\mathbf{x})$; we'll consider derivatives of these functions below.  
 
-$\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = diag(\frac{\partial f_i}{\partial g_i})diag(\frac{\partial g_i}{\partial x_i})$
+As we saw in a previous section, element-wise operations on vectors $w$ and $x$ yield diagonal matrices with elements $\frac{\partial w_i}{\partial x_i}$ because $w_i$ is a function purely of $x_i$ but not $x_j$ for $j \neq i$. The same thing happens here when $f_i$ is purely a function of $g_i$ and $g_i$ is purely a function of $x_i$:
 
-To illustrate the vector chain rule, let's compute the derivative with respect to vector $\mathbf{x}$ for $y = f(\mathbf{x}) = sum(\mathbf{x}  z)$. We know from a previous section that the gradient is $[z, z, \ldots, z]$, but we can also use the chain rule. Let's introduce an intermediate vector variable $\mathbf{u}$ that depends on input $\mathbf{x}$:
+$\frac{\partial \mathbf{f}}{\partial \mathbf{g}} = diag(\frac{\partial f_i}{\partial g_i})$\\
+$\frac{\partial \mathbf{g}}{\partial \mathbf{x}} = diag(\frac{\partial g_i}{\partial x_i})$
 
-$\mathbf{u}(\mathbf{x}) = \mathbf{x} z$\\
-$y = f(\mathbf{u}) = sum(\mathbf{u})$
+In this situation, the vector chain rule simplifies to:
 
-Now that we've rephrased $y$, we recognize two subexpressions for which we already know the partial derivatives.
+$\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = diag(\frac{\partial f_i}{\partial g_i})diag(\frac{\partial g_i}{\partial x_i}) = diag(\frac{\partial f_i}{\partial g_i}\frac{\partial g_i}{\partial x_i})$
 
-$\frac{\partial\mathbf{u}}{\partial \mathbf{x}} = diag(\vec{1}z) = Iz$\\
-$\frac{\partial f}{\partial \mathbf{u}} = \vec{1}^T$\\
+Therefore, the Jacobian reduces to a diagonal matrix whose elements are the single-variable chain rule values.
 
-The overall derivative with respect to $\mathbf{x}$ follows from the vector chain rule:
-
-\[
-\frac{\partial}{\partial \mathbf{x}} f(\mathbf{u}(\mathbf{x})) = \begin{bmatrix}
-	\frac{\partial f}{\partial u_1} & \frac{\partial f}{\partial u_2} & \ldots & \frac{\partial f}{\partial u_n}\end{bmatrix}\begin{bmatrix}
-	\frac{\partial u_1}{\partial x_1} &  & \text{\huge0} & \\
-	 & \frac{\partial u_2}{\partial x_2} & &\\
-	& &\ddots\\
-	& \text{\huge0} &   & \frac{\partial u_n}{\partial x_n}\\
-\end{bmatrix} = \begin{bmatrix}
-	1 & 1 & \ldots & 1\end{bmatrix}\begin{bmatrix}
-	z &  & \text{\huge0} & \\
-	 & z & &\\
-	& &\ddots\\
-	& \text{\huge0} &   & z\\
-\end{bmatrix}
-\]
-
-because $\frac{\partial}{\partial \mathbf{x}} f(\mathbf{u}(\mathbf{x})) = \frac{\partial f}{\partial \mathbf{u}}\frac{\partial\mathbf{u}}{\partial \mathbf{x}} = [z, z, \ldots, z]$
-
-Just to be sure, let's go through the process
-
-\begin{enumerate}
-	\item  Introduce intermediate variables for nested subexpressions and subexpressions for both binary and unary operators; e.g., $\times$ is binary, $sin(x)$ and other trigonometric functions are usually unary because there is a single operand.
-	\item Compute derivatives of the intermediate variables.
-	\item Combine all derivatives of intermediate variables by multiplying them together to get the overall result.
-	\item Substitute intermediate variables back in if any are referenced.
-\end{enumerate}
-
-todo: where $f_i$ only accesses $g_i$.
-
-show $f_i$ uses just $g_i$ and how it simplifies. we can force this by copying subexpressions, no subexpr elimination. so if $f_1 = g_1$, $f_2 = g_1$ and $g_1 = x^2$, just dup so $g_2 = x^2$ exists and make $f_2 = g_2$. not quite right. say it's common because we do lots of element-wise binary ops like $\mathbf{x \cdot y z}$
-
- terminology and notation http://spot.pcc.edu/math/APEXCalculus/sec\_multi\_chain.html distinguishes between the total derivative and the gradient as part I and part II.
- 
-All we need is vector chain rule:
-
- $\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$
-
-as it is completely general.
-
-When $f$ and $x$ scalars, 
+After slogging through all of that mathematics, here's the payoff. All you need is the vector chain rule because the single-variable formulas are special cases of the vector chain rule. The following table summarizes the appropriate components to multiply in order to get the Jacobian.
 
 \begin{center}
 \begin{tabular}[t]{c|cccc}
@@ -846,44 +802,62 @@ When $f$ and $x$ scalars,
 \multicolumn{2}{c}{
   \begin{tabular}[t]{c}
   scalar\\
-  \framebox(25,25){$x$}\\
-  \end{tabular}} & & \begin{tabular}{c}
+  \framebox(18,18){$x$}\\
+  \end{tabular}} & & \\
+  \begin{tabular}{c}$\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x}))$\\
+	   = $\frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$
+		\\
+		\end{tabular} & \begin{tabular}[t]{c}
+  scalar\\
+  \framebox(18,18){$u$}\\
+  \end{tabular} & \begin{tabular}{c}
   vector\\
-  \framebox(25,60){$\mathbf{x}$}
-  \end{tabular}\\
-   & scalar $u$ & vector $\mathbf{u}$& \\
+  \framebox(18,40){$\mathbf{u}$}
+  \end{tabular}& &\begin{tabular}{c}
+  vector\\
+  \framebox(18,40){$\mathbf{x}$}
+  \end{tabular} \\
 \hline
 \\[\dimexpr-\normalbaselineskip+5pt]
 
 \begin{tabular}[b]{c}
   scalar\\
-  \framebox(25,25){$f$}\\
-  \end{tabular} &\framebox(25,25){$\frac{\partial f}{\partial {u}}$} \framebox(25,25){$\frac{\partial u}{\partial {x}}$} & \framebox(60,25){$\frac{\partial f}{\partial {\mathbf{u}}}$} \framebox(25,60){$\frac{\partial \mathbf{u}}{\partial x}$} & &
-\framebox(60,25){$\frac{\partial f}{\partial {\mathbf{u}}}$} \framebox(60,60){$\frac{\partial \mathbf{u}}{\partial \mathbf{x}}$}
+  \framebox(18,18){$f$}\\
+  \end{tabular} &\framebox(18,18){$\frac{\partial f}{\partial {u}}$} \framebox(18,18){$\frac{\partial u}{\partial {x}}$} ~~~& \raisebox{22pt}{\framebox(40,18){$\frac{\partial f}{\partial {\mathbf{u}}}$}} \framebox(18,40){$\frac{\partial \mathbf{u}}{\partial x}$} & ~~~&
+\raisebox{22pt}{\framebox(40,18){$\frac{\partial f}{\partial {\mathbf{u}}}$}} \framebox(40,40){$\frac{\partial \mathbf{u}}{\partial \mathbf{x}}$}
 \\
   
 \begin{tabular}[b]{c}
   vector\\
-  \framebox(25,60){$\mathbf{f}$}\\
-  \end{tabular} & \framebox(25,60){$\frac{\partial \mathbf{f}}{\partial {u}}$} \framebox(25,25){$\frac{\partial u}{\partial {x}}$} & \framebox(60,60){$\frac{\partial \mathbf{f}}{\partial \mathbf{u}}$} \framebox(25,60){$\frac{\partial \mathbf{u}}{\partial x}$} & & \framebox(60,60){$\frac{\partial \mathbf{f}}{\partial \mathbf{u}}$} \framebox(60,60){$\frac{\partial \mathbf{u}}{\partial \mathbf{x}}$}\\
+  \framebox(18,40){$\mathbf{f}$}\\
+  \end{tabular} & \framebox(18,40){$\frac{\partial \mathbf{f}}{\partial {u}}$} \raisebox{22pt}{\framebox(18,18){$\frac{\partial u}{\partial {x}}$}} & \framebox(40,40){$\frac{\partial \mathbf{f}}{\partial \mathbf{u}}$} \framebox(18,40){$\frac{\partial \mathbf{u}}{\partial x}$} & & \framebox(40,40){$\frac{\partial \mathbf{f}}{\partial \mathbf{u}}$} \framebox(40,40){$\frac{\partial \mathbf{u}}{\partial \mathbf{x}}$}\\
   
 \end{tabular}
 \end{center}
 
-\subsection{Derivatives of vector dot product}
+\section{The derivative of the neuron activation function}
 
-Now that we've got the chain rule in mind and we can compute the Jacobians for both element-wise binary operations and vector summation, we can define the gradient of the important vector dot product $y = \mathbf{f(w)} \cdot \mathbf{g(x)}$. (Note we use $y$ not $\mathbf{y}$ as the result is a scalar not a vector.) You will find the derivative of dot product defined as $f(\mathbf{x}) \cdot g'(\mathbf{x}) + f'(\mathbf{x}) \cdot g(\mathbf{x})$, but we'll use the chain rule instead to avoid having to memorize yet another rule.
+To illustrate the vector chain rule, let's compute the derivatives of a typical activation function for a single neural network computation unit with respect to the model parameters, $\mathbf{w}$ and $b$:
 
-Notice that dot product $\mathbf{w} \cdot \mathbf{x}$, such as we used in the neuron output function, is just the summation of the element-wise multiplication of the elements: $\Sigma_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$. (You might also find it useful to remember the linear algebra notation $\mathbf{w} \cdot \mathbf{x} = \mathbf{w}^{T} \mathbf{x}$.)  To use the chain rule, we perform a quick substitution, $\mathbf{u} = \mathbf{w} \otimes \mathbf{x}$ and $y = sum(\mathbf{u})$, and multiply their partial derivatives:
+$activation(\mathbf{x}) = max(0, \mathbf{w} \cdot \mathbf{x} + b)$
 
-$\frac{d \mathbf{u}}{d\mathbf{x}} = \frac{d}{d\mathbf{x}} (\mathbf{w} \otimes \mathbf{x}) = diag(\mathbf{w})$\\
-$\frac{dy}{d\mathbf{u}} = \frac{d}{d\mathbf{u}} sum(\mathbf{u}) = \vec{1}^T$
+Let's worry about $max$ later to focus on computing $\frac{\partial}{\partial \mathbf{w}} \mathbf{w} \cdot \mathbf{x} + b$ and $\frac{\partial}{\partial b} \mathbf{w} \cdot \mathbf{x} + b$. (Recall that neural networks learn through optimization of their weights and biases.)  We haven't discussed the derivative of the dot product yet, $y = \mathbf{f(w)} \cdot \mathbf{g(x)}$, but we can use the chain rule to avoid having to memorize yet another rule. (Note notation $y$ not $\mathbf{y}$ as the result is a scalar not a vector.) The dot product $\mathbf{w} \cdot \mathbf{x}$ is just the summation of the element-wise multiplication of the elements: $\Sigma_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$. (You might also find it useful to remember the linear algebra notation $\mathbf{w} \cdot \mathbf{x} = \mathbf{w}^{T} \mathbf{x}$.)  
 
-$\frac{dy}{d\mathbf{x}} = \frac{dy}{d\mathbf{u}} \frac{d\mathbf{u}}{d\mathbf{x}} = \vec{1}^T \times diag(\mathbf{w}) = \mathbf{w}^T$
+To use the chain rule for $y = sum(\mathbf{w} \otimes \mathbf{x})$, we introduce an intermediate vector variable $\mathbf{u}$ just as we did using the single-variable chain rule:
 
-Similarly, $\frac{dy}{d\mathbf{w}} = \mathbf{x}^T$. Note: the gradient is a horizontal vector (1 output)!
+$\mathbf{u} = \mathbf{w} \otimes \mathbf{x}$\\
+$y = sum(\mathbf{u})$
 
-To check our results, we can also grind the dot product down into a pure scalar function:
+Once we've rephrased $y$, we recognize two subexpressions for which we already know the partial derivatives:
+
+$\frac{\partial  \mathbf{u}}{\partial \mathbf{w}} = \frac{\partial }{\partial \mathbf{w}} (\mathbf{w} \otimes \mathbf{x}) = diag(\mathbf{x})$\\
+$\frac{\partial y}{\partial \mathbf{u}} = \frac{\partial }{\partial \mathbf{u}} sum(\mathbf{u}) = \vec{1}^T$
+
+The chain rule says to multiply the partials:
+
+$\frac{\partial y}{\partial \mathbf{w}} = \frac{\partial y}{\partial \mathbf{u}} \frac{\partial \mathbf{u}}{\partial \mathbf{w}} = \vec{1}^T  diag(\mathbf{x}) = \mathbf{x}^T$
+
+To check our results, we can grind the dot product down into a pure scalar function:
 
 $y = \mathbf{w} \cdot \mathbf{x} = \Sigma_i^n (w_i x_i)$
 
@@ -893,59 +867,154 @@ Then:
 
 $\frac{\partial y}{\partial \mathbf{w}} = [ x_1, \ldots, x_n ] = \mathbf{x}^T$
 
-Our results match. 
+Hooray! Our results match. 
 
-\section{The derivative of the neuron activation function}
+Now, let $y = \mathbf{w} \cdot \mathbf{x} + b$, the full expression within the $max$ activation function call. We have two different partials to compute but don't need the chain rule:
 
-After all that, we're ready to actually take the derivative of the neuron activation function we provided in the introduction, $output(\mathbf{x}) = max(0, \mathbf{w} \cdot \mathbf{x} + b)$.  In practice, training a neuron requires that we take the derivative of our loss  or ``cost'' function $C(\mathbf{w},b) = \frac{1}{n} \Sigma_{\mathbf{x}} ||desiredoutput(\mathbf{x}) - output(\mathbf{x})||_2^2$, with respect to the parameters of our model, $\mathbf{w}$ and $b$.  We won't solve that full problem here, but we can apply the rules we've learned to compute partial derivatives of the output of the rectified linear activation function. The partial derivatives are:
+$\frac{\partial y}{\partial \mathbf{w}} = \frac{\partial }{\partial \mathbf{w}}\mathbf{w} \cdot \mathbf{x} + \frac{\partial }{\partial \mathbf{w}}b = \mathbf{x}^T + \vec{0}^T = \mathbf{x}^T$\\
+$\frac{\partial y}{\partial b} = \frac{\partial }{\partial b}\mathbf{w} \cdot \mathbf{x} + \frac{\partial }{\partial b}b = 0 + 1 = 1$
 
-$\frac{\partial z}{\partial \mathbf{w}} = \frac{\partial \mathbf{w} \cdot \mathbf{x}}{\partial \mathbf{w}} + \frac{\partial b}{\partial \mathbf{w}} = \mathbf{x}^T + \vec{0}^T = \mathbf{x}^T$
+And, finally, we can take the partials of the activation function output, $max(0, \mathbf{w} \cdot \mathbf{x} + b)$. The use of the $max(0,z)$ function call for scalar $z$ just says to treat all negative $z$ values as 0.  The derivative of the max function is a piecewise function. When $z \leq 0$, the derivative is 0 because $z$ is a constant. When $z > 0$, the derivative of the max function is just the derivative of $z$, which is $1$:
+
+$
+\frac{\partial}{\partial z}max(0,z) =
+	\begin{cases}
+	0 & z \leq 0\\
+	\frac{dz}{dz}=1 & z > 0\\
+\end{cases}
+$
+
+\framebox[\linewidth]{\parbox{0.97\linewidth}{An aside on broadcasting functions across scalars. When one or both of the $max$ arguments are vectors, such as $max(0,\mathbf{x})$, we broadcast the single-variable function $max$ across the elements. This is an example of an element-wise unary operator.  Just to be clear:
+
+$
+max(0,\mathbf{x}) = \begin{bmatrix}
+max(0,x_1)\\
+max(0,x_2)\\
+\ldots\\
+max(0,x_n)\\
+\end{bmatrix}
+$
+
+For the derivative of the broadcast version then, we get a vector of zeros and ones where:
+
+$
+\frac{\partial}{\partial x_i}max(0,x_i) =
+	\begin{cases}
+	0 & x_i \leq 0\\
+	\frac{dx_i}{dx_i}=1 & x_i > 0\\
+\end{cases}
+$
+
+$
+\frac{\partial}{\partial \mathbf{x}}max(0,\mathbf{x}) =
+\begin{bmatrix}
+	\frac{\partial}{\partial x_1}max(0,x_1)\\
+	\frac{\partial}{\partial x_2}max(0,x_2)\\
+	\ldots\\
+    \frac{\partial}{\partial x_n}max(0,x_n)
+\end{bmatrix}
+$
+}}
+
+To get the derivative of the $activation(\mathbf{x})$ function, we need the chain rule because of the nested subexpression, $\mathbf{w} \cdot \mathbf{x} + b$. Following our process, let's introduce intermediate scalar variable $z$ to represent the affine function giving:
+
+$z(\mathbf{w},\mathbf{x},b) = \mathbf{w} \cdot \mathbf{x} + b$\\
+$activation(z) = max(0,z)$
+
+The vector chain rule tells us:
+
+$\frac{\partial activation}{\partial \mathbf{w}} = \frac{\partial activation}{\partial z}\frac{\partial z}{\partial \mathbf{w}}$
+
+which we can rewrite as follows:
+
+$\frac{\partial activation}{\partial \mathbf{w}} = \begin{cases}
+	0\frac{\partial z}{\partial \mathbf{w}}=\vec{0}^T & z \leq 0\\
+	1\frac{\partial z}{\partial \mathbf{w}}=\frac{\partial z}{\partial \mathbf{w}} = \mathbf{x}^T & z > 0 ~~~~~~~~~~~~~~~~~~(\text{we computed }\frac{\partial z}{\partial \mathbf{w}}=\mathbf{x}^T \text{ previously})\\
+\end{cases}$
+
+and then substitute $z = \mathbf{w} \cdot \mathbf{x} + b$ back in:
+ 
+$\frac{\partial activation}{\partial \mathbf{w}} = \begin{cases}
+	\vec{0}^T & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
+	\mathbf{x}^T & \mathbf{w} \cdot \mathbf{x} + b > 0\\
+\end{cases}$
+
+That equation matches our intuition.  When the activation function clips affine function output, $z$, to 0, the derivative is zero with respect to any weight $w_i$. When $z > 0$, it's as if the $max$ function disappears and we get just the derivative of $z$ with respect to the weights. 
+
+Turning now to the derivative of the activation function with respect to $b$, we can jump immediately to:
+ 
+$\frac{\partial activation}{\partial b} = \begin{cases}
+	0\frac{\partial z}{\partial b} = 0 & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
+	1\frac{\partial z}{\partial b} = 1 & \mathbf{w} \cdot \mathbf{x} + b > 0\\
+\end{cases}
+$
+
+In practice, training a neuron requires that we take the derivative of our loss  or ``cost'' function $C(\mathbf{w},\mathbf{x},b) = \frac{1}{n} \Sigma_{\mathbf{x}} ||target(\mathbf{x}) - \mathbf{w}\cdot\mathbf{x}+b)||_2^2$, with respect to the parameters of our model, $\mathbf{w}$ and $b$.
+
+$X = [\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_k]^T$
+
+$\mathbf{y} = [target(\mathbf{x}_1), target(\mathbf{x}_2), \ldots, target(\mathbf{x}_k)]^T$ ($y_i$ is a scalar)
+
+\[
+C(\mathbf{w},b,X,\mathbf{y}) = \frac{1}{k} \sum_{i=1}^{k} (y_i - activation(\mathbf{x}_i))^2 = \frac{1}{k} \sum_{i=1}^{k} (y_i - max(0, \mathbf{w}\cdot\mathbf{x}_i+b))^2
+\]
+
+$u(\mathbf{w},b,\mathbf{x}) = max(0, \mathbf{w}\cdot\mathbf{x}+b)$\\
+$v(y,u) = y - u$\\
+$C(v) = \frac{1}{k} \sum_{i=1}^k v^2$
+
+From before, we know
+
+$\frac{\partial }{\partial \mathbf{w}} u(\mathbf{w},b,\mathbf{x}) = \begin{cases}
+	\vec{0}^T & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
+	\mathbf{x}^T & \mathbf{w} \cdot \mathbf{x} + b > 0\\
+\end{cases}$
 
 and
 
-$\frac{\partial z}{\partial b} = \frac{\partial \mathbf{w} \cdot \mathbf{x}}{\partial b} + \frac{\partial b}{\partial b} = 0 + 1 = 1$
-
-And, finally, we can take the partials of the activation function output. The $max(0,z)$ function just says to treat all negative $z$ values as 0, so its derivative is 0 for $z \leq 0$ and $dz/dz = 1$ for $z > 0$. Because $output(\mathbf{x})$ is a nested function, we need the chain rule so let's use $z = \mathbf{w} \cdot \mathbf{x} + b$ to get $output(\mathbf{x}) = max(0,z(\mathbf{x}))$. Then,
-
-$\frac{\partial output}{\partial \mathbf{w}} = \frac{\partial output}{\partial z}\frac{\partial z}{\partial \mathbf{w}}$
-
-where
-
-$\frac{\partial}{\partial z} output(\mathbf{x}) = \frac{\partial}{\partial z} max(z(\mathbf{x})) = \begin{cases}
-	0 & z \leq 0\\
-	1 & z > 0\\
-\end{cases}
-$
-
-and, using $\frac{\partial z}{\partial \mathbf{w}} = \mathbf{x}^T$,
-
-$\frac{\partial output}{\partial \mathbf{w}} = \begin{cases}
-	0 & z \leq 0\\
-	\mathbf{x}^T & z > 0\\
-\end{cases}
-$
-
-Substituting $z = \mathbf{w} \cdot \mathbf{x} + b$, we get:
-
-$\frac{\partial output}{\partial \mathbf{w}} = \begin{cases}
+$\frac{\partial v(y,u)}{\partial \mathbf{w}} = \frac{\partial}{\partial \mathbf{w}} (y - u) = \vec{0}^T - \frac{\partial u}{\partial \mathbf{w}} = -\frac{\partial u}{\partial \mathbf{w}} = \begin{cases}
 	\vec{0}^T & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
-	\mathbf{x}^T & \mathbf{w} \cdot \mathbf{x} + b > 0\\
+	-\mathbf{x}^T & \mathbf{w} \cdot \mathbf{x} + b > 0\\
+\end{cases}$
+
+then
+
+\[
+\begin{array}{ccl}
+\frac{\partial C(v)}{\partial \mathbf{w}} & = & \frac{\partial }{\partial \mathbf{w}}\frac{1}{k} \sum_{i=1}^k v^2\\\\
+ & = & \frac{1}{k} \sum_{i=1}^k \frac{\partial}{\partial \mathbf{w}} v^2\\\\
+ & = & \frac{1}{k} \sum_{i=1}^k \frac{\partial v^2}{\partial v} \frac{\partial v}{\partial \mathbf{w}} \\\\
+ & = & \frac{1}{k} \sum_{i=1}^k 2v \frac{\partial v}{\partial \mathbf{w}} \\\\
+ & = & \frac{1}{k} \sum_{i=1}^k \begin{cases}
+	2v\vec{0}^T = \vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
+	-2v\mathbf{x}^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
+\end{cases}\\\\
+ & = & \frac{1}{k} \sum_{i=1}^k \begin{cases}
+	\vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
+	-2(y_i-u)\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
+\end{cases}\\\\
+ & = & \frac{1}{k} \sum_{i=1}^k \begin{cases}
+	\vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
+	-2(y_i-max(0, \mathbf{w}\cdot\mathbf{x}_i+b))\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
+\end{cases}\\\\
+ & = & \frac{1}{k} \sum_{i=1}^k \begin{cases}
+	\vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
+	-2(y_i-\mathbf{w}\cdot\mathbf{x}_i+b)\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
+\end{cases}\\\\
+ & = & \begin{cases}
+	\vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
+	\frac{-2}{k} \sum_{i=1}^k (y_i-\mathbf{w}\cdot\mathbf{x}_i+b)\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
 \end{cases}
-$
+\end{array}
+\]
 
-which matches our intuition. The change in output when $z \leq 0$ is 0 for any $w_i$ change and the change in output is $x_i$ when $z > 0$ for any $w_i$ change. When $z > 0$, it's as if the $max$ function disappears. 
+todo: add note from Michael Nielsen on why the cost is always decreasing; equation (10) here http://neuralnetworksanddeeplearning.com/chap1.html
 
-Turning to the partial with respect to $b$ now, we can use our intuition to jump directly to
-
-$\frac{\partial output}{\partial b} = \begin{cases}
-	0 & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
-	\frac{\partial output}{\partial b} = 1 & \mathbf{w} \cdot \mathbf{x} + b > 0\\
-\end{cases}
-$
+\section{Summary}
 
 At this point, you are well on your way to understanding matrix calculus!  Your next step would be to learn about the partial derivatives of matrices not just vectors.
 
-todo: Matrix Differentiation https://atmos.washington.edu/~dennis/MatrixCalculus.pdf
+todo: Matrix Differentiation https://atmos.washington.edu/\verb|~|dennis/MatrixCalculus.pdf
 
 \section{Matrix Calculus Reference}
 
