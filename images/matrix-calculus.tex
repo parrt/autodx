@@ -837,13 +837,13 @@ After slogging through all of that mathematics, here's the payoff. All you need 
 
 \section{The derivative of the neuron activation function}
 
-To illustrate the vector chain rule, let's compute the derivatives of a typical activation function for a single neural network computation unit with respect to the model parameters, $\mathbf{w}$ and $b$:
+We now have all of the pieces needed to compute the derivative of a typical activation function for a single neural network computation unit with respect to the model parameters, $\mathbf{w}$ and $b$:
 
 $activation(\mathbf{x}) = max(0, \mathbf{w} \cdot \mathbf{x} + b)$
 
-Let's worry about $max$ later to focus on computing $\frac{\partial}{\partial \mathbf{w}} \mathbf{w} \cdot \mathbf{x} + b$ and $\frac{\partial}{\partial b} \mathbf{w} \cdot \mathbf{x} + b$. (Recall that neural networks learn through optimization of their weights and biases.)  We haven't discussed the derivative of the dot product yet, $y = \mathbf{f(w)} \cdot \mathbf{g(x)}$, but we can use the chain rule to avoid having to memorize yet another rule. (Note notation $y$ not $\mathbf{y}$ as the result is a scalar not a vector.) The dot product $\mathbf{w} \cdot \mathbf{x}$ is just the summation of the element-wise multiplication of the elements: $\Sigma_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$. (You might also find it useful to remember the linear algebra notation $\mathbf{w} \cdot \mathbf{x} = \mathbf{w}^{T} \mathbf{x}$.)  
+Let's worry about $max$ later to focus on computing $\frac{\partial}{\partial \mathbf{w}} \mathbf{w} \cdot \mathbf{x} + b$ and $\frac{\partial}{\partial b} \mathbf{w} \cdot \mathbf{x} + b$. (Recall that neural networks learn through optimization of their weights and biases.)  We haven't discussed the derivative of the dot product yet, $y = \mathbf{f(w)} \cdot \mathbf{g(x)}$, but we can use the chain rule to avoid having to memorize yet another rule. (Note notation $y$ not $\mathbf{y}$ as the result is a scalar not a vector.) 
 
-To use the chain rule for $y = sum(\mathbf{w} \otimes \mathbf{x})$, we introduce an intermediate vector variable $\mathbf{u}$ just as we did using the single-variable chain rule:
+The dot product $\mathbf{w} \cdot \mathbf{x}$ is just the summation of the element-wise multiplication of the elements: $\Sigma_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$. (You might also find it useful to remember the linear algebra notation $\mathbf{w} \cdot \mathbf{x} = \mathbf{w}^{T} \mathbf{x}$.) To use the chain rule for $y = sum(\mathbf{w} \otimes \mathbf{x})$, we introduce an intermediate vector variable $\mathbf{u}$ just as we did using the single-variable chain rule:
 
 $\mathbf{u} = \mathbf{w} \otimes \mathbf{x}$\\
 $y = sum(\mathbf{u})$
@@ -874,7 +874,7 @@ Now, let $y = \mathbf{w} \cdot \mathbf{x} + b$, the full expression within the $
 $\frac{\partial y}{\partial \mathbf{w}} = \frac{\partial }{\partial \mathbf{w}}\mathbf{w} \cdot \mathbf{x} + \frac{\partial }{\partial \mathbf{w}}b = \mathbf{x}^T + \vec{0}^T = \mathbf{x}^T$\\
 $\frac{\partial y}{\partial b} = \frac{\partial }{\partial b}\mathbf{w} \cdot \mathbf{x} + \frac{\partial }{\partial b}b = 0 + 1 = 1$
 
-And, finally, we can take the partials of the activation function output, $max(0, \mathbf{w} \cdot \mathbf{x} + b)$. The use of the $max(0,z)$ function call for scalar $z$ just says to treat all negative $z$ values as 0.  The derivative of the max function is a piecewise function. When $z \leq 0$, the derivative is 0 because $z$ is a constant. When $z > 0$, the derivative of the max function is just the derivative of $z$, which is $1$:
+Let's tackle the partials of the activation function output, $max(0, \mathbf{w} \cdot \mathbf{x} + b)$. The use of the $max(0,z)$ function call for scalar $z$ just says to treat all negative $z$ values as 0.  The derivative of the max function is a piecewise function. When $z \leq 0$, the derivative is 0 because $z$ is a constant. When $z > 0$, the derivative of the max function is just the derivative of $z$, which is $1$:
 
 $
 \frac{\partial}{\partial z}max(0,z) =
@@ -918,7 +918,7 @@ $
 
 To get the derivative of the $activation(\mathbf{x})$ function, we need the chain rule because of the nested subexpression, $\mathbf{w} \cdot \mathbf{x} + b$. Following our process, let's introduce intermediate scalar variable $z$ to represent the affine function giving:
 
-$z(\mathbf{w},\mathbf{x},b) = \mathbf{w} \cdot \mathbf{x} + b$\\
+$z(\mathbf{w},b,\mathbf{x}) = \mathbf{w} \cdot \mathbf{x} + b$\\
 $activation(z) = max(0,z)$
 
 The vector chain rule tells us:
@@ -941,7 +941,7 @@ $\frac{\partial activation}{\partial \mathbf{w}} = \begin{cases}
 
 That equation matches our intuition.  When the activation function clips affine function output, $z$, to 0, the derivative is zero with respect to any weight $w_i$. When $z > 0$, it's as if the $max$ function disappears and we get just the derivative of $z$ with respect to the weights. 
 
-Turning now to the derivative of the activation function with respect to $b$, we can jump immediately to:
+Turning now to the derivative of the activation function with respect to $b$, we get:
  
 $\frac{\partial activation}{\partial b} = \begin{cases}
 	0\frac{\partial z}{\partial b} = 0 & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
@@ -949,21 +949,27 @@ $\frac{\partial activation}{\partial b} = \begin{cases}
 \end{cases}
 $
 
-In practice, training a neuron requires that we take the derivative of our loss  or ``cost'' function $C(\mathbf{w},\mathbf{x},b) = \frac{1}{n} \Sigma_{\mathbf{x}} ||target(\mathbf{x}) - \mathbf{w}\cdot\mathbf{x}+b)||_2^2$, with respect to the parameters of our model, $\mathbf{w}$ and $b$.
+Let's use these partial derivatives now to handle the entire loss function.
 
-$X = [\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_k]^T$
+\section{The derivative of the neural network loss function}
 
-$\mathbf{y} = [target(\mathbf{x}_1), target(\mathbf{x}_2), \ldots, target(\mathbf{x}_k)]^T$ ($y_i$ is a scalar)
+Training a neuron requires that we take the derivative of our loss  or ``cost'' function with respect to the parameters of our model, $\mathbf{w}$ and $b$. Because we train with multiple inputs and targets, we need some notation. Let $X = [\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_k]^T$, $k=|X|$, and $\mathbf{y} = [target(\mathbf{x}_1), target(\mathbf{x}_2), \ldots, target(\mathbf{x}_k)]^T$ where $y_i$ is a scalar. Then the cost equation becomes:
 
 \[
 C(\mathbf{w},b,X,\mathbf{y}) = \frac{1}{k} \sum_{i=1}^{k} (y_i - activation(\mathbf{x}_i))^2 = \frac{1}{k} \sum_{i=1}^{k} (y_i - max(0, \mathbf{w}\cdot\mathbf{x}_i+b))^2
 \]
 
+Following our chain rule process introduces these intermediate variables:
+ 
 $u(\mathbf{w},b,\mathbf{x}) = max(0, \mathbf{w}\cdot\mathbf{x}+b)$\\
 $v(y,u) = y - u$\\
 $C(v) = \frac{1}{k} \sum_{i=1}^k v^2$
 
-From before, we know
+In order to optimize this function, we need to know the partial derivatives with respect to the model parameters, $\mathbf{w}$ and $b$. Let's start with the weights. 
+
+\subsection{The derivative with respect to the weights}
+
+From before, we know:
 
 $\frac{\partial }{\partial \mathbf{w}} u(\mathbf{w},b,\mathbf{x}) = \begin{cases}
 	\vec{0}^T & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
@@ -977,10 +983,10 @@ $\frac{\partial v(y,u)}{\partial \mathbf{w}} = \frac{\partial}{\partial \mathbf{
 	-\mathbf{x}^T & \mathbf{w} \cdot \mathbf{x} + b > 0\\
 \end{cases}$
 
-then
+then, for the overall gradient, we get:
 
-\[
-\begin{array}{ccl}
+\allowdisplaybreaks
+\begin{eqnarray*}
 \frac{\partial C(v)}{\partial \mathbf{w}} & = & \frac{\partial }{\partial \mathbf{w}}\frac{1}{k} \sum_{i=1}^k v^2\\\\
  & = & \frac{1}{k} \sum_{i=1}^k \frac{\partial}{\partial \mathbf{w}} v^2\\\\
  & = & \frac{1}{k} \sum_{i=1}^k \frac{\partial v^2}{\partial v} \frac{\partial v}{\partial \mathbf{w}} \\\\
@@ -997,24 +1003,108 @@ then
 	\vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
 	-2(y_i-max(0, \mathbf{w}\cdot\mathbf{x}_i+b))\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
 \end{cases}\\\\
- & = & \frac{1}{k} \sum_{i=1}^k \begin{cases}
+\phantom{\frac{\partial C(v)}{\partial \mathbf{w}}} & = & \frac{1}{k} \sum_{i=1}^k \begin{cases}
 	\vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
-	-2(y_i-\mathbf{w}\cdot\mathbf{x}_i+b)\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
+	-2(y_i-(\mathbf{w}\cdot\mathbf{x}_i+b))\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
 \end{cases}\\\\
  & = & \begin{cases}
 	\vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
-	\frac{-2}{k} \sum_{i=1}^k (y_i-\mathbf{w}\cdot\mathbf{x}_i+b)\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
+	\frac{-2}{k} \sum_{i=1}^k (y_i-(\mathbf{w}\cdot\mathbf{x}_i+b))\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
+\end{cases}\\\\
+ & = & \begin{cases}
+	\vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
+	\frac{2}{k} \sum_{i=1}^k (\mathbf{w}\cdot\mathbf{x}_i+b-y_i)\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
 \end{cases}
-\end{array}
+\end{eqnarray*}
+
+To interpret that equation, we can substitute an error term $e_i = \mathbf{w}\cdot\mathbf{x}_i+b-y_i$ for the nonzero case yielding:
+
+\[
+\frac{\partial C}{\partial \mathbf{w}} = \frac{2}{k} \sum_{i=1}^k e_i\mathbf{x}_i^T
 \]
 
-todo: add note from Michael Nielsen on why the cost is always decreasing; equation (10) here http://neuralnetworksanddeeplearning.com/chap1.html
+Then notice that this computation is a weighted average across all $\mathbf{x}_i$ in $X$. The weights are the error terms, the difference between the target output and the actual neuron output for each $\mathbf{x}_i$ input. The resulting gradient will, on average, point in the direction of higher cost or loss because large $e_i$ emphasize their associated $\mathbf{x}_i$. Imagine we only had one input vector, $k=|X|=1$, then the gradient is just $2e_1\mathbf{x}_1^T$.  If the error is 0, then the gradient is zero and we have arrived at the minimum loss. If $e_1$ is some small difference, the gradient is a small step in the direction of $\mathbf{x}_1$. If $e_1$ is large, the gradient is a large step in that direction.
+
+Of course, we want to reduce not increase the loss, which is why the standard [gradient descent](link) recurrence relation takes the negative of the gradient to update the current position (for scalar learning rate  $\eta$):
+
+\[
+\mathbf{x}_{t+1} = \mathbf{x}_{t} - \eta \frac{\partial C}{\partial \mathbf{w}}
+\]
+
+Because the gradient indicates the direction of higher cost, we want to update $\mathbf{x}$ in the opposite direction.
+
+\subsection{The derivative with respect to the bias}
+
+
+To optimize the bias, $b$, we need the partial with respect to $b$ also.  Here are the intermediate variables again:
+
+$u(\mathbf{w},b,\mathbf{x}) = max(0, \mathbf{w}\cdot\mathbf{x}+b)$\\
+$v(y,u) = y - u$\\
+$C(v) = \frac{1}{k} \sum_{i=1}^k v^2$
+
+We computed the partial with respect to the bias for equation $u(\mathbf{w},b,\mathbf{x})$ previously:
+
+$\frac{\partial u}{\partial b} = \begin{cases}
+	0 & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
+	1 & \mathbf{w} \cdot \mathbf{x} + b > 0\\
+\end{cases}
+$
+
+For $v$, the partial is:
+
+$
+\frac{\partial v(y,u)}{\partial b} = \frac{\partial}{\partial b} (y - u) = 0 - \frac{\partial u}{\partial b} = -\frac{\partial u}{\partial b} = \begin{cases}
+	0 & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
+	-1 & \mathbf{w} \cdot \mathbf{x} + b > 0\\
+\end{cases}
+$
+
+And for the partial of the cost function itself we get:
+
+\allowdisplaybreaks
+\begin{eqnarray*}
+\frac{\partial C(v)}{\partial b} & = & \frac{\partial }{\partial b}\frac{1}{k} \sum_{i=1}^k v^2\\\\
+ & = & \frac{1}{k} \sum_{i=1}^k \frac{\partial}{\partial b} v^2\\\\
+ & = & \frac{1}{k} \sum_{i=1}^k \frac{\partial v^2}{\partial v} \frac{\partial v}{\partial b} \\\\
+ & = & \frac{1}{k} \sum_{i=1}^k 2v \frac{\partial v}{\partial b} \\\\
+ & = & \frac{1}{k} \sum_{i=1}^k \begin{cases}
+ 	0 & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
+ 	-2v & \mathbf{w} \cdot \mathbf{x} + b > 0\\
+ \end{cases}\\\\
+ & = & \frac{1}{k} \sum_{i=1}^k \begin{cases}
+ 	0 & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
+ 	-2(y_i-max(0, \mathbf{w}\cdot\mathbf{x}_i+b)) & \mathbf{w} \cdot \mathbf{x} + b > 0\\
+ \end{cases}\\\\
+ & = & \frac{1}{k} \sum_{i=1}^k \begin{cases}
+ 	0 & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
+ 	2(\mathbf{w}\cdot\mathbf{x}_i+b-y_i) & \mathbf{w} \cdot \mathbf{x} + b > 0\\
+ \end{cases}\\\\
+ & = & \begin{cases}
+	0 & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
+	\frac{2}{k} \sum_{i=1}^k (\mathbf{w}\cdot\mathbf{x}_i+b-y_i) & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
+\end{cases}
+\end{eqnarray*}
+
+As before, we can substitute an error term for the nonzero case:
+
+\[
+\frac{\partial C}{\partial b} = \frac{2}{k} \sum_{i=1}^k e_i
+\]
+
+The partial derivative is then just the average error. To update the neuron bias, we nudge it in the opposite direction of increased cost:
+
+\[
+b_{t+1} = b_{t} - \eta \frac{\partial C}{\partial b}
+\]
+ 
+In practice, it is convenient to combine $\mathbf{w}$ and $b$ into a single vector parameter rather than having to deal with two different partials: $\hat{\mathbf{w}} = [\mathbf{w}, b]^T$. This requires a tweak to the input vector $\mathbf{x}$ as well but simplifies the activation function. By tacking a 1 onto the end of $\mathbf{x}$, $\hat{\mathbf{x}} = [\mathbf{x},1]$, $\mathbf{w} \cdot \mathbf{x} + b$ becomes $\hat{\mathbf{w}} \cdot \hat{\mathbf{x}}$.  Also notice that $2/k$ is fixed for a fixed number of inputs. Because this value will not change as we update the weights and biases, we can ignore this term because all we need is a direction not the actual gradient. This observation simplifies our equations further:
+
+$\frac{\partial C}{\partial \mathbf{w}} = \sum_{i=1}^k e_i\mathbf{x}_i^T$\\
+$\frac{\partial C}{\partial b} = \sum_{i=1}^k e_i$
 
 \section{Summary}
 
-At this point, you are well on your way to understanding matrix calculus!  Your next step would be to learn about the partial derivatives of matrices not just vectors.
-
-todo: Matrix Differentiation https://atmos.washington.edu/\verb|~|dennis/MatrixCalculus.pdf
+At this point, you are well on your way to understanding matrix calculus!  Your next step would be to learn about the partial derivatives of matrices not just vectors. For example, you can take a look at the matrix differentiation section of [Matrix calculus](https://atmos.washington.edu/\verb|~|dennis/MatrixCalculus.pdf).
 
 \section{Matrix Calculus Reference}
 
