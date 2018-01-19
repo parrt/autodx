@@ -1,0 +1,21 @@
+Hopefully you remember some of the main scalar derivative rules summarized in this section, but you can peek at [khan vid](https://www.khanacademy.org/math/ap-calculus-ab/ab-derivative-rules) if your memory is a bit fuzzy.  You can reduce the number of rules to memorize, if you're willing to remember a canonical set of simple rules and apply the Swiss Army knife of rules called the {\em chain rule}. We'll look at the chain rule in excruciating detail in a section below, but for now you can assume the rule is correct and applicable. Here are the rules you have to commit to memory:
+
+$
+\begin{array}{lccc}
+Rule & f(x) & \text{\parbox[t][0mm][b]{43mm}{Scalar derivative notation with respect to $x$}} & \text{Example}\\
+\\[\dimexpr-\normalbaselineskip+2pt]
+\hline
+\\[\dimexpr-\normalbaselineskip+5pt]
+\vspace{1mm}
+\text{Constant} & a & 0 &  \frac{d}{dx}99 = 0\\
+\vspace{1mm}
+\text{Multiplication by constant} &	ax	&c \frac{df}{dx} & \frac{d}{dx}3x = 3\\
+\vspace{1mm}
+\text{Power Rule}	& x^a	& ax^{a-1} & \frac{d}{dx}x^3 = 3x^2\\
+\vspace{1mm}
+\text{Sum Rule}	& a + x	& 0 + 1 = 1  & \frac{d}{dx} (10+x+5) = 1\\
+\text{Chain Rule}	 & f(g(\mathbf{x})) &  \sum_{i=1}^n \frac{\partial f}{\partial u_i}\frac{\partial  u_i}{\partial  x}, \text{ let } u=g(x) & \frac{d}{dx} ln(x^2) = \frac{1}{x^2}2x = \frac{2}{x}\\
+\end{array}
+$
+
+For neural networks, we also use the natural log $\frac{d}{dx} ln(x) = \frac{1}{x}$. For demonstration purposes below, you might also recall that $\frac{d}{dx}sin(x) = cos(x)$.
