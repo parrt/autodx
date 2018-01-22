@@ -248,7 +248,7 @@ Also be careful to track whether a matrix is vertical, $\mathbf{x}$, or horizont
 
 Element-wise binary operations on vectors, such as vector addition $\mathbf{w} + \mathbf{x}$, are important because we can express many common vector operations, such as the multiplication of a vector by a scalar, as element-wise binary operations.   Examples that often crop up in deep learning are $max(\mathbf{w},\mathbf{x})$ and $\mathbf{w} > \mathbf{x}$ (returns a vector of ones and zeros). We can generalize the element-wise binary operations with notation $\mathbf{y} = \mathbf{f(w)} \bigcirc \mathbf{g(x)}$ where $m=n=|y|=|w|=|x|$. The $\bigcirc$ symbol represents any element-wise operator (such as $+$) and not the $\circ$ function composition operator.  Here's what equation $\mathbf{y} = \mathbf{f(w)} \bigcirc \mathbf{g(x)}$ looks like when we zoom in to examine the scalar equations:
 
-$\begin{bmatrix}
+\\[\begin{bmatrix}
            y_1\\
            y_2\\
            \vdots \\
@@ -258,31 +258,29 @@ $\begin{bmatrix}
            f_{n}(\mathbf{w}) \bigcirc g_{2}(\mathbf{x})\\
            \vdots \\
            f_{n}(\mathbf{w}) \bigcirc g_{n}(\mathbf{x})\\
-         \end{bmatrix}$
+         \end{bmatrix}\\]
 
 where we write $n$ not $m$ equations vertically to emphasize the fact that the result of element-wise operators give $m=n$ sized vector results.
 
 Using the ideas from the last section, we can see that the general case for the Jacobian with respect to $\mathbf{w}$ is the square matrix:
 
-$J_\mathbf{w} = 
+\\[J_\mathbf{w} = 
 \frac{\partial \mathbf{y}}{\partial \mathbf{w}}  = \begin{bmatrix}
 \frac{\partial}{\partial w_1} ( f_{1}(\mathbf{w}) \bigcirc g_{1}(\mathbf{x}) ) & \frac{\partial}{\partial w_2} ( f_{1}(\mathbf{w}) \bigcirc g_{1}(\mathbf{x}) ) & \ldots & \frac{\partial}{\partial w_n} ( f_{1}(\mathbf{w}) \bigcirc g_{1}(\mathbf{x}) )\\\\
 \frac{\partial}{\partial w_1} ( f_{2}(\mathbf{w}) \bigcirc g_{2}(\mathbf{x}) ) & \frac{\partial}{\partial w_2} ( f_{2}(\mathbf{w}) \bigcirc g_{2}(\mathbf{x}) ) & \ldots & \frac{\partial}{\partial w_n} ( f_{2}(\mathbf{w}) \bigcirc g_{2}(\mathbf{x}) )\\\\
 & \ldots\\\\
 \frac{\partial}{\partial w_1} ( f_{n}(\mathbf{w}) \bigcirc g_{n}(\mathbf{x}) ) & \frac{\partial}{\partial w_2} ( f_{n}(\mathbf{w}) \bigcirc g_{n}(\mathbf{x}) ) & \ldots & \frac{\partial}{\partial w_n} ( f_{n}(\mathbf{w}) \bigcirc g_{n}(\mathbf{x}) )\\
-\end{bmatrix}
-$
+\end{bmatrix}\\]
 
 and the Jacobian with respect to $\mathbf{x}$ is:
 
-$J_\mathbf{x} = 
+\\[J_\mathbf{x} = 
 \frac{\partial \mathbf{y}}{\partial \mathbf{x}}  = \begin{bmatrix}
 \frac{\partial}{\partial x_1} ( f_{1}(\mathbf{w}) \bigcirc g_{1}(\mathbf{x}) ) & \frac{\partial}{\partial x_2} ( f_{1}(\mathbf{w}) \bigcirc g_{1}(\mathbf{x}) ) & \ldots & \frac{\partial}{\partial x_n} ( f_{1}(\mathbf{w}) \bigcirc g_{1}(\mathbf{x}) )\\\\
 \frac{\partial}{\partial x_1} ( f_{2}(\mathbf{w}) \bigcirc g_{2}(\mathbf{x}) ) & \frac{\partial}{\partial x_2} ( f_{2}(\mathbf{w}) \bigcirc g_{2}(\mathbf{x}) ) & \ldots & \frac{\partial}{\partial x_n} ( f_{2}(\mathbf{w}) \bigcirc g_{2}(\mathbf{x}) )\\\\
 & \ldots\\\\
 \frac{\partial}{\partial x_1} ( f_{n}(\mathbf{w}) \bigcirc g_{n}(\mathbf{x}) ) & \frac{\partial}{\partial x_2} ( f_{n}(\mathbf{w}) \bigcirc g_{n}(\mathbf{x}) ) & \ldots & \frac{\partial}{\partial x_n} ( f_{n}(\mathbf{w}) \bigcirc g_{n}(\mathbf{x}) )\\
-\end{bmatrix}
-$
+\end{bmatrix}\\]
 
 That's quite a furball, but fortunately the Jacobian is very often a diagonal matrix, a matrix that is zero everywhere but the diagonal. Because this greatly simplifies the Jacobian, let's examine in detail when the Jacobian reduces to a diagonal matrix for element-wise operations. 
 
@@ -294,38 +292,36 @@ We'll take advantage of this simplification later and refer to the constraint th
 
 Under this condition, the elements along the diagonal of the Jacobian are $\frac{\partial}{\partial w_i} ( f_i(w_i) \bigcirc g_i(x_i) )$:
 
-$
-\frac{\partial \mathbf{y}}{\partial \mathbf{w}}  = \begin{bmatrix}
+\\[\frac{\partial \mathbf{y}}{\partial \mathbf{w}}  = \begin{bmatrix}
 \frac{\partial}{\partial w_1} ( f_{1}(w_1) \bigcirc g_{1}(x_1) )\\
 & \frac{\partial}{\partial w_2} (f_{2}(w_2) \bigcirc g_{2}(x_2) ) & &\text{\huge0}\\
 & & \ldots \\
 \text{\huge0}& & & \frac{\partial}{\partial w_n} (f_{n}(w_n) \bigcirc g_{n}(x_n) )
-\end{bmatrix}
-$
+\end{bmatrix}\\]
 
 (The large ``0''s are a shorthand indicating all of the off-diagonal are 0.)
 
 More succinctly, we can write:
 
-$\frac{\partial \mathbf{y}}{\partial \mathbf{w}} = diag \left( \frac{\partial}{\partial w_1}(f_{1}(w_1) \bigcirc g_{1}(x_1)),~ \frac{\partial}{\partial w_2}(f_{2}(w_2) \bigcirc g_{2}(x_2)),~ \ldots,~ \frac{\partial}{\partial w_n}(f_{n}(w_n) \bigcirc g_{n}(x_n)) \right)$
+\\[\frac{\partial \mathbf{y}}{\partial \mathbf{w}} = diag \left( \frac{\partial}{\partial w_1}(f_{1}(w_1) \bigcirc g_{1}(x_1)),~ \frac{\partial}{\partial w_2}(f_{2}(w_2) \bigcirc g_{2}(x_2)),~ \ldots,~ \frac{\partial}{\partial w_n}(f_{n}(w_n) \bigcirc g_{n}(x_n)) \right)\\]
 
 and
 
-$\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = diag \left( \frac{\partial}{\partial x_1}(f_{1}(w_1) \bigcirc g_{1}(x_1)),~ \frac{\partial}{\partial x_2}(f_{2}(w_2) \bigcirc g_{2}(x_2)),~ \ldots,~ \frac{\partial}{\partial x_n}(f_{n}(w_n) \bigcirc g_{n}(x_n)) \right)$
+\\[\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = diag \left( \frac{\partial}{\partial x_1}(f_{1}(w_1) \bigcirc g_{1}(x_1)),~ \frac{\partial}{\partial x_2}(f_{2}(w_2) \bigcirc g_{2}(x_2)),~ \ldots,~ \frac{\partial}{\partial x_n}(f_{n}(w_n) \bigcirc g_{n}(x_n)) \right)\\]
 
 where $diag(\mathbf{x})$ constructs a matrix whose diagonal elements are taken from vector $\mathbf{x}$: $diag(\mathbf{x}) = \mathbf{x}^T I$. $I$ represents the square identity matrix of appropriate dimensions that is zero everywhere but the diagonal, which contains all ones.  The $T$ exponent of $\mathbf{x}^T$ represents the transpose of the indicated vector. In this case, it flips a vertical vector to a horizontal vector.
 
 Because we do lots of simple vector arithmetic, the general function $\mathbf{f(w)}$ in the binary element-wise operation is often just the vector $\mathbf{w}$.  Any time the general function is a vector, we know that $f_i(\mathbf{w})$ reduces to $f_i(w_i) = w_i$. For example, vector addition $\mathbf{w + x}$ fits our element-wise diagonal condition because $\mathbf{f(w)} + \mathbf{g(x)}$ has scalar equations $y_i = f_i(\mathbf{w}) + g_i(\mathbf{x})$ that reduce to just $y_i = f_i(w_i) + g_i(x_i) = w_i + x_i$ with partial derivatives:
 
-$\frac{\partial}{\partial w_i} ( f_{i}(w_i) + g_{i}(x_i) ) = \frac{\partial}{\partial w_i}(w_i + x_i) = 1 + 0 = 1$\\
-$\frac{\partial}{\partial x_i} ( f_{i}(w_i) + g_{i}(x_i) ) = \frac{\partial}{\partial x_i}(w_i + x_i) = 0 + 1 = 1$
+\\[\frac{\partial}{\partial w_i} ( f_{i}(w_i) + g_{i}(x_i) ) = \frac{\partial}{\partial w_i}(w_i + x_i) = 1 + 0 = 1\\]
+
+\\[\frac{\partial}{\partial x_i} ( f_{i}(w_i) + g_{i}(x_i) ) = \frac{\partial}{\partial x_i}(w_i + x_i) = 0 + 1 = 1\\]
 
 That gives us $\frac{\partial (\mathbf{w+x})}{\partial \mathbf{w}} = \frac{\partial (\mathbf{w+x})}{\partial \mathbf{x}} = I$, the identity matrix, because every element along the diagonal is 1.
 
 Given the simplicity of this special case, $f_i(\mathbf{w})$ reducing to $f_i(w_i)$, you should be able to derive the Jacobians for the common element-wise binary operations on vectors:
 
-$
-\begin{array}{lllll}
+\\[\begin{array}{lllll}
 \text{Op} & \text{Partial with respect to } \mathbf{w} & \text{Partial with respect to }\mathbf{x}\\
 \hline\\
 
@@ -337,8 +333,7 @@ $
 
 \oslash & \frac{\partial (\mathbf{w \oslash x})}{\partial \mathbf{w}}  =  diag(\ldots\frac{\partial (w_i / x_i)}{\partial w_i}\ldots)  =  diag(\ldots \frac{1}{x_i} \ldots) & \frac{\partial (\mathbf{w \oslash x})}{\partial \mathbf{x}}  =  diag(\ldots \frac{-w_i}{x_i^2} \ldots)\\
 
-\end{array}
-$
+\end{array}\\]
 
 The $\otimes$ and $\oslash$ operators are element-wise multiplication and division; $\otimes$ is sometimes called the *Hadamard product*. There isn't a standard notation for element-wise multiplication and division so where using an approach consistent with our general binary operation notation.
 
@@ -350,13 +345,13 @@ $\mathbf{y} = \mathbf{f(x)} + \mathbf{g}(z)$ where $\mathbf{f(x)} = \mathbf{x}$ 
 
 The partial derivatives of vector-scalar addition and multiplication with respect to vector $\mathbf{x}$ use our element-wise rule:
 
-$\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = diag \left( \ldots \frac{\partial}{\partial x_i} ( f_i(x_i) \bigcirc g_i(z) ) \ldots \right)$
+\\[\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = diag \left( \ldots \frac{\partial}{\partial x_i} ( f_i(x_i) \bigcirc g_i(z) ) \ldots \right)\\]
 
 This follows because functions $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(z) = \vec{1} z$ clearly satisfy our element-wise diagonal condition for the Jacobian (that $f_i(\mathbf{x})$ refer at most to $x_i$ and $g_i(z)$ refers to the $i^{th}$ value of the $\vec{1}z$ vector). 
 
 Using the usual rules for scalar partial derivatives, we arrive at the following diagonal elements of the Jacobian for vector-scalar addition:
  
-$\frac{\partial}{\partial x_i} ( f_i(x_i) + g_i(z) ) = \frac{\partial (x_i + z)}{\partial x_i} = \frac{\partial x_i}{\partial x_i} + \frac{\partial z}{\partial x_i} = 1 + 0 = 1$
+\\[\frac{\partial}{\partial x_i} ( f_i(x_i) + g_i(z) ) = \frac{\partial (x_i + z)}{\partial x_i} = \frac{\partial x_i}{\partial x_i} + \frac{\partial z}{\partial x_i} = 1 + 0 = 1\\]
 
 So, $\frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} + z ) = diag(\vec{1}) = I$.
 
@@ -384,46 +379,42 @@ Summing up the elements of a vector is an important operation in deep learning, 
 
 Let $y = sum( \mathbf{f}(\mathbf{x})) = \Sigma_{i=1}^n f_i(\mathbf{x})$.  Notice we were careful here to leave the parameter as a vector $\mathbf{x}$ because each function $f_i$ could use all values in the vector, not just $x_i$. The sum is over the {\bf results} of the function and not the parameter. The gradient ($1 \times n$ Jacobian) of vector summation is:
 
-$
+
 \begin{array}{lcl}
 \frac{\partial y}{\partial \mathbf{x}} & = & \begin{bmatrix} \frac{\partial y}{\partial x_1}, \frac{\partial y}{\partial x_2}, \ldots, \frac{\partial y}{\partial x_n} \end{bmatrix}\\\\
  & = & \begin{bmatrix} \frac{\partial}{\partial x_1} \Sigma_i f_i(\mathbf{x}),~ \frac{\partial}{\partial x_2} \Sigma_i f_i(\mathbf{x}),~ \ldots,~ \frac{\partial}{\partial x_n} \Sigma_i  f_i(\mathbf{x}) \end{bmatrix} \\\\
  & = & \begin{bmatrix} \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_1},~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_2},~ \ldots,~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_n}  \end{bmatrix}~~~~~~~~~~~~~~~(\text{move derivative inside }\Sigma)\\\\
 \end{array}
-$
+
 
 (The summation inside the gradient elements can be tricky so make sure to keep your notation consistent.)
 
 Let's look at the gradient of the simple $y = sum(\mathbf{x})$. The function inside the summation is just $f_i(\mathbf{x}) = x_i$ and the gradient is then:
 
-$\nabla y = \begin{bmatrix} \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_1},~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_2},~ \ldots,~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_n}  \end{bmatrix} = \begin{bmatrix} \Sigma_i \frac{\partial x_i}{\partial x_1},~ \Sigma_i \frac{\partial x_i}{\partial x_2},~ \ldots,~ \Sigma_i \frac{\partial x_i}{\partial x_n}  \end{bmatrix}$
+\\[\nabla y = \begin{bmatrix} \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_1},~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_2},~ \ldots,~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_n}  \end{bmatrix} = \begin{bmatrix} \Sigma_i \frac{\partial x_i}{\partial x_1},~ \Sigma_i \frac{\partial x_i}{\partial x_2},~ \ldots,~ \Sigma_i \frac{\partial x_i}{\partial x_n}  \end{bmatrix}\\]
 
 Because $\frac{\partial}{\partial x_j} x_i = 0$ for $j \neq i$, we can simplify to:
 
-$\nabla y = \begin{bmatrix} \frac{\partial x_1}{\partial x_1},~ \frac{\partial x_2}{\partial x_2},~ \ldots,~ \frac{\partial x_n}{\partial x_n}  \end{bmatrix} = \begin{bmatrix}1, 1, \ldots, 1\end{bmatrix} = \vec{1}^T$
+\\[\nabla y = \begin{bmatrix} \frac{\partial x_1}{\partial x_1},~ \frac{\partial x_2}{\partial x_2},~ \ldots,~ \frac{\partial x_n}{\partial x_n}  \end{bmatrix} = \begin{bmatrix}1, 1, \ldots, 1\end{bmatrix} = \vec{1}^T\\]
 
 Notice that the result is a horizontal vector full of 1s, not a vertical vector, and so the gradient is $\vec{1}^T$.  It's very important to keep the shape of all of your vectors and matrices in order otherwise it's impossible to compute the derivatives of complex functions.
 
 As another example, let's sum the result of multiplying a vector by a constant scalar.  If $y = sum(\mathbf{x} z)$ then $f_i(\mathbf{x},z) = x_i z$. The gradient is:
 
-$
-\begin{array}{lcl}
+\\[\begin{array}{lcl}
 \frac{\partial y}{\partial \mathbf{x}} & = & \begin{bmatrix} \Sigma_i \frac{\partial}{\partial x_1} x_i z,~ \Sigma_i \frac{\partial }{\partial x_2} x_i z,~ \ldots,~ \Sigma_i \frac{\partial}{\partial x_n} x_i z  \end{bmatrix}\\\\
  & = & \begin{bmatrix} \frac{\partial}{\partial x_1} x_1 z,~ \frac{\partial }{\partial x_2} x_2 z,~ \ldots,~ \frac{\partial}{\partial x_n} x_n z  \end{bmatrix}\\\\
  & = & \begin{bmatrix} z, z, \ldots, z \end{bmatrix}\\\\
-\end{array}
-$
+\end{array}\\]
 
 The derivative with respect to scalar variable $z$ is $1 \times 1$:
 
-$
-\begin{array}{lcl}
+\\[\begin{array}{lcl}
 \frac{\partial y}{\partial z} & = & \frac{\partial}{\partial z} \Sigma_{i=1}^n (x_i+z)\\\\
 & = & \Sigma_i \frac{\partial}{\partial z} (x_i+z)\\\\
 & = & \Sigma_i (0 + 1)\\\\
 & = & n
-\end{array}
-$
+\end{array}\\]
 
 ## The Chain Rules
 
@@ -439,7 +430,7 @@ Let's start with the solution to the derivative of our nested expression: $\frac
 
 Chain rules are typically defined in terms of nested functions, such as $y = f(g(x))$ for single-variable chain rules. (You will also see the chain rule defined using function composition $(f \circ g)(x)$, which is the same thing.)  Some sources write the derivative using shorthand notation $y' = f'(g(x))g'(x)$, but that hides the fact that we are introducing an intermediate variable: $u = g(x)$, which we'll see shortly. It's better to define the [single-variable chain rule](http://m.wolframalpha.com/input/?i=chain+rule) of $f(g(x))$ explicitly so we never take the derivative with respect to the wrong variable. Here is the formulation of the single-variable chain rule we recommend:
 
-$\frac{dy}{dx} = \frac{dy}{du}\frac{du}{dx}$
+\\[\frac{dy}{dx} = \frac{dy}{du}\frac{du}{dx}\\]
 
 To deploy the single-variable chain rule, follow these steps:
 
@@ -454,20 +445,18 @@ The third step puts the ``chain'' in ``chain rule'' because it chains together i
 
 Let's try  this process on $y = f(g(x)) = sin(x^2)$:
 
-\begin{enumerate}
-	\item Introduce intermediate variables. Let $u = x^2$ represent subexpression $x^2$ (shorthand for $u(x) = x^2$). This gives us:\\
-	$u = x^2$ ~~~~~~~~~~~~~~~~~~~~~~~~~~~(relative to definition $f(g(x))$, $g(x) = x^2$)\\
-	$y = sin(u)$ ~~~~~~~~~~~~~~~~~~~~~~($y = f(u) = sin(u)$)\\
+1. Introduce intermediate variables. Let $u = x^2$ represent subexpression $x^2$ (shorthand for $u(x) = x^2$). This gives us:
+	$u = x^2$ ~~~~~~~~~~~~~~~~~~~~~~~~~~~(relative to definition $f(g(x))$, $g(x) = x^2$)
+	$y = sin(u)$ ~~~~~~~~~~~~~~~~~~~~~~($y = f(u) = sin(u)$)
 The order of these subexpressions does not affect the answer, but we recommend working in the reverse order of operations dictated by the nesting (innermost to outermost). That way, expressions and derivatives are always functions of previously-computed elements. 
-	\item Compute derivatives.\\
-	$\frac{du}{dx} = 2x$ ~~~~~~~~~~~~~~~~~~~~~~~~~ (Take derivative with respect to $x$)\\
+1.	Compute derivatives.
+	$\frac{du}{dx} = 2x$ ~~~~~~~~~~~~~~~~~~~~~~~~~ (Take derivative with respect to $x$)
 	$\frac{dy}{du} = cos(u)$  ~~~~~~~~~~~~~~~~~~~~ (Take derivative with respect to $u$ not $x$)
-	\item Combine.\\
+1. Combine.
 	$\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx} = cos(u)2x$
-	\item Subtitute.\\
-	$\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx} = cos(x^2)2x = 2xcos(x^2)$	
-\end{enumerate}
-
+1. Subtitute.
+	$\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx} = cos(x^2)2x = 2xcos(x^2)$
+	
 Notice how easy it is to compute the derivatives of the intermediate variables in isolation! The chain rule says it's legal to do that and tells us how to combine the intermediate results to get $2xcos(x^2)$.
 
 You can think of the combining step of the chain rule in terms of units canceling. If we let $y$ be gallons of gas, $x$ be the gallons in a gas tank, and $u$ as miles we can interpret $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$ as $\frac{miles}{tank} = \frac{miles}{gallon} \frac{gallon}{tank}$. The $gallon$ denominator and numerator cancel. This is a convenient way to remember the chain rule but the analogy only goes so far; don't treat $dy$ and $dx$ has separate variables since they are two components in the name of a single derivative operator.
@@ -478,16 +467,13 @@ Another way to to think about the single-variable chain rule is to visualize the
 
 Changes to function parameter $x$ bubble up through a squaring operation then through a $sin$ operation to change result $y$. You can think of $\frac{du}{dx}$ as ``getting changes from $x$ to $u$ and $\frac{dy}{du}$ as ``getting changes from $u$ to $y$.'' Getting from $x$ to $y$ requires an intermediate hop. The chain rule is, by convention, usually written from the output variable down to the parameter(s), $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$. But, the $x$-to-$y$ perspective would be more clear if we reversed the flow and used the equivalent $\frac{dy}{dx} = \frac{du}{dx}\frac{dy}{du}$.
 
-{\bf Conditions under which the single-variable chain rule applies}. Notice that there is a single dataflow path from $x$ to the root $y$.  Changes in $x$ can influence output $y$ in only one way.  That is the condition under which we can apply the single-variable chain rule. An easier condition to remember, though one that's a bit looser, is that none of the intermediate subexpression functions, $u(x)$ and $y(u)$, have more than one parameter.  Consider $y(x) = x+x^2$, which would become $y(x,u) = x+u$ after introducing intermediate variable $u$.  As we'll see in the next section, $y(x,u)$ has multiple paths from $x$ to $y$. To handle that situation, we'll deploy the single-variable total-derivative chain rule.
+**Conditions under which the single-variable chain rule applies**. Notice that there is a single dataflow path from $x$ to the root $y$.  Changes in $x$ can influence output $y$ in only one way.  That is the condition under which we can apply the single-variable chain rule. An easier condition to remember, though one that's a bit looser, is that none of the intermediate subexpression functions, $u(x)$ and $y(u)$, have more than one parameter.  Consider $y(x) = x+x^2$, which would become $y(x,u) = x+u$ after introducing intermediate variable $u$.  As we'll see in the next section, $y(x,u)$ has multiple paths from $x$ to $y$. To handle that situation, we'll deploy the single-variable total-derivative chain rule.
 	
-\framebox[\linewidth]{\parbox{0.97\linewidth}{As an aside for those interested in automatic differentiation, papers and library documentation use terminology *forward differentiation* and *backward differentiation* (for use in the [back-propagation algorithm](link)). From a dataflow perspective, we are computing a forward differentiation because it follows the normal data flow direction.  Backward differentiation, naturally, goes the other direction and we're asking how a change in the output would affect function parameter $x$. Because backward differentiation can determine changes in all function parameters at once, it turns out to be much more efficient for computing the derivative of functions with lots of parameters. Forward differentiation, on the other hand, must consider how a change in each parameter, in turn, affects the function output $y$.\\
+<div style="border:1px;border-style:solid; padding=5">As an aside for those interested in automatic differentiation, papers and library documentation use terminology *forward differentiation* and *backward differentiation* (for use in the [back-propagation algorithm](link)). From a dataflow perspective, we are computing a forward differentiation because it follows the normal data flow direction.  Backward differentiation, naturally, goes the other direction and we're asking how a change in the output would affect function parameter $x$. Because backward differentiation can determine changes in all function parameters at once, it turns out to be much more efficient for computing the derivative of functions with lots of parameters. Forward differentiation, on the other hand, must consider how a change in each parameter, in turn, affects the function output $y$.</div>
 
-\begin{tabular}{cc}
-	Forward differentiation & Backward differentiation\\
-	from $x$ to $y$ & from $y$ to $x$\\
-$\frac{dy}{dx} = \frac{du}{dx}\frac{dy}{du}$ & $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$\\
-\end{tabular}
-\vspace{3mm}
+
+Forward differentiation from $x$ to $y$ | Backward differentiation from $y$ to $x$
+\frac{dy}{dx} = \frac{du}{dx}\frac{dy}{du}$ | $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$
 
 Automatic differentiation is beyond the scope of this article, but we're setting the stage for a future article.
 }}
@@ -771,44 +757,7 @@ Therefore, the Jacobian reduces to a diagonal matrix whose elements are the sing
 
 After slogging through all of that mathematics, here's the payoff. All you need is the vector chain rule because the single-variable formulas are special cases of the vector chain rule. The following table summarizes the appropriate components to multiply in order to get the Jacobian.
 
-\begin{center}
-\begin{tabular}[t]{c|cccc}
-  & 
-\multicolumn{2}{c}{
-  \begin{tabular}[t]{c}
-  scalar\\
-  \framebox(18,18){$x$}\\
-  \end{tabular}} & & \\
-  \begin{tabular}{c}$\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x}))$\\
-	   = $\frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$
-		\\
-		\end{tabular} & \begin{tabular}[t]{c}
-  scalar\\
-  \framebox(18,18){$u$}\\
-  \end{tabular} & \begin{tabular}{c}
-  vector\\
-  \framebox(18,40){$\mathbf{u}$}
-  \end{tabular}& &\begin{tabular}{c}
-  vector\\
-  \framebox(18,40){$\mathbf{x}$}
-  \end{tabular} \\
-\hline
-\\[\dimexpr-\normalbaselineskip+5pt]
-
-\begin{tabular}[b]{c}
-  scalar\\
-  \framebox(18,18){$f$}\\
-  \end{tabular} &\framebox(18,18){$\frac{\partial f}{\partial {u}}$} \framebox(18,18){$\frac{\partial u}{\partial {x}}$} ~~~& \raisebox{22pt}{\framebox(40,18){$\frac{\partial f}{\partial {\mathbf{u}}}$}} \framebox(18,40){$\frac{\partial \mathbf{u}}{\partial x}$} & ~~~&
-\raisebox{22pt}{\framebox(40,18){$\frac{\partial f}{\partial {\mathbf{u}}}$}} \framebox(40,40){$\frac{\partial \mathbf{u}}{\partial \mathbf{x}}$}
-\\
-  
-\begin{tabular}[b]{c}
-  vector\\
-  \framebox(18,40){$\mathbf{f}$}\\
-  \end{tabular} & \framebox(18,40){$\frac{\partial \mathbf{f}}{\partial {u}}$} \raisebox{22pt}{\framebox(18,18){$\frac{\partial u}{\partial {x}}$}} & \framebox(40,40){$\frac{\partial \mathbf{f}}{\partial \mathbf{u}}$} \framebox(18,40){$\frac{\partial \mathbf{u}}{\partial x}$} & & \framebox(40,40){$\frac{\partial \mathbf{f}}{\partial \mathbf{u}}$} \framebox(40,40){$\frac{\partial \mathbf{u}}{\partial \mathbf{x}}$}\\
-  
-\end{tabular}
-\end{center}
+<img src="chain-shape.png" alt="chain-shape.png" width="80%">
 
 # The gradient of the neuron activation function
 
@@ -859,37 +808,31 @@ $
 \end{cases}
 $
 
-\framebox[\linewidth]{\parbox{0.97\linewidth}{An aside on broadcasting functions across scalars. When one or both of the $max$ arguments are vectors, such as $max(0,\mathbf{x})$, we broadcast the single-variable function $max$ across the elements. This is an example of an element-wise unary operator.  Just to be clear:
+<div style="border:1px;border-style:solid; padding=5">An aside on broadcasting functions across scalars. When one or both of the $max$ arguments are vectors, such as $max(0,\mathbf{x})$, we broadcast the single-variable function $max$ across the elements. This is an example of an element-wise unary operator.  Just to be clear:
 
-$
-max(0,\mathbf{x}) = \begin{bmatrix}
+\\[max(0,\mathbf{x}) = \begin{bmatrix}
 max(0,x_1)\\
 max(0,x_2)\\
 \ldots\\
 max(0,x_n)\\
-\end{bmatrix}
-$
+\end{bmatrix}\\]
 
 For the derivative of the broadcast version then, we get a vector of zeros and ones where:
 
-$
-\frac{\partial}{\partial x_i}max(0,x_i) =
+\\[\frac{\partial}{\partial x_i}max(0,x_i) =
 	\begin{cases}
 	0 & x_i \leq 0\\
 	\frac{dx_i}{dx_i}=1 & x_i > 0\\
-\end{cases}
-$
+\end{cases}\\]
 
-$
-\frac{\partial}{\partial \mathbf{x}}max(0,\mathbf{x}) =
+\\[\frac{\partial}{\partial \mathbf{x}}max(0,\mathbf{x}) =
 \begin{bmatrix}
 	\frac{\partial}{\partial x_1}max(0,x_1)\\
 	\frac{\partial}{\partial x_2}max(0,x_2)\\
 	\ldots\\
     \frac{\partial}{\partial x_n}max(0,x_n)
-\end{bmatrix}
-$
-}}
+\end{bmatrix}\\]
+</div>
 
 To get the derivative of the $activation(\mathbf{x})$ function, we need the chain rule because of the nested subexpression, $\mathbf{w} \cdot \mathbf{x} + b$. Following our process, let's introduce intermediate scalar variable $z$ to represent the affine function giving:
 
