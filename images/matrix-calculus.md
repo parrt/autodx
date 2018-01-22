@@ -189,60 +189,44 @@ where each $\frac{\partial}{\partial \mathbf{x}} f_i(\mathbf{x})$ is a horizonta
 
 The Jacobian of the identity function $\mathbf{f(x)} = \mathbf{x}$, with $f_i(\mathbf{x}) = x_i$, has $n$ functions and each function has $n$ parameters held in a single vector $\mathbf{x}$. The Jacobian is, therefore, a square matrix since $m=n$:
 
-<table>
-<tr> 
-<td>$\frac{\partial \mathbf{y}}{\partial \mathbf{x}}$</td><td>=</td><td>$\begin{bmatrix}
+\\[\begin{eqnarray*}
+\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = \begin{bmatrix}
 \frac{\partial}{\partial {x}} f_1(\mathbf{x}) \\
 \frac{\partial}{\partial {x}} f_2(\mathbf{x})\\
 \ldots\\
 \frac{\partial}{\partial {x}} f_m(\mathbf{x})
-\end{bmatrix}$</td>
-</tr>
-<tr>
-<td></td><td>=</td><td>$\begin{bmatrix}
+\end{bmatrix} &=& \begin{bmatrix}
 \frac{\partial}{\partial {x_1}} f_1(\mathbf{x})~ \frac{\partial}{\partial {x_2}} f_1(\mathbf{x}) ~\ldots~ \frac{\partial}{\partial {x_n}} f_1(\mathbf{x}) \\
 \frac{\partial}{\partial {x_1}} f_2(\mathbf{x})~ \frac{\partial}{\partial {x_2}} f_2(\mathbf{x}) ~\ldots~ \frac{\partial}{\partial {x_n}} f_2(\mathbf{x}) \\
 \ldots\\
 ~\frac{\partial}{\partial {x_1}} f_m(\mathbf{x})~ \frac{\partial}{\partial {x_2}} f_m(\mathbf{x}) ~\ldots~ \frac{\partial}{\partial {x_n}} f_m(\mathbf{x}) \\
-\end{bmatrix}$</td>
-</tr>
-<tr>
-<td></td><td>=</td><td>$\begin{bmatrix}
+\end{bmatrix}\\\\
+ & = & \begin{bmatrix}
 \frac{\partial}{\partial {x_1}} x_1~ \frac{\partial}{\partial {x_2}} x_1 ~\ldots~ \frac{\partial}{\partial {x_n}} x_1 \\
 \frac{\partial}{\partial {x_1}} x_2~ \frac{\partial}{\partial {x_2}} x_2 ~\ldots~ \frac{\partial}{\partial {x_n}} x_2 \\
 \ldots\\
 ~\frac{\partial}{\partial {x_1}} x_n~ \frac{\partial}{\partial {x_2}} x_n ~\ldots~ \frac{\partial}{\partial {x_n}} x_n \\
-\end{bmatrix}$</td>
-</tr>
-<tr>
-<td></td><td></td><td>(and since $\frac{\partial}{\partial {x_j}} x_i = 0$  for $j \neq i$)</td>
-</tr>
-<tr>
-<td></td><td>=</td><td>$\begin{bmatrix}
+\end{bmatrix}\\\\
+& & (\text{and since } \frac{\partial}{\partial {x_j}} x_i = 0 \text{ for } j \neq i)\\\\
+ & = & \begin{bmatrix}
 \frac{\partial}{\partial {x_1}} x_1 & 0 & \ldots& 0 \\
 0 & \frac{\partial}{\partial {x_2}} x_2 &\ldots & 0 \\
 & & \ddots\\
 0 & 0 &\ldots& \frac{\partial}{\partial {x_n}} x_n \\
-\end{bmatrix}$</td>
-</tr>
-<tr>
-<td></td><td>=</td><td>$\begin{bmatrix}
+\end{bmatrix}\\\\
+ & = & \begin{bmatrix}
 1 & 0 & \ldots& 0 \\
 0 &1 &\ldots & 0 \\
 & & \ddots\\
 0 & 0 & \ldots &1 \\
-\end{bmatrix}$</td>
-</tr>
-<tr>
-<td></td><td>=</td><td>$I$ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;($I$  is the identity matrix with ones down the diagonal)</td>
-</tr>
-</table>
+\end{bmatrix}\\\\
+& = & I ~~~~(I \text{ is the identity matrix with ones down the diagonal})\\
+\end{eqnarray*}
+\\]
 
 Make sure that you can derive each step above before moving on. If you get stuck, just consider each element of the matrix in isolation and apply the usual scalar derivative rules.   That is a generally useful trick: Reduce vector expressions down to a set of scalar expressions and then take all of the partials, combining the results appropriately into vectors and matrices at the end.
  
 Also be careful to track whether a matrix is vertical, $\mathbf{x}$, or horizontal, $\mathbf{x}^T$ where $\mathbf{x}^T$ means $\mathbf{x}$ transpose. Also make sure you pay attention to whether something is a scalar-valued function, $y = ...\,$, or a vector of functions (or a vector-valued function), $\mathbf{y} = ...\,$.
-
-
 
 ## Derivatives of vector element-wise binary operators
 
