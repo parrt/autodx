@@ -8,11 +8,11 @@ title: The Matrix Calculus You Need For Deep Learning
 
 # Introduction
 
-Most of us last saw calculus in school, but derivatives are a critical part of machine learning, particularly deep neural networks, which are trained by optimizing a loss function. Pick up a machine learning paper or the documentation of a library such as [PyTorch](link) and calculus comes screeching back into your life like distant relatives around the holidays.  And it's not just any old scalar calculus that pops up---we need differential *matrix calculus*, the shotgun wedding of [linear algebra](https://en.wikipedia.org/wiki/Linear\_algebra) and [multivariate calculus](https://en.wikipedia.org/wiki/Multivariable\_calculus).
+Most of us last saw calculus in school, but derivatives are a critical part of machine learning, particularly deep neural networks, which are trained by optimizing a loss function. Pick up a machine learning paper or the documentation of a library such as [PyTorch](link) and calculus comes screeching back into your life like distant relatives around the holidays.  And it's not just any old scalar calculus that pops up---we need differential *matrix calculus*, the shotgun wedding of [linear algebra](https://en.wikipedia.org/wiki/Linear_algebra) and [multivariate calculus](https://en.wikipedia.org/wiki/Multivariable_calculus).
 
 For example, the activation of a single computation unit in a neural network is typically calculated using the dot product (from linear algebra) of an edge weight vector $\mathbf{w}$ with an input vector $\mathbf{x}$ plus a scalar bias (threshold): $z(\mathbf{x}) = \Sigma_i^n w_i x_i + b = \mathbf{w} \cdot \mathbf{x} + b$. Function $z(\mathbf{x})$ is called the unit's *affine function* and is followed by a [rectified linear unit](link), which clips negative values to zero: $max(0, z(\mathbf{x}))$. Such a computational unit is sometimes referred to as an ``artificial neuron'' and looks like:
 
-![neuron.png](neuron.png){ width=20% }
+<img src="neuron.png" alt=neuron.png width=50%>
 
 Neural networks consist of many of these units, organized into multiple collections of neurons called *layers*. The activation of one layer's units become the input to the next layer's units. The activation of the unit or units in the final layer is called the network output.
 
@@ -34,31 +34,36 @@ In contrast, we're going to rederive and rediscover some key matrix calculus rul
 
 Hopefully you remember some of these main scalar derivative rules. If your memory is a bit fuzzy on this, have a look at [khan vid](https://www.khanacademy.org/math/ap-calculus-ab/ab-derivative-rules).
 
+<table>
+<tr>
+<th>Rule </th><th> $f(x)$</th> <th>Scalar derivative notation with respect to $x$</th><th> Example</th>
+</tr>
+<tr>
+<td>Constant </td><td> c</td><td> 0 </td><td> $\frac{d}{dx}99 = 0$</td>
+</tr>
+<tr>
+<td>Multiplication by constant} </td><td>	cf	</td><td>$c \frac{df}{dx}$</td><td>$\frac{d}{dx}3x = 3$</td>
+</tr>
+<tr>
+<td>Power Rule</td><td>$x^n$	</td><td>$nx^{n-1}$</td><td>$\frac{d}{dx}x^3 = 3x^2$</td>
+</tr>
+<tr>
+<td>Sum Rule</td><td>$f + g$</td><td>$\frac{df}{dx} + \frac{dg}{dx}$</td><td>$\frac{d}{dx} (x^2 + 3x) = 2x + 3$</td>
+</tr>
+<tr>
+<td>Difference Rule</td><td>$f - g$</td><td>$\frac{df}{dx} - \frac{dg}{dx}$</td><td>$\frac{d}{dx}(x^2 - 3x) = 2x - 3$</td>
+</tr>
+<tr>
+<td>Product Rule</td><td>$fg$</td><td>$f \frac{dg}{dx} + \frac{df}{dx} g$</td><td>$\frac{d}{dx}x^2x = x^2 + x2x = 3x^2$</td>
+</tr>
+<tr>
+<td>Quotient Rule</td><td>$\frac{f}{g} = fg^{-1}$</td><td>$f \frac{dg}{dx}^{-1} + \frac{df}{dx} g^{-1}$</td><td>$\frac{d}{dx}x^2 / 3x = x^2/3 + 2x / 3x$</td>
+</tr>
+<tr>
+<td>Chain Rule</td><td>$f(g(x))$</td><td>$\frac{df(u)}{du}\frac{du}{dx}$,  let $u=g(x)$</td><td>$\frac{d}{dx} ln(x^2) = \frac{1}{x^2}2x = \frac{2}{x}$</td>
+</tr>
+</table>
 
-\\[
-\begin{array}{lccc}
-Rule & f(x) & \text{\parbox[t][0mm][b]{43mm}{Scalar derivative notation with respect to $x$}} & \text{Example}\\
-\\[\dimexpr-\normalbaselineskip+2pt]
-\hline
-\\[\dimexpr-\normalbaselineskip+5pt]
-\vspace{1mm}
-\text{Constant} & c & 0 &  \frac{d}{dx}99 = 0\\
-\vspace{1mm}
-\text{Multiplication by constant} &	cf	&c \frac{df}{dx} & \frac{d}{dx}3x = 3\\
-\vspace{1mm}
-\text{Power Rule}	& x^n	& nx^{n-1} & \frac{d}{dx}x^3 = 3x^2\\
-\vspace{1mm}
-
-\text{Sum Rule}	& f + g	& \frac{df}{dx} + \frac{dg}{dx} & \frac{d}{dx} (x^2 + 3x) = 2x + 3\\
-\vspace{1mm}
-\text{Difference Rule}	& f - g	& \frac{df}{dx} - \frac{dg}{dx} & \frac{d}{dx}(x^2 - 3x) = 2x - 3\\
-\vspace{1mm}
-\text{Product Rule}	& fg & f \frac{dg}{dx} + \frac{df}{dx} g & \frac{d}{dx}x^2x = x^2 + x2x = 3x^2\\
-\vspace{1mm}
-\text{Quotient Rule}	& \frac{f}{g} = fg^{-1} & f \frac{dg}{dx}^{-1} + \frac{df}{dx} g^{-1} & \frac{d}{dx}x^2 / 3x = x^2/3 + 2x / 3x\\
-\text{Chain Rule}	 & f(g(x)) &   \frac{df(u)}{du}\frac{du}{dx}, \text{ let } u=g(x) & \frac{d}{dx} ln(x^2) = \frac{1}{x^2}2x = \frac{2}{x}\\
-\end{array}
-\\]
 
 There are other rules for trigonometry, exponentials, etc., which you can find [Khan Academy differential calculus course](https://www.khanacademy.org/math/differential-calculus).
 
@@ -66,7 +71,9 @@ When a function has a single parameter, $f(x)$, you'll often see $f'$ and $f'(x)
 
 You can think of $\frac{d}{dx}$ as an operator that maps a function of one parameter to another function.  That means that $\frac{d}{dx} f(x)$ maps $f(x)$ to its derivative with respect to $x$, which is the same thing as $\frac{df(x)}{dx}$. Also, if $y = f(x)$, then $\frac{dy}{dx} = \frac{df(x)}{dx} = \frac{d}{dx}f(x)$. Thinking of the derivative as an operator helps to simplify complicated derivatives because the operator is distributive and lets us pull out constants. For example, in the following equation, we can pull out the constant 9 and distribute the derivative operator across the elements within the parentheses.
 
-$\frac{d}{dx} 9(x + x^2) = 9 \frac{d}{dx}(x + x^2) = 9 (\frac{d}{dx}x + \frac{d}{dx}x^2) = 9(1 + 2x) = 9 + 18x$
+\\[
+\frac{d}{dx} 9(x + x^2) = 9 \frac{d}{dx}(x + x^2) = 9 (\frac{d}{dx}x + \frac{d}{dx}x^2) = 9(1 + 2x) = 9 + 18x
+\\]
 
 That procedure reduced the derivative of $9(x + x^2)$ to a bit of arithmetic and the derivatives of $x$ and $x^2$, which are much easier to solve than the original derivative.
 
@@ -79,7 +86,7 @@ The partial derivative with respect to $x$ is just the usual scalar derivative, 
 
 To make it clear we are doing vector calculus and not just multivariate calculus, let's consider what we do with the partial derivatives $\frac{\partial f(x,y)}{\partial x}$ and $\frac{\partial f(x,y)}{\partial y}$ (another way to say $\frac{\partial}{\partial x}f(x,y)$ and $\frac{\partial }{\partial y}f(x,y)$) that we computed for $f(x,y) = 3x^2y$.  Instead of having them just floating around and not organized in any way, let's organize them into a horizontal vector. We call this vector the *gradient* of $f(x,y)$ and write it as:
 
-$\nabla f(x,y)  = [ \frac{\partial f(x,y)}{\partial x}, \frac{\partial f(x,y)}{\partial y}] = [6yx, 3x^2]$
+\\[\nabla f(x,y)  = [ \frac{\partial f(x,y)}{\partial x}, \frac{\partial f(x,y)}{\partial y}] = [6yx, 3x^2]\\]
 
 So the gradient of $f(x,y)$ is simply a vector of its partials. Gradients are part of the vector calculus world, which deals with functions that map $n$ scalar parameters to a single scalar.  Now, let's get crazy and consider derivatives of multiple functions simultaneously.
 
@@ -87,17 +94,17 @@ So the gradient of $f(x,y)$ is simply a vector of its partials. Gradients are pa
 
 When we move from derivatives of one function to derivatives of many functions, we move from the world of vector calculus to matrix calculus. Let's compute partial derivatives for two functions, both of which take two parameters.  We can keep the same $f(x,y) = 3x^2y$ from the last section, but let's also bring in $g(x,y) = 2x + y^8$.  The gradient for $g$ has two entries, a partial derivative for each parameter:
 
-$\frac{\partial g(x,y)}{\partial x} = \frac{\partial 2x}{\partial x} + \frac{\partial y^8}{\partial x} = 2\frac{\partial x}{\partial x} + 0 = 2 \times 1 = 1$
+\\[\frac{\partial g(x,y)}{\partial x} = \frac{\partial 2x}{\partial x} + \frac{\partial y^8}{\partial x} = 2\frac{\partial x}{\partial x} + 0 = 2 \times 1 = 1\\]
 
 and
 
-$\frac{\partial g(x,y)}{\partial y} = \frac{\partial 2x}{\partial y} + \frac{\partial y^8}{\partial y} = 0 + 8y^7 = 8y^7$
+\\[\frac{\partial g(x,y)}{\partial y} = \frac{\partial 2x}{\partial y} + \frac{\partial y^8}{\partial y} = 0 + 8y^7 = 8y^7\\]
 
 giving us gradient $\nabla g(x,y) = [1, 8y^7]$.
 
 Gradient vectors organize all of the partial derivatives for a specific scalar function. If we have two functions, we can also organize their gradients into a matrix by stacking the gradients. When we do so, we get the *Jacobian matrix* (or just the *Jacobian*) where the gradients are rows:
 
-$J =
+\\[J =
 \begin{bmatrix}
 	\nabla f(x,y)\\
 	\nabla g(x,y)
@@ -107,61 +114,57 @@ $J =
 \end{bmatrix} = \begin{bmatrix}
 	6yx & 3x^2\\
 	1 & 8y^7
-\end{bmatrix}
-$
+\end{bmatrix}\\]
 
 Welcome to matrix calculus!
 
-{\bf Note that there are multiple ways to represent the Jacobian.} We are using the so-called [numerator layout](https://en.wikipedia.org/wiki/Matrix\_calculus\#Layout\_conventions) but many papers and software will use the *denominator layout*. This is just transpose of the numerator layout Jacobian (flip it around its diagonal):
+**Note that there are multiple ways to represent the Jacobian.** We are using the so-called [numerator layout](https://en.wikipedia.org/wiki/Matrix_calculus#Layout_conventions) but many papers and software will use the *denominator layout*. This is just transpose of the numerator layout Jacobian (flip it around its diagonal):
 
-$
+\\[
 \begin{bmatrix}
 	6yx & 1\\
 	3x^2 & 8y^7
 \end{bmatrix}
-$
+\\]
 
 ## Generalization of the Jacobian
 
 So far, we've looked at a specific example of a Jacobian matrix. To define the Jacobian matrix more generally, let's combine multiple parameters into a single vector argument: $f(x,y,z) \Rightarrow f(\mathbf{x})$. (You will sometimes see notation $\vec{x}$  for vectors in the literature as well.) Lowercase letters in bold font such as $\mathbf{x}$ are vectors and those in italics font like $x$ are scalars. $x_i$ is the $i^{th}$ element of vector $\mathbf{x}$ and is in italics because a single vector element is a scalar. We also have to define an orientation for vector $\mathbf{x}$. We'll assume that all vectors are vertical by default of size $n \times 1$:
 
-$\mathbf{x} = \begin{bmatrix}
+\\[\mathbf{x} = \begin{bmatrix}
            x_1\\
            x_2\\
            \vdots \\
            x_n\\
-           \end{bmatrix}$
+           \end{bmatrix}\\]
 
 With multiple scalar-valued functions, we can combine them all into a vector just like we did with the parameters. Let $\mathbf{y} = \mathbf{f}(\mathbf{x})$ be a vector of $m$ scalar-valued functions that each take a vector $\mathbf{x}$ of length $n=|\mathbf{x}|$ where $|\mathbf{x}|$ is the cardinality (count) of elements in $\mathbf{x}$. Each $f_i$ function within $\mathbf{f}$ returns a scalar just as in the previous section:
 
-$
+\\[
 \begin{array}{lcl}
 y_1 & = & f_1(\mathbf{x})\\
 y_2 & = & f_2(\mathbf{x})\\
  & \vdots & \\
 y_m & = & f_m(\mathbf{x})\\
-\end{array}
-$
+\end{array}\\]
 
 For instance, we'd represent $f(x,y) = 3x^2y$ and $g(x,y) = 2x + y^8$ from the last section as
 
-$y_1 = f_1(\mathbf{x}) = 3x_1^2x_2$ ~~~~~~~~(substituting $x_1$ for $x$, $x_2$ for $y$)\\
+$y_1 = f_1(\mathbf{x}) = 3x_1^2x_2$  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(substituting $x_1$ for $x$, $x_2$ for $y$)
 $y_2 = f_2(\mathbf{x}) = 2x_1 + x_2^8$
 
 It's very often the case that $m=n$ because we will have a scalar function result for each element of the $\mathbf{x}$ vector.  For example, consider the identity function $\mathbf{y} = \mathbf{f(x)} = \mathbf{x}$:
 
-$
-\begin{array}{lclcc}
+\\[\begin{array}{lclcc}
 y_1 & = & f_1(\mathbf{x})& = & x_1\\
 y_2 & = & f_2(\mathbf{x})& = & x_2\\
  & \vdots & \\
 y_n & = & f_n(\mathbf{x})& = & x_n\\
-\end{array}
-$
+\end{array}\\]
 
 So we have $m=n$ functions and parameters, in this case. Generally speaking, though, the Jacobian matrix is the collection of all $m \times n$ possible partial derivatives, which is the stack of $m$ gradients with respect to $\mathbf{x}$:
 
-$
+\\[
 \frac{\partial \mathbf{y}}{\partial \mathbf{x}} = \begin{bmatrix}
 \nabla f_1(\mathbf{x}) \\
 \nabla f_2(\mathbf{x})\\
@@ -178,68 +181,62 @@ $
 \ldots\\
 ~\frac{\partial}{\partial {x_1}} f_m(\mathbf{x})~ \frac{\partial}{\partial {x_2}} f_m(\mathbf{x}) ~\ldots~ \frac{\partial}{\partial {x_n}} f_m(\mathbf{x}) \\
 \end{bmatrix}
-$
+\\]
 
 where each $\frac{\partial}{\partial \mathbf{x}} f_i(\mathbf{x})$ is a horizontal $n$-vector because the partial derivative is with respect to a vector, $\mathbf{x}$, whose length is $n = |\mathbf{x}|$.  The width of the Jacobian is $n$ if we're taking the partial derivative with respect to $\mathbf{x}$ because there are $n$ parameters we can wiggle, each potentially changing the function's value. Therefore, the Jacobian is always $m$ rows for $m$ equations.  It helps to think about the possible Jacobian shapes visually:
 
-\begin{center}
-\begin{tabular}{c|ccl}
-  & \begin{tabular}[t]{c}
-  scalar\\
-  \framebox(18,18){$x$}\\
-  \end{tabular} & \begin{tabular}{c}
-  vector\\
-  \framebox(18,40){$\mathbf{x}$}
-  \end{tabular}\\
-\hline
-\\[\dimexpr-\normalbaselineskip+5pt]
-\begin{tabular}[b]{c}
-  scalar\\
-  \framebox(18,18){$f$}\\
-  \end{tabular} &\framebox(18,18){$\frac{\partial f}{\partial {x}}$} & \framebox(40,18){$\frac{\partial f}{\partial {\mathbf{x}}}$}&\\
-\begin{tabular}[b]{c}
-  vector\\
-  \framebox(18,40){$\mathbf{f}$}\\
-  \end{tabular} & \framebox(18,40){$\frac{\partial \mathbf{f}}{\partial {x}}$} & \framebox(40,40){$\frac{\partial \mathbf{f}}{\partial \mathbf{x}}$}\\
-\end{tabular}
-\end{center}
+<img src="shape.png" width="40%">
 
 The Jacobian of the identity function $\mathbf{f(x)} = \mathbf{x}$, with $f_i(\mathbf{x}) = x_i$, has $n$ functions and each function has $n$ parameters held in a single vector $\mathbf{x}$. The Jacobian is, therefore, a square matrix since $m=n$:
 
-\begin{eqnarray*}
-\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = \begin{bmatrix}
+<table>
+<tr> 
+<td>$\frac{\partial \mathbf{y}}{\partial \mathbf{x}}$</td><td>=</td><td>$\begin{bmatrix}
 \frac{\partial}{\partial {x}} f_1(\mathbf{x}) \\
 \frac{\partial}{\partial {x}} f_2(\mathbf{x})\\
 \ldots\\
 \frac{\partial}{\partial {x}} f_m(\mathbf{x})
-\end{bmatrix} &=& \begin{bmatrix}
+\end{bmatrix}$</td>
+</tr>
+<tr>
+<td></td><td>=</td><td>$\begin{bmatrix}
 \frac{\partial}{\partial {x_1}} f_1(\mathbf{x})~ \frac{\partial}{\partial {x_2}} f_1(\mathbf{x}) ~\ldots~ \frac{\partial}{\partial {x_n}} f_1(\mathbf{x}) \\
 \frac{\partial}{\partial {x_1}} f_2(\mathbf{x})~ \frac{\partial}{\partial {x_2}} f_2(\mathbf{x}) ~\ldots~ \frac{\partial}{\partial {x_n}} f_2(\mathbf{x}) \\
 \ldots\\
 ~\frac{\partial}{\partial {x_1}} f_m(\mathbf{x})~ \frac{\partial}{\partial {x_2}} f_m(\mathbf{x}) ~\ldots~ \frac{\partial}{\partial {x_n}} f_m(\mathbf{x}) \\
-\end{bmatrix}\\\\
- & = & \begin{bmatrix}
+\end{bmatrix}$</td>
+</tr>
+<tr>
+<td></td><td>=</td><td>$\begin{bmatrix}
 \frac{\partial}{\partial {x_1}} x_1~ \frac{\partial}{\partial {x_2}} x_1 ~\ldots~ \frac{\partial}{\partial {x_n}} x_1 \\
 \frac{\partial}{\partial {x_1}} x_2~ \frac{\partial}{\partial {x_2}} x_2 ~\ldots~ \frac{\partial}{\partial {x_n}} x_2 \\
 \ldots\\
 ~\frac{\partial}{\partial {x_1}} x_n~ \frac{\partial}{\partial {x_2}} x_n ~\ldots~ \frac{\partial}{\partial {x_n}} x_n \\
-\end{bmatrix}\\\\
-& & (\text{and since } \frac{\partial}{\partial {x_j}} x_i = 0 \text{ for } j \neq i)\\\\
- & = & \begin{bmatrix}
+\end{bmatrix}$</td>
+</tr>
+<tr>
+<td></td><td></td><td>(and since $\frac{\partial}{\partial {x_j}} x_i = 0$  for $j \neq i$)</td>
+</tr>
+<tr>
+<td></td><td>=</td><td>$\begin{bmatrix}
 \frac{\partial}{\partial {x_1}} x_1 & 0 & \ldots& 0 \\
 0 & \frac{\partial}{\partial {x_2}} x_2 &\ldots & 0 \\
 & & \ddots\\
 0 & 0 &\ldots& \frac{\partial}{\partial {x_n}} x_n \\
-\end{bmatrix}\\\\
- & = & \begin{bmatrix}
+\end{bmatrix}$</td>
+</tr>
+<tr>
+<td></td><td>=</td><td>$\begin{bmatrix}
 1 & 0 & \ldots& 0 \\
 0 &1 &\ldots & 0 \\
 & & \ddots\\
 0 & 0 & \ldots &1 \\
-\end{bmatrix}\\\\
-& = & I ~~~~(I \text{ is the identity matrix with ones down the diagonal})\\
-\end{eqnarray*}
-
+\end{bmatrix}$</td>
+</tr>
+<tr>
+<td></td><td>=</td><td>$I$ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;($I$  is the identity matrix with ones down the diagonal)</td>
+</tr>
+</table>
 
 Make sure that you can derive each step above before moving on. If you get stuck, just consider each element of the matrix in isolation and apply the usual scalar derivative rules.   That is a generally useful trick: Reduce vector expressions down to a set of scalar expressions and then take all of the partials, combining the results appropriately into vectors and matrices at the end.
  
@@ -477,7 +474,7 @@ You can think of the combining step of the chain rule in terms of units cancelin
 
 Another way to to think about the single-variable chain rule is to visualize the overall expression as a dataflow diagram or chain of operations (or [abstract syntax tree](link) for compiler people):
 
-![sin-square.png](sin-square.png)
+<img src="sin-square.png" alt=sin-square.png width=30%>
 
 Changes to function parameter $x$ bubble up through a squaring operation then through a $sin$ operation to change result $y$. You can think of $\frac{du}{dx}$ as ``getting changes from $x$ to $u$ and $\frac{dy}{du}$ as ``getting changes from $u$ to $y$.'' Getting from $x$ to $y$ requires an intermediate hop. The chain rule is, by convention, usually written from the output variable down to the parameter(s), $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$. But, the $x$-to-$y$ perspective would be more clear if we reversed the flow and used the equivalent $\frac{dy}{dx} = \frac{du}{dx}\frac{dy}{du}$.
 
@@ -523,7 +520,7 @@ $\frac{dy}{dx} = \frac{6sin(u_1)x^2cos(x^3)}{u_2^2} = \frac{6sin(x^3)x^2cos(x^3)
 
 Here is a visualization of the data flow through the chain of operations from $x$ to $y$:
 
-![chain-tree.png](chain-tree.png)
+<img src="chain-tree.png" alt=chain-tree.png width=30%>
 
 At this point, we can handle derivatives of nested expressions of a single variable, $x$, using the chain rule but only if $x$ can affect $y$ through a single data flow path. To handle more complicated expressions, we need to extend our technique, which we'll do next.
 
@@ -546,7 +543,7 @@ $\frac{\partial u_2(x,u_1)}{\partial x} = \frac{\partial }{\partial x}(x + u_1) 
 
 Ooops! The partial $\frac{\partial u_2(x,u_1)}{\partial x}$ is wrong because it violates a key assumption for partial derivatives. When taking the partial derivative with respect to $x$, the other variables must not vary as $x$ varies. Otherwise, we could not act as if the other variables were constants. Clearly, though, $u_1(x)=x^2$ is a function of $x$ and therefore varies with $x$. $\frac{\partial u_2(x,u_1)}{\partial x} \neq 1 + 0$ because $\frac{\partial u_1(x)}{\partial x} \neq 0$. A quick look at the data flow diagram for $y=u_2(x,u_1)$ shows multiple paths from $x$ to $y$, thus, making it clear we need to consider direct and indirect (through $u_1(x)$) dependencies on $x$:
 
-![plus-square.png](plus-square.png)
+<img src="plus-square.png" alt=plus-square.png width=30%>
 
 A change in $x$ effects $y$ both as an operand of the addition and as the operand of the square operator. Here's an equation that describes how tweaks to $x$ affect the output:
 
@@ -556,7 +553,7 @@ Then, $\Delta y = \hat y - y$.
 
 If we let $x=1$, then $y=1+1^2=2$. If we bump $x$ by 1, $\Delta x=1$, then $\hat y = (1+1) + (1+1)^2 = 2 + 4 = 6$. The change in $y$ is not $1$, as $\partial u_2 / u_1$ would lead us to believe, but $6-2 = 4$!
 
-Enter the ``law'' of [*total derivatives*](https://en.wikipedia.org/wiki/Total\_derivative), which basically says that to compute $\frac{dy}{dx}$, we need to sum up all possible contributions from changes in $x$ to the change in $y$. The total derivative with respect to $x$ assumes all variables, such as $u_1$ in this case, are functions of $x$ and potentially vary as $x$ varies.   The total derivative of $f(x) = u_2(x,u_1)$ that depends on $x$ directly and indirectly via intermediate variable $u_1(x)$ is given by:
+Enter the ``law'' of [*total derivatives*](https://en.wikipedia.org/wiki/Total_derivative), which basically says that to compute $\frac{dy}{dx}$, we need to sum up all possible contributions from changes in $x$ to the change in $y$. The total derivative with respect to $x$ assumes all variables, such as $u_1$ in this case, are functions of $x$ and potentially vary as $x$ varies.   The total derivative of $f(x) = u_2(x,u_1)$ that depends on $x$ directly and indirectly via intermediate variable $u_1(x)$ is given by:
 
 $\frac{dy}{dx} = \frac{\partial f(x)}{\partial x} = \frac{\partial u_2(x,u_1)}{\partial x} = \frac{\partial u_2}{\partial x}\frac{\partial x}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{\partial u_1}{\partial x} = \frac{\partial u_2}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{\partial u_1}{\partial x}$
 
@@ -574,7 +571,7 @@ That is an application of what we can call the *single-variable total-derivative
 
 The total derivative assumes all variables are potentially codependent whereas the partial derivative assumes all variables but $x$ are constants.
 
-There is something subtle going on here with the notation. All of the derivatives are shown as partial derivatives because $f$ and $u_i$ are functions of multiple variables. This notation mirrors that of [Wolfram's notation](http://mathworld.wolfram.com/TotalDerivative.html) but differs from  [Wikipedia](https://en.wikipedia.org/wiki/Total\_derivative), which uses ${d f(x,u_1,\ldots,u_n)}/{d x}$ instead (possibly to emphasize the total derivative nature of the equation). We'll stick with the partial derivative notation so that it's consistent with our discussion of the vector chain rule in the next section.
+There is something subtle going on here with the notation. All of the derivatives are shown as partial derivatives because $f$ and $u_i$ are functions of multiple variables. This notation mirrors that of [Wolfram's notation](http://mathworld.wolfram.com/TotalDerivative.html) but differs from  [Wikipedia](https://en.wikipedia.org/wiki/Total_derivative), which uses ${d f(x,u_1,\ldots,u_n)}/{d x}$ instead (possibly to emphasize the total derivative nature of the equation). We'll stick with the partial derivative notation so that it's consistent with our discussion of the vector chain rule in the next section.
 
 In practice, just keep in mind that when you take the total derivative with respect to $x$, other variables might also be functions of $x$ so add in their contributions as well.  The left side of the equation looks like a typical partial derivative but the right-hand side is actually the total derivative.  It's common, however, that many temporary variables are functions of a single parameter, which means that the single-variable total-derivative chain rule degenerates to the single-variable chain rule.
 
@@ -1238,7 +1235,7 @@ $\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = \frac
 
 When looking for resources on the web, search for ``matrix calculus'' not ``vector calculus.''  Here are some comments on the top links that come up from a [Google search](https://www.google.com/search?q=matrix+calculus\&oq=matrix+calculus):
 
-https://en.wikipedia.org/wiki/Matrix\_calculus The Wikipedia entry is actually quite good and they have a good description of the different layout conventions. Recall that we use the numerator layout where the variables go horizontally and the functions go vertically in the Jacobian. Wikipedia also has a good description of [total derivatives](https://en.wikipedia.org/wiki/Total\_derivative), but be careful that they use slightly different notation than we do. We always use the $\partial x$ notation not $dx$.
+https://en.wikipedia.org/wiki/Matrix_calculus The Wikipedia entry is actually quite good and they have a good description of the different layout conventions. Recall that we use the numerator layout where the variables go horizontally and the functions go vertically in the Jacobian. Wikipedia also has a good description of [total derivatives](https://en.wikipedia.org/wiki/Total_derivative), but be careful that they use slightly different notation than we do. We always use the $\partial x$ notation not $dx$.
 
 http://www.ee.ic.ac.uk/hp/staff/dmb/matrix/calculus.html This page has a section on matrix differentiation with some useful identities; this person uses numerator layout. This might be a good place to start after reading this article to learn about matrix versus vector differentiation.
 
@@ -1252,6 +1249,6 @@ Further down in the list, you'll run into a useful set of slides:  https://www.c
 
 To learn more about neural networks and the mathematics behind optimization and back propagation, we highly recommend Michael Nielsen's book http://neuralnetworksanddeeplearning.com/chap1.html
 
-We reference the law of [total derivative](https://en.wikipedia.org/wiki/Total\_derivative), which is an important concept that just means derivatives with respect to $x$ must take into consideration the derivative with respect $x$ of all variables that are a function of $x$.
+We reference the law of [total derivative](https://en.wikipedia.org/wiki/Total_derivative), which is an important concept that just means derivatives with respect to $x$ must take into consideration the derivative with respect $x$ of all variables that are a function of $x$.
 
 \end{document}
