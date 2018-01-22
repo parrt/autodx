@@ -763,18 +763,19 @@ After slogging through all of that mathematics, here's the payoff. All you need 
 
 We now have all of the pieces needed to compute the derivative of a typical activation function for a single neural network computation unit with respect to the model parameters, $\mathbf{w}$ and $b$:
 
-$activation(\mathbf{x}) = max(0, \mathbf{w} \cdot \mathbf{x} + b)$
+\\[ activation(\mathbf{x}) = max(0, \mathbf{w} \cdot \mathbf{x} + b) \\]
 
 Let's worry about $max$ later and focus on computing $\frac{\partial}{\partial \mathbf{w}} (\mathbf{w} \cdot \mathbf{x} + b)$ and $\frac{\partial}{\partial b} (\mathbf{w} \cdot \mathbf{x} + b)$. (Recall that neural networks learn through optimization of their weights and biases.)  We haven't discussed the derivative of the dot product yet, $y = \mathbf{f(w)} \cdot \mathbf{g(x)}$, but we can use the chain rule to avoid having to memorize yet another rule. (Note notation $y$ not $\mathbf{y}$ as the result is a scalar not a vector.) 
 
 The dot product $\mathbf{w} \cdot \mathbf{x}$ is just the summation of the element-wise multiplication of the elements: $\Sigma_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$. (You might also find it useful to remember the linear algebra notation $\mathbf{w} \cdot \mathbf{x} = \mathbf{w}^{T} \mathbf{x}$.) To use the chain rule for $y = sum(\mathbf{w} \otimes \mathbf{x})$, we introduce an intermediate vector variable $\mathbf{u}$ just as we did using the single-variable chain rule:
 
-$\mathbf{u} = \mathbf{w} \otimes \mathbf{x}$\\
+$\mathbf{u} = \mathbf{w} \otimes \mathbf{x}$
 $y = sum(\mathbf{u})$
 
 Once we've rephrased $y$, we recognize two subexpressions for which we already know the partial derivatives:
 
-$\frac{\partial  \mathbf{u}}{\partial \mathbf{w}} = \frac{\partial }{\partial \mathbf{w}} (\mathbf{w} \otimes \mathbf{x}) = diag(\mathbf{x})$\\
+$\frac{\partial  \mathbf{u}}{\partial \mathbf{w}} = \frac{\partial }{\partial \mathbf{w}} (\mathbf{w} \otimes \mathbf{x}) = diag(\mathbf{x})$
+
 $\frac{\partial y}{\partial \mathbf{u}} = \frac{\partial }{\partial \mathbf{u}} sum(\mathbf{u}) = \vec{1}^T$
 
 The vector chain rule says to multiply the partials:
@@ -800,13 +801,11 @@ $\frac{\partial y}{\partial b} = \frac{\partial }{\partial b}\mathbf{w} \cdot \m
 
 Let's tackle the partials of the activation function output, $max(0, \mathbf{w} \cdot \mathbf{x} + b)$. The use of the $max(0,z)$ function call on scalar $z$ just says to treat all negative $z$ values as 0.  The derivative of the max function is a piecewise function. When $z \leq 0$, the derivative is 0 because $z$ is a constant. When $z > 0$, the derivative of the max function is just the derivative of $z$, which is $1$:
 
-$
-\frac{\partial}{\partial z}max(0,z) =
+\\[ \frac{\partial}{\partial z}max(0,z) =
 	\begin{cases}
 	0 & z \leq 0\\
 	\frac{dz}{dz}=1 & z > 0\\
-\end{cases}
-$
+\end{cases} \\]
 
 <div style="border:1px;border-style:solid; padding=5">An aside on broadcasting functions across scalars. When one or both of the $max$ arguments are vectors, such as $max(0,\mathbf{x})$, we broadcast the single-variable function $max$ across the elements. This is an example of an element-wise unary operator.  Just to be clear:
 
@@ -845,27 +844,26 @@ $\frac{\partial activation}{\partial \mathbf{w}} = \frac{\partial activation}{\p
 
 which we can rewrite as follows:
 
-$\frac{\partial activation}{\partial \mathbf{w}} = \begin{cases}
+\\[\frac{\partial activation}{\partial \mathbf{w}} = \begin{cases}
 	0\frac{\partial z}{\partial \mathbf{w}}=\vec{0}^T & z \leq 0\\
 	1\frac{\partial z}{\partial \mathbf{w}}=\frac{\partial z}{\partial \mathbf{w}} = \mathbf{x}^T & z > 0 ~~~~~~~~~~~~~~~~~~(\text{we computed }\frac{\partial z}{\partial \mathbf{w}}=\mathbf{x}^T \text{ previously})\\
-\end{cases}$
+\end{cases}\\]
 
 and then substitute $z = \mathbf{w} \cdot \mathbf{x} + b$ back in:
  
-$\frac{\partial activation}{\partial \mathbf{w}} = \begin{cases}
+\\[\frac{\partial activation}{\partial \mathbf{w}} = \begin{cases}
 	\vec{0}^T & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
 	\mathbf{x}^T & \mathbf{w} \cdot \mathbf{x} + b > 0\\
-\end{cases}$
+\end{cases}\\]
 
 That equation matches our intuition.  When the activation function clips affine function output $z$ to 0, the derivative is zero with respect to any weight $w_i$. When $z > 0$, it's as if the $max$ function disappears and we get just the derivative of $z$ with respect to the weights. 
 
 Turning now to the derivative of the activation function with respect to $b$, we get:
  
-$\frac{\partial activation}{\partial b} = \begin{cases}
+\\[\frac{\partial activation}{\partial b} = \begin{cases}
 	0\frac{\partial z}{\partial b} = 0 & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
 	1\frac{\partial z}{\partial b} = 1 & \mathbf{w} \cdot \mathbf{x} + b > 0\\
-\end{cases}
-$
+\end{cases}\\]
 
 Let's use these partial derivatives now to handle the entire loss function.
 
@@ -889,20 +887,21 @@ Let's compute the gradient with respect to $\mathbf{w}$ first.
 
 From before, we know:
 
-$\frac{\partial }{\partial \mathbf{w}} u(\mathbf{w},b,\mathbf{x}) = \begin{cases}
+\\[\frac{\partial }{\partial \mathbf{w}} u(\mathbf{w},b,\mathbf{x}) = \begin{cases}
 	\vec{0}^T & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
 	\mathbf{x}^T & \mathbf{w} \cdot \mathbf{x} + b > 0\\
-\end{cases}$
+\end{cases}\\]
 
 and
 
-$\frac{\partial v(y,u)}{\partial \mathbf{w}} = \frac{\partial}{\partial \mathbf{w}} (y - u) = \vec{0}^T - \frac{\partial u}{\partial \mathbf{w}} = -\frac{\partial u}{\partial \mathbf{w}} = \begin{cases}
+\\[\frac{\partial v(y,u)}{\partial \mathbf{w}} = \frac{\partial}{\partial \mathbf{w}} (y - u) = \vec{0}^T - \frac{\partial u}{\partial \mathbf{w}} = -\frac{\partial u}{\partial \mathbf{w}} = \begin{cases}
 	\vec{0}^T & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
 	-\mathbf{x}^T & \mathbf{w} \cdot \mathbf{x} + b > 0\\
-\end{cases}$
+\end{cases}\\]
 
 Then, for the overall gradient, we get:
 
+\\[
 \begin{eqnarray*}
 \frac{\partial C(v)}{\partial \mathbf{w}} & = & \frac{\partial }{\partial \mathbf{w}}\frac{1}{N} \sum_{i=1}^N v^2\\\\
  & = & \frac{1}{N} \sum_{i=1}^N \frac{\partial}{\partial \mathbf{w}} v^2\\\\
@@ -933,6 +932,7 @@ Then, for the overall gradient, we get:
 	\frac{2}{N} \sum_{i=1}^N (\mathbf{w}\cdot\mathbf{x}_i+b-y_i)\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
 \end{cases}
 \end{eqnarray*}
+\\]
 
 To interpret that equation, we can substitute an error term $e_i = \mathbf{w}\cdot\mathbf{x}_i+b-y_i$ yielding:
 
@@ -961,24 +961,21 @@ $C(v) = \frac{1}{N} \sum_{i=1}^N v^2$
 
 We computed the partial with respect to the bias for equation $u(\mathbf{w},b,\mathbf{x})$ previously:
 
-$\frac{\partial u}{\partial b} = \begin{cases}
+\\[\frac{\partial u}{\partial b} = \begin{cases}
 	0 & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
 	1 & \mathbf{w} \cdot \mathbf{x} + b > 0\\
-\end{cases}
-$
+\end{cases}\\]
 
 For $v$, the partial is:
 
-$
-\frac{\partial v(y,u)}{\partial b} = \frac{\partial}{\partial b} (y - u) = 0 - \frac{\partial u}{\partial b} = -\frac{\partial u}{\partial b} = \begin{cases}
+\\[\frac{\partial v(y,u)}{\partial b} = \frac{\partial}{\partial b} (y - u) = 0 - \frac{\partial u}{\partial b} = -\frac{\partial u}{\partial b} = \begin{cases}
 	0 & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
 	-1 & \mathbf{w} \cdot \mathbf{x} + b > 0\\
-\end{cases}
-$
+\end{cases}\\]
 
 And for the partial of the cost function itself we get:
 
-\allowdisplaybreaks
+\\[
 \begin{eqnarray*}
 \frac{\partial C(v)}{\partial b} & = & \frac{\partial }{\partial b}\frac{1}{N} \sum_{i=1}^N v^2\\\\
  & = & \frac{1}{N} \sum_{i=1}^N \frac{\partial}{\partial b} v^2\\\\
@@ -1001,6 +998,7 @@ And for the partial of the cost function itself we get:
 	\frac{2}{N} \sum_{i=1}^N (\mathbf{w}\cdot\mathbf{x}_i+b-y_i) & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
 \end{cases}
 \end{eqnarray*}
+\\]
 
 As before, we can substitute an error term:
 
@@ -1014,10 +1012,7 @@ The partial derivative is then just the average error or zero, according to the 
 b_{t+1} = b_{t} - \eta \frac{\partial C}{\partial b}
 \\]
  
-In practice, it is convenient to combine $\mathbf{w}$ and $b$ into a single vector parameter rather than having to deal with two different partials: $\hat{\mathbf{w}} = [\mathbf{w}^T, b]^T$. This requires a tweak to the input vector $\mathbf{x}$ as well but simplifies the activation function. By tacking a 1 onto the end of $\mathbf{x}$, $\hat{\mathbf{x}} = [\mathbf{x}^T,1]$, $\mathbf{w} \cdot \mathbf{x} + b$ becomes $\hat{\mathbf{w}} \cdot \hat{\mathbf{x}}$.  Also notice that $2/N$ is fixed for a fixed number of training exemplars. Because this value will not change as we update the weights and biases, we can ignore this term because all we need is a direction not the actual gradient. (That constant could be folded into the learning rate $\eta$ anyway.) This observation simplifies our equations further for the nonzero activation case:
-
-\\[\frac{\partial C}{\partial \mathbf{w}} = \sum_{i=1}^N e_i\mathbf{x}_i^T\\]
-\\[\frac{\partial C}{\partial b} = \sum_{i=1}^N e_i\\]
+In practice, it is convenient to combine $\mathbf{w}$ and $b$ into a single vector parameter rather than having to deal with two different partials: $\hat{\mathbf{w}} = [\mathbf{w}^T, b]^T$. This requires a tweak to the input vector $\mathbf{x}$ as well but simplifies the activation function. By tacking a 1 onto the end of $\mathbf{x}$, $\hat{\mathbf{x}} = [\mathbf{x}^T,1]$, $\mathbf{w} \cdot \mathbf{x} + b$ becomes $\hat{\mathbf{w}} \cdot \hat{\mathbf{x}}$.  
 
 This finishes off the optimization of the neural network loss function because we have the two partials necessary to perform a gradient descent.
 
