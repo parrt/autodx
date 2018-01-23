@@ -3,7 +3,8 @@ author:
 - Terence Parr and Jeremy Howard
 title: The Matrix Calculus You Need For Deep Learning
 ---
-<!-- WOW! Need space on left edge of each row in block equation array environment!!! -->
+<!-- WOW! Need space on left edge of each row in block equation array environment for katex!!! -->
+<!-- WOW! need space after/before \\[ and \\] for equations. no hline for katex -->
 <!--TOC-->
 
 # Introduction
