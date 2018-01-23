@@ -151,10 +151,10 @@ y_m & = & f_m(\mathbf{x})\\
 For instance, we'd represent $f(x,y) = 3x^2y$ and $g(x,y) = 2x + y^8$ from the last section as
 
 \\[
-\begin{eqnarray*}
+\begin{array}{lllllllll}
 y_1 = f_1(\mathbf{x}) = 3x_1^2x_2  &&&(\text{substituting }x_1 \text{for }x, x_2 \text{for }y)\\
 y_2 = f_2(\mathbf{x}) = 2x_1 + x_2^8
-\end{eqnarray*}
+\end{array}
 \\]
 
 It's very often the case that $m=n$ because we will have a scalar function result for each element of the $\mathbf{x}$ vector.  For example, consider the identity function $\mathbf{y} = \mathbf{f(x)} = \mathbf{x}$:
@@ -193,7 +193,7 @@ where each $\frac{\partial}{\partial \mathbf{x}} f_i(\mathbf{x})$ is a horizonta
 
 The Jacobian of the identity function $\mathbf{f(x)} = \mathbf{x}$, with $f_i(\mathbf{x}) = x_i$, has $n$ functions and each function has $n$ parameters held in a single vector $\mathbf{x}$. The Jacobian is, therefore, a square matrix since $m=n$:
 
-\\[\begin{eqnarray*}
+\\[\begin{array}{lllllllll}
 \frac{\partial \mathbf{y}}{\partial \mathbf{x}} = \begin{bmatrix}
 \frac{\partial}{\partial {x}} f_1(\mathbf{x}) \\
 \frac{\partial}{\partial {x}} f_2(\mathbf{x})\\
@@ -225,7 +225,7 @@ The Jacobian of the identity function $\mathbf{f(x)} = \mathbf{x}$, with $f_i(\m
 0 & 0 & \ldots &1 \\
 \end{bmatrix}\\\\
 & = & I &&&(I \text{ is the identity matrix with ones down the diagonal})\\
-\end{eqnarray*}
+\end{array}
 \\]
 
 Make sure that you can derive each step above before moving on. If you get stuck, just consider each element of the matrix in isolation and apply the usual scalar derivative rules.   That is a generally useful trick: Reduce vector expressions down to a set of scalar expressions and then take all of the partials, combining the results appropriately into vectors and matrices at the end.
@@ -309,7 +309,7 @@ That gives us $\frac{\partial (\mathbf{w+x})}{\partial \mathbf{w}} = \frac{\part
 
 Given the simplicity of this special case, $f_i(\mathbf{w})$ reducing to $f_i(w_i)$, you should be able to derive the Jacobians for the common element-wise binary operations on vectors:
 
-\\[\begin{eqnarray*}
+\\[\begin{array}{lllllllll}
 \text{Op} & ~~ & \text{Partial with respect to } \mathbf{w} & ~~ &  \text{Partial with respect to }\mathbf{x}\\
 \hline\\
 
@@ -320,7 +320,7 @@ Given the simplicity of this special case, $f_i(\mathbf{w})$ reducing to $f_i(w_
 \otimes & ~~ & \frac{\partial (\mathbf{w \otimes x})}{\partial \mathbf{w}}  =  diag(\ldots\frac{\partial (w_i \times x_i)}{\partial w_i} \ldots)  =  diag(\mathbf{x}) & ~~ & \frac{\partial (\mathbf{w \otimes x})}{\partial \mathbf{x}}  =  diag(\mathbf{w})\\\\
 
 \oslash & ~~ & \frac{\partial (\mathbf{w \oslash x})}{\partial \mathbf{w}}  =  diag(\ldots\frac{\partial (w_i / x_i)}{\partial w_i}\ldots)  =  diag(\ldots \frac{1}{x_i} \ldots) & ~~ & \frac{\partial (\mathbf{w \oslash x})}{\partial \mathbf{x}}  =  diag(\ldots \frac{-w_i}{x_i^2} \ldots)\\
-\end{eqnarray*}\\]
+\end{array}\\]
 
 The $\otimes$ and $\oslash$ operators are element-wise multiplication and division; $\otimes$ is sometimes called the *Hadamard product*. There isn't a standard notation for element-wise multiplication and division so where using an approach consistent with our general binary operation notation.
 
@@ -468,19 +468,19 @@ With deeply nested expressions, it helps to think about deploying the chain rule
 
 <ol>
 	<li>Introduce intermediate variables.
-	$\begin{eqnarray*}
+	$\begin{array}{lllllllll}
 u_1 &=& f_1(x) &= x^3\\
 u_2 &= &f_2(u_1) &= sin(u_1)\\
 u_3 &= &f_3(u_2) &= u_2^2\\
 u_4 &=& f_4(u_3) &= ln(u_3) ~~~~~~(y = u_4)
-\end{eqnarray*}$
+\end{array}$
 	<li> Compute derivatives.
-$\begin{eqnarray*}
+$\begin{array}{lllllllll}
 \frac{d}{u_x} u_1 & = & \frac{d}{x} x^3 & = & 3x^2\\
 \frac{d}{u_1} u_2 & = & \frac{d}{u_1} sin(u_1) & = & cos(u_1) \\
 \frac{d}{u_2} u_3 & = & \frac{d}{u_2} u_2^2 & =& 2u_2\\
 \frac{d}{u_3} u_4 & = & \frac{d}{u_3} ln(u_3) & =& \frac{1}{u_3}\\
-\end{eqnarray*}$
+\end{array}$
 	<li> Combine four intermediate values.
 $\frac{dy}{dx} = \frac{d u_4}{dx} = \frac{d u_4}{du_3}\frac{du_3}{d u_2} \frac{du_2}{du_1} \frac{du_1}{dx} = \frac{1}{u_3}  2u_2  cos(u_1)  3x^2 = \frac{6u_2x^2cos(u_1)}{u_3}$
 	<li> Subtitute.
@@ -500,10 +500,10 @@ Our single-variable chain rule has limited applicability because all intermediat
 Of course, we immediately see $\frac{dy}{dx} = \frac{d}{dx}x + \frac{d}{dx}x^2 = 1 + 2x$, but that is using the scalar  addition derivative rule, not the chain rule.  If we tried to apply the single-variable chain rule, we'd get the wrong answer. In fact, the previous chain rule is meaningless in this case because derivative operator $\frac{d}{dx}$ does not apply to multivariate functions, such as $u_2$ among our intermediate variables:
 
 \\[
-\begin{eqnarray*}
+\begin{array}{lllllllll}
 u_1(x) &=& x^2\\
 u_2(x,u_1) &=& x + u_1 & & & (y = f(x) = u_2(x,u_1))
-\end{eqnarray*}
+\end{array}
 \\]
 
 Let's try it anyway to see what happens. If we pretend that $\frac{du_2}{du_1} = 0 + 1 = 1$ and $\frac{du_1}{dx} = 2x$, then $\frac{dy}{dx} = \frac{du_2}{dx} = \frac{du_2}{du_1} \frac{du_1}{dx} = 2x$ instead of the right answer $1 + 2x$.  
@@ -511,11 +511,11 @@ Let's try it anyway to see what happens. If we pretend that $\frac{du_2}{du_1} =
 Because $u_2(x,u) = x + u_1$ has multiple parameters, partial derivatives come into play. Let's blindly apply the partial derivative operator to all of our equations and see what we get:
 
 \\[
-\begin{eqnarray*}
+\begin{array}{lllllllll}
 \frac{\partial u_1(x)}{\partial x} &=& 2x &&&(\text{same as }\frac{du_1(x)}{dx})\\
 \frac{\partial u_2(x,u_1)}{\partial u_1} &=& \frac{\partial }{\partial u_1}(x + u_1) = 0 + 1 = 1\\
 \frac{\partial u_2(x,u_1)}{\partial x} &=& \frac{\partial }{\partial x}(x + u_1) = 1 + 0 = 1 & & &(\text{something's not quite right here!})\\
-\end{eqnarray*}
+\end{array}
 \\]
 
 Ooops! The partial $\frac{\partial u_2(x,u_1)}{\partial x}$ is wrong because it violates a key assumption for partial derivatives. When taking the partial derivative with respect to $x$, the other variables must not vary as $x$ varies. Otherwise, we could not act as if the other variables were constants. Clearly, though, $u_1(x)=x^2$ is a function of $x$ and therefore varies with $x$. $\frac{\partial u_2(x,u_1)}{\partial x} \neq 1 + 0$ because $\frac{\partial u_1(x)}{\partial x} \neq 0$. A quick look at the data flow diagram for $y=u_2(x,u_1)$ shows multiple paths from $x$ to $y$, thus, making it clear we need to consider direct and indirect (through $u_1(x)$) dependencies on $x$:
@@ -555,21 +555,21 @@ In practice, just keep in mind that when you take the total derivative with resp
 Let's look at a nested subexpression, such as $f(x) = sin(x + x^2)$.  We introduce three intermediate variables:
 
 \\[
-\begin{eqnarray*}
+\begin{array}{lllllllll}
 u_1(x) &=& x^2\\
 u_2(x,u_1) &=& x + u_1\\
 u_3(u_2) &=& sin(u_2) &&&(y = f(x) = u_3(u_2))
-\end{eqnarray*}
+\end{array}
 \\]
 
 and partials:
 
 \\[
-\begin{eqnarray*}
+\begin{array}{lllllllll}
 \frac{\partial u_1}{\partial x} &=& 2x\\
 \frac{\partial u_2}{\partial x} &=& \frac{\partial x}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{\partial u_1}{\partial x} &=& 1 + 1 \times 2x &=& 1+2x\\
 \frac{\partial f(x)}{\partial x} &=& \frac{\partial u_3}{\partial x} + \frac{\partial u_3}{\partial u_2}\frac{\partial u_2}{\partial x} &=& 0 + cos(u_2)\frac{\partial u_2}{\partial x} &=& cos(x+x^2)(1+2x)
-\end{eqnarray*}
+\end{array}
 \\]
 
 where both $\frac{\partial u_2}{\partial x}$ and $\frac{\partial f(x)}{\partial x}$ have $\frac{\partial u_i}{\partial x}$ terms that take into account the total derivative.
@@ -577,14 +577,14 @@ where both $\frac{\partial u_2}{\partial x}$ and $\frac{\partial f(x)}{\partial 
 Also notice that the total derivative formula always {\bf sums} versus, say, multiplies terms $\frac{\partial f}{\partial u_i}\frac{\partial  u_i}{\partial  x}$.  It's tempting to think that summing up terms in the derivative makes sense because, for example, $y = x+x^2$ adds two terms. Nope. The total derivative is adding terms because it represents a weighted sum of all $x$ contributions to the change in $y$. For example, given $y = x \times x^2$ instead of $y = x + x^2$, the total-derivative chain rule formula still adds partial derivative terms. ($x \times x^2$  simplifies to $x^3$ but for this demonstration, let's not combine the terms.) Here are the intermediate variables and partial derivatives:
 
 \\[
-\begin{eqnarray*}
+\begin{array}{lllllllll}
 u_1(x) &=& x^2\\
 u_2(x,u_1) &=& x u_1 &&& (y = f(x) = u_2(x,u_1))\\
 \\
 \frac{\partial u_1}{\partial x} &=& 2x\\
 \frac{\partial u_2}{\partial x} &=& u_1 &&&(\text{for } u_2 = x + u_1, \frac{\partial u_2}{\partial x} = 1)\\
 \frac{\partial u_2}{\partial u_1} &=& x &&&(\text{for }  u_2 = x + u_1, \frac{\partial u_2}{\partial u_1} = 1)
-\end{eqnarray*}
+\end{array}
 \\]
 
 The form of the total derivative remains the same, however:
@@ -717,9 +717,9 @@ with the single-variable chain rule:
 To make this formula work for multiple parameters or vector $\mathbf{x}$, we just have to change $x$ to vector $\mathbf{x}$ in the equation.  The effect is  that $\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ and the resulting Jacobian,  $\frac{\partial \mathbf{f}}{\partial \mathbf{x}}$, are now matrices instead of  vertical vectors. Our complete *vector chain rule* is:
 
 \\[
-\begin{eqnarray*}
+\begin{array}{lllllllll}
 \frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}} &&&(\text{Note: matrix multiply doesn't commute; order of }\frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}} \text{matters})\\
-\end{eqnarray*}
+\end{array}
 \\]
 
 The beauty of the vector formula over the single-variable chain rule is that it automatically takes into consideration the total derivative while maintaining the same notational simplicity.  The Jacobian contains all possible combinations of $f_i$ with respect to $g_j$ and $g_i$ with respect to $x_j$. For completeness, here are the two Jacobian components in their full glory:
@@ -770,19 +770,19 @@ Let's worry about $max$ later and focus on computing $\frac{\partial}{\partial \
 The dot product $\mathbf{w} \cdot \mathbf{x}$ is just the summation of the element-wise multiplication of the elements: $\Sigma_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$. (You might also find it useful to remember the linear algebra notation $\mathbf{w} \cdot \mathbf{x} = \mathbf{w}^{T} \mathbf{x}$.) To use the chain rule for $y = sum(\mathbf{w} \otimes \mathbf{x})$, we introduce an intermediate vector variable $\mathbf{u}$ just as we did using the single-variable chain rule:
 
 \\[
-\begin{eqnarray*}
+\begin{array}{lllllllll}
 \mathbf{u} &=& \mathbf{w} \otimes \mathbf{x}\\
 y &=& sum(\mathbf{u}) \\
-\end{eqnarray*}
+\end{array}
 \\]
 
 Once we've rephrased $y$, we recognize two subexpressions for which we already know the partial derivatives:
 
 \\[
-\begin{eqnarray*}
+\begin{array}{lllllllll}
 \frac{\partial  \mathbf{u}}{\partial \mathbf{w}} &=& \frac{\partial }{\partial \mathbf{w}} (\mathbf{w} \otimes \mathbf{x}) &=& diag(\mathbf{x})\\
 \frac{\partial y}{\partial \mathbf{u}} &=& \frac{\partial }{\partial \mathbf{u}} sum(\mathbf{u}) &=& \vec{1}^T\\
-\end{eqnarray*}
+\end{array}
 \\]
 
 The vector chain rule says to multiply the partials:
@@ -792,10 +792,10 @@ The vector chain rule says to multiply the partials:
 To check our results, we can grind the dot product down into a pure scalar function:
 
 \\[
-\begin{eqnarray*}
+\begin{array}{lllllllll}
 y &=& \mathbf{w} \cdot \mathbf{x} &=& \Sigma_i^n (w_i x_i)\\
 \frac{\partial y}{\partial w_j} &=& \frac{\partial}{\partial w_j} \Sigma_i (w_i x_i) &=& \Sigma_i \frac{\partial}{\partial w_j} (w_i x_i) &=& \frac{\partial}{\partial w_j} (w_j x_j) &=& x_j\\
-\end{eqnarray*}
+\end{array}
 \\]
 
 Then:
@@ -807,10 +807,10 @@ Hooray! Our results match.
 Now, let $y = \mathbf{w} \cdot \mathbf{x} + b$, the full expression within the $max$ activation function call. We have two different partials to compute but don't need the chain rule:
 
 \\[
-\begin{eqnarray*}
+\begin{array}{lllllllll}
 \frac{\partial y}{\partial \mathbf{w}} &=& \frac{\partial }{\partial \mathbf{w}}\mathbf{w} \cdot \mathbf{x} + \frac{\partial }{\partial \mathbf{w}}b &=& \mathbf{x}^T + \vec{0}^T &=& \mathbf{x}^T\\
 \frac{\partial y}{\partial b} &=& \frac{\partial }{\partial b}\mathbf{w} \cdot \mathbf{x} + \frac{\partial }{\partial b}b &=& 0 + 1 &=& 1\\
-\end{eqnarray*}
+\end{array}
 \\]
 
 Let's tackle the partials of the activation function output, $max(0, \mathbf{w} \cdot \mathbf{x} + b)$. The use of the $max(0,z)$ function call on scalar $z$ just says to treat all negative $z$ values as 0.  The derivative of the max function is a piecewise function. When $z \leq 0$, the derivative is 0 because $z$ is a constant. When $z > 0$, the derivative of the max function is just the derivative of $z$, which is $1$:
@@ -893,11 +893,11 @@ C(\mathbf{w},b,X,\mathbf{y}) = \frac{1}{N} \sum_{i=1}^{N} (y_i - activation(\mat
 Following our chain rule process introduces these intermediate variables:
 
 \\[
-\begin{eqnarray*} 
+\begin{array}{lllllllll} 
 u(\mathbf{w},b,\mathbf{x}) &=& max(0, \mathbf{w}\cdot\mathbf{x}+b)\\
 v(y,u) &=& y - u\\
 C(v) &=& \frac{1}{N} \sum_{i=1}^N v^2\\
-\end{eqnarray*}
+\end{array}
 \\]
 
 Let's compute the gradient with respect to $\mathbf{w}$ first.
@@ -921,7 +921,7 @@ and
 Then, for the overall gradient, we get:
 
 \\[
-\begin{eqnarray*}
+\begin{array}{lllllllll}
 \frac{\partial C(v)}{\partial \mathbf{w}} & = & \frac{\partial }{\partial \mathbf{w}}\frac{1}{N} \sum_{i=1}^N v^2\\\\
  & = & \frac{1}{N} \sum_{i=1}^N \frac{\partial}{\partial \mathbf{w}} v^2\\\\
  & = & \frac{1}{N} \sum_{i=1}^N \frac{\partial v^2}{\partial v} \frac{\partial v}{\partial \mathbf{w}} \\\\
@@ -950,7 +950,7 @@ Then, for the overall gradient, we get:
 	\vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
 	\frac{2}{N} \sum_{i=1}^N (\mathbf{w}\cdot\mathbf{x}_i+b-y_i)\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
 \end{cases}
-\end{eqnarray*}
+\end{array}
 \\]
 
 To interpret that equation, we can substitute an error term $e_i = \mathbf{w}\cdot\mathbf{x}_i+b-y_i$ yielding:
@@ -974,11 +974,11 @@ Because the gradient indicates the direction of higher cost, we want to update $
 To optimize the bias, $b$, we also need the partial with respect to $b$.  Here are the intermediate variables again:
 
 \\[
-\begin{eqnarray*}
+\begin{array}{lllllllll}
 u(\mathbf{w},b,\mathbf{x}) &=& max(0, \mathbf{w}\cdot\mathbf{x}+b)\\
 v(y,u) &=& y - u\\
 C(v) &=& \frac{1}{N} \sum_{i=1}^N v^2\\
-\end{eqnarray*}
+\end{array}
 \\]
 
 We computed the partial with respect to the bias for equation $u(\mathbf{w},b,\mathbf{x})$ previously:
@@ -998,7 +998,7 @@ For $v$, the partial is:
 And for the partial of the cost function itself we get:
 
 \\[
-\begin{eqnarray*}
+\begin{array}{lllllllll}
 \frac{\partial C(v)}{\partial b} & = & \frac{\partial }{\partial b}\frac{1}{N} \sum_{i=1}^N v^2\\\\
  & = & \frac{1}{N} \sum_{i=1}^N \frac{\partial}{\partial b} v^2\\\\
  & = & \frac{1}{N} \sum_{i=1}^N \frac{\partial v^2}{\partial v} \frac{\partial v}{\partial b} \\\\
@@ -1019,7 +1019,7 @@ And for the partial of the cost function itself we get:
 	0 & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
 	\frac{2}{N} \sum_{i=1}^N (\mathbf{w}\cdot\mathbf{x}_i+b-y_i) & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
 \end{cases}
-\end{eqnarray*}
+\end{array}
 \\]
 
 As before, we can substitute an error term:
