@@ -150,8 +150,12 @@ y_m & = & f_m(\mathbf{x})\\
 
 For instance, we'd represent $f(x,y) = 3x^2y$ and $g(x,y) = 2x + y^8$ from the last section as
 
-$y_1 = f_1(\mathbf{x}) = 3x_1^2x_2$  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(substituting $x_1$ for $x$, $x_2$ for $y$)
-$y_2 = f_2(\mathbf{x}) = 2x_1 + x_2^8$
+\\[
+\begin{eqnarray*}
+y_1 = f_1(\mathbf{x}) = 3x_1^2x_2  &&&(\text{substituting }x_1 \text{for }x, x_2 \text{for }y)\\
+y_2 = f_2(\mathbf{x}) = 2x_1 + x_2^8
+\end{eqnarray*}
+\\]
 
 It's very often the case that $m=n$ because we will have a scalar function result for each element of the $\mathbf{x}$ vector.  For example, consider the identity function $\mathbf{y} = \mathbf{f(x)} = \mathbf{x}$:
 
@@ -326,7 +330,7 @@ When we multiply or add scalars to vectors, we're implicitly expanding the scala
 
 The partial derivatives of vector-scalar addition and multiplication with respect to vector $\mathbf{x}$ use our element-wise rule:
 
-\\[\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = diag \left( \ldots \frac{\partial}{\partial x_i} ( f_i(x_i) \bigcirc g_i(z) ) \ldots \right)\\]
+\\[ \frac{\partial \mathbf{y}}{\partial \mathbf{x}} = diag \left( \ldots \frac{\partial}{\partial x_i} ( f_i(x_i) \bigcirc g_i(z) ) \ldots \right)\\]
 
 This follows because functions $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(z) = \vec{1} z$ clearly satisfy our element-wise diagonal condition for the Jacobian (that $f_i(\mathbf{x})$ refer at most to $x_i$ and $g_i(z)$ refers to the $i^{th}$ value of the $\vec{1}z$ vector). 
 
@@ -338,19 +342,19 @@ So, $\frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} + z ) = diag(\vec{1}) = I
 
 Computing the partial derivative with respect to the scalar parameter $z$, however, results in a vertical vector, not a diagonal matrix. The elements of the vector are:
  
-$\frac{\partial}{\partial z} ( f_i(x_i) + g_i(z) ) = \frac{\partial (x_i + z)}{\partial z} = \frac{\partial x_i}{\partial z} + \frac{\partial z}{\partial z} = 0 + 1 = 1$
+\\[ \frac{\partial}{\partial z} ( f_i(x_i) + g_i(z) ) = \frac{\partial (x_i + z)}{\partial z} = \frac{\partial x_i}{\partial z} + \frac{\partial z}{\partial z} = 0 + 1 = 1\\]
 
 Therefore, $\frac{\partial}{\partial z} ( \mathbf{x} + z ) = \vec{1}$.
 
 The diagonal elements of the Jacobian for vector-scalar multiplication involve the product rule for scalar derivatives:
 
-$\frac{\partial}{\partial x_i} ( f_i(x_i) \otimes g_i(z) ) = x_i  \frac{\partial z}{\partial x_i} + z  \frac{\partial x_i}{\partial x_i} = 0 + z = z$
+\\[ \frac{\partial}{\partial x_i} ( f_i(x_i) \otimes g_i(z) ) = x_i  \frac{\partial z}{\partial x_i} + z  \frac{\partial x_i}{\partial x_i} = 0 + z = z\\]
 
 So, $\frac{\partial}{\partial \mathbf{x}} ( \mathbf{x} z ) = diag(\vec{1}  z) = I z$. 
 
 The partial derivative with respect to scalar parameter $z$ is a vertical vector whose elements are:
 
-$\frac{\partial}{\partial z} ( f_i(x_i) \otimes g_i(z) ) = x_i \frac{\partial z}{\partial z} + z \frac{\partial x_i}{\partial z} = x_i + 0 = x_i$
+\\[\frac{\partial}{\partial z} ( f_i(x_i) \otimes g_i(z) ) = x_i \frac{\partial z}{\partial z} + z \frac{\partial x_i}{\partial z} = x_i + 0 = x_i\\]
 
 This gives us $\frac{\partial}{\partial z} ( \mathbf{x} z ) = \mathbf{x}$.
 
@@ -359,7 +363,6 @@ This gives us $\frac{\partial}{\partial z} ( \mathbf{x} z ) = \mathbf{x}$.
 Summing up the elements of a vector is an important operation in deep learning, such as the network loss function, but we can also use it as a way to simplify computing the derivative of vector dot product and other operations that reduce vectors to scalars.
 
 Let $y = sum( \mathbf{f}(\mathbf{x})) = \Sigma_{i=1}^n f_i(\mathbf{x})$.  Notice we were careful here to leave the parameter as a vector $\mathbf{x}$ because each function $f_i$ could use all values in the vector, not just $x_i$. The sum is over the {\bf results} of the function and not the parameter. The gradient ($1 \times n$ Jacobian) of vector summation is:
-
 
 \begin{array}{lcl}
 \frac{\partial y}{\partial \mathbf{x}} & = & \begin{bmatrix} \frac{\partial y}{\partial x_1}, \frac{\partial y}{\partial x_2}, \ldots, \frac{\partial y}{\partial x_n} \end{bmatrix}\\\\
@@ -521,7 +524,7 @@ Ooops! The partial $\frac{\partial u_2(x,u_1)}{\partial x}$ is wrong because it 
 
 A change in $x$ effects $y$ both as an operand of the addition and as the operand of the square operator. Here's an equation that describes how tweaks to $x$ affect the output:
 
-$\hat y = (x + \Delta x) + (x + \Delta x)^2$
+\\[\hat y = (x + \Delta x) + (x + \Delta x)^2\\]
 
 Then, $\Delta y = \hat y - y$.
 
@@ -529,7 +532,7 @@ If we let $x=1$, then $y=1+1^2=2$. If we bump $x$ by 1, $\Delta x=1$, then $\hat
 
 Enter the "law" of [*total derivatives*](https://en.wikipedia.org/wiki/Total_derivative), which basically says that to compute $\frac{dy}{dx}$, we need to sum up all possible contributions from changes in $x$ to the change in $y$. The total derivative with respect to $x$ assumes all variables, such as $u_1$ in this case, are functions of $x$ and potentially vary as $x$ varies.   The total derivative of $f(x) = u_2(x,u_1)$ that depends on $x$ directly and indirectly via intermediate variable $u_1(x)$ is given by:
 
-$\frac{dy}{dx} = \frac{\partial f(x)}{\partial x} = \frac{\partial u_2(x,u_1)}{\partial x} = \frac{\partial u_2}{\partial x}\frac{\partial x}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{\partial u_1}{\partial x} = \frac{\partial u_2}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{\partial u_1}{\partial x}$
+\\[\frac{dy}{dx} = \frac{\partial f(x)}{\partial x} = \frac{\partial u_2(x,u_1)}{\partial x} = \frac{\partial u_2}{\partial x}\frac{\partial x}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{\partial u_1}{\partial x} = \frac{\partial u_2}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{\partial u_1}{\partial x}\\]
 
 Using this formula, we get the proper answer:
 
@@ -586,7 +589,7 @@ u_2(x,u_1) &=& x u_1 &&& (y = f(x) = u_2(x,u_1))\\
 
 The form of the total derivative remains the same, however:
 
-$\frac{dy}{dx} = \frac{\partial u_2}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{d u_1}{\partial  x} = u_1 + x 2x = x^2 + 2x^2 = 3x^2$
+\\[\frac{dy}{dx} = \frac{\partial u_2}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{d u_1}{\partial  x} = u_1 + x 2x = x^2 + 2x^2 = 3x^2\\]
 
 It's the partials (weights) that change, not the formula, when the intermediate variable operators change.
 
@@ -705,15 +708,15 @@ That means that the Jacobian is the multiplication of two other Jacobians, which
 
 Whew!  We get the same answer as the scalar approach. This vector chain rule for vectors of functions and a single parameter appears to be correct and, indeed, mirrors the single-variable chain rule. Compare the vector rule:
 
-$\frac{\partial}{\partial x} \mathbf{f}(\mathbf{g}(x)) = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial x}$
+\\[\frac{\partial}{\partial x} \mathbf{f}(\mathbf{g}(x)) = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial x}\\]
 
 with the single-variable chain rule:
 
-$\frac{d}{dx} f(g(x)) = \frac{df}{dg}\frac{dg}{dx}$
+\\[\frac{d}{dx} f(g(x)) = \frac{df}{dg}\frac{dg}{dx}\\]
 
 To make this formula work for multiple parameters or vector $\mathbf{x}$, we just have to change $x$ to vector $\mathbf{x}$ in the equation.  The effect is  that $\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ and the resulting Jacobian,  $\frac{\partial \mathbf{f}}{\partial \mathbf{x}}$, are now matrices instead of  vertical vectors. Our complete *vector chain rule* is:
 
-$\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Note: matrix multiply doesn't commute; order of $\frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ matters)
+\\[\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Note: matrix multiply doesn't commute; order of $\frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ matters)\\]
 
 The beauty of the vector formula over the single-variable chain rule is that it automatically takes into consideration the total derivative while maintaining the same notational simplicity.  The Jacobian contains all possible combinations of $f_i$ with respect to $g_j$ and $g_i$ with respect to $x_j$. For completeness, here are the two Jacobian components in their full glory:
 
@@ -739,12 +742,12 @@ Even within this $\frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\
 
 As we saw in a previous section, element-wise operations on vectors $\mathbf{w}$ and $\mathbf{x}$ yield diagonal matrices with elements $\frac{\partial w_i}{\partial x_i}$ because $w_i$ is a function purely of $x_i$ but not $x_j$ for $j \neq i$. The same thing happens here when $f_i$ is purely a function of $g_i$ and $g_i$ is purely a function of $x_i$:
 
-$\frac{\partial \mathbf{f}}{\partial \mathbf{g}} = diag(\frac{\partial f_i}{\partial g_i})$\\
-$\frac{\partial \mathbf{g}}{\partial \mathbf{x}} = diag(\frac{\partial g_i}{\partial x_i})$
+\\[\frac{\partial \mathbf{f}}{\partial \mathbf{g}} = diag(\frac{\partial f_i}{\partial g_i})\\]
+\\[\frac{\partial \mathbf{g}}{\partial \mathbf{x}} = diag(\frac{\partial g_i}{\partial x_i}) \\]
 
 In this situation, the vector chain rule simplifies to:
 
-$\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = diag(\frac{\partial f_i}{\partial g_i})diag(\frac{\partial g_i}{\partial x_i}) = diag(\frac{\partial f_i}{\partial g_i}\frac{\partial g_i}{\partial x_i})$
+\\[\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = diag(\frac{\partial f_i}{\partial g_i})diag(\frac{\partial g_i}{\partial x_i}) = diag(\frac{\partial f_i}{\partial g_i}\frac{\partial g_i}{\partial x_i})\\]
 
 Therefore, the Jacobian reduces to a diagonal matrix whose elements are the single-variable chain rule values.
 
@@ -762,35 +765,49 @@ Let's worry about $max$ later and focus on computing $\frac{\partial}{\partial \
 
 The dot product $\mathbf{w} \cdot \mathbf{x}$ is just the summation of the element-wise multiplication of the elements: $\Sigma_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$. (You might also find it useful to remember the linear algebra notation $\mathbf{w} \cdot \mathbf{x} = \mathbf{w}^{T} \mathbf{x}$.) To use the chain rule for $y = sum(\mathbf{w} \otimes \mathbf{x})$, we introduce an intermediate vector variable $\mathbf{u}$ just as we did using the single-variable chain rule:
 
-$\mathbf{u} = \mathbf{w} \otimes \mathbf{x}$
-$y = sum(\mathbf{u})$
+\\[
+\begin{eqnarray*}
+\mathbf{u} &=& \mathbf{w} \otimes \mathbf{x}\\
+y &=& sum(\mathbf{u}) \\
+\end{eqnarray*}
+\\]
 
 Once we've rephrased $y$, we recognize two subexpressions for which we already know the partial derivatives:
 
-$\frac{\partial  \mathbf{u}}{\partial \mathbf{w}} = \frac{\partial }{\partial \mathbf{w}} (\mathbf{w} \otimes \mathbf{x}) = diag(\mathbf{x})$
-
-$\frac{\partial y}{\partial \mathbf{u}} = \frac{\partial }{\partial \mathbf{u}} sum(\mathbf{u}) = \vec{1}^T$
+\\[
+\begin{eqnarray*}
+\frac{\partial  \mathbf{u}}{\partial \mathbf{w}} &=& \frac{\partial }{\partial \mathbf{w}} (\mathbf{w} \otimes \mathbf{x}) &=& diag(\mathbf{x})\\
+\frac{\partial y}{\partial \mathbf{u}} &=& \frac{\partial }{\partial \mathbf{u}} sum(\mathbf{u}) &=& \vec{1}^T\\
+\end{eqnarray*}
+\\]
 
 The vector chain rule says to multiply the partials:
 
-$\frac{\partial y}{\partial \mathbf{w}} = \frac{\partial y}{\partial \mathbf{u}} \frac{\partial \mathbf{u}}{\partial \mathbf{w}} = \vec{1}^T  diag(\mathbf{x}) = \mathbf{x}^T$
+\\[\frac{\partial y}{\partial \mathbf{w}} = \frac{\partial y}{\partial \mathbf{u}} \frac{\partial \mathbf{u}}{\partial \mathbf{w}} = \vec{1}^T  diag(\mathbf{x}) = \mathbf{x}^T\\]
 
 To check our results, we can grind the dot product down into a pure scalar function:
 
-$y = \mathbf{w} \cdot \mathbf{x} = \Sigma_i^n (w_i x_i)$
-
-$\frac{\partial y}{\partial w_j} = \frac{\partial}{\partial w_j} \Sigma_i (w_i x_i) = \Sigma_i \frac{\partial}{\partial w_j} (w_i x_i) = \frac{\partial}{\partial w_j} (w_j x_j) = x_j$
+\\[
+\begin{eqnarray*}
+y &=& \mathbf{w} \cdot \mathbf{x} &=& \Sigma_i^n (w_i x_i)\\
+\frac{\partial y}{\partial w_j} &=& \frac{\partial}{\partial w_j} \Sigma_i (w_i x_i) &=& \Sigma_i \frac{\partial}{\partial w_j} (w_i x_i) &=& \frac{\partial}{\partial w_j} (w_j x_j) &=& x_j\\
+\end{eqnarray*}
+\\]
 
 Then:
 
-$\frac{\partial y}{\partial \mathbf{w}} = [ x_1, \ldots, x_n ] = \mathbf{x}^T$
+\\[\frac{\partial y}{\partial \mathbf{w}} = [ x_1, \ldots, x_n ] = \mathbf{x}^T\\]
 
 Hooray! Our results match. 
 
 Now, let $y = \mathbf{w} \cdot \mathbf{x} + b$, the full expression within the $max$ activation function call. We have two different partials to compute but don't need the chain rule:
 
-$\frac{\partial y}{\partial \mathbf{w}} = \frac{\partial }{\partial \mathbf{w}}\mathbf{w} \cdot \mathbf{x} + \frac{\partial }{\partial \mathbf{w}}b = \mathbf{x}^T + \vec{0}^T = \mathbf{x}^T$\\
-$\frac{\partial y}{\partial b} = \frac{\partial }{\partial b}\mathbf{w} \cdot \mathbf{x} + \frac{\partial }{\partial b}b = 0 + 1 = 1$
+\\[
+\begin{eqnarray*}
+\frac{\partial y}{\partial \mathbf{w}} &=& \frac{\partial }{\partial \mathbf{w}}\mathbf{w} \cdot \mathbf{x} + \frac{\partial }{\partial \mathbf{w}}b &=& \mathbf{x}^T + \vec{0}^T &=& \mathbf{x}^T\\
+\frac{\partial y}{\partial b} &=& \frac{\partial }{\partial b}\mathbf{w} \cdot \mathbf{x} + \frac{\partial }{\partial b}b &=& 0 + 1 &=& 1\\
+\end{eqnarray*}
+\\]
 
 Let's tackle the partials of the activation function output, $max(0, \mathbf{w} \cdot \mathbf{x} + b)$. The use of the $max(0,z)$ function call on scalar $z$ just says to treat all negative $z$ values as 0.  The derivative of the max function is a piecewise function. When $z \leq 0$, the derivative is 0 because $z$ is a constant. When $z > 0$, the derivative of the max function is just the derivative of $z$, which is $1$:
 
@@ -828,13 +845,13 @@ For the derivative of the broadcast version then, we get a vector of zeros and o
 
 To get the derivative of the $activation(\mathbf{x})$ function, we need the chain rule because of the nested subexpression, $\mathbf{w} \cdot \mathbf{x} + b$. Following our process, let's introduce intermediate scalar variable $z$ to represent the affine function giving:
 
-$z(\mathbf{w},b,\mathbf{x}) = \mathbf{w} \cdot \mathbf{x} + b$
+\\[z(\mathbf{w},b,\mathbf{x}) = \mathbf{w} \cdot \mathbf{x} + b\\]
 
-$activation(z) = max(0,z)$
+\\[activation(z) = max(0,z)\\]
 
 The vector chain rule tells us:
 
-$\frac{\partial activation}{\partial \mathbf{w}} = \frac{\partial activation}{\partial z}\frac{\partial z}{\partial \mathbf{w}}$
+\\[\frac{\partial activation}{\partial \mathbf{w}} = \frac{\partial activation}{\partial z}\frac{\partial z}{\partial \mathbf{w}}\\]
 
 which we can rewrite as follows:
 
@@ -950,12 +967,15 @@ Because the gradient indicates the direction of higher cost, we want to update $
 
 ## The derivative with respect to the bias
 
-
 To optimize the bias, $b$, we also need the partial with respect to $b$.  Here are the intermediate variables again:
 
-$u(\mathbf{w},b,\mathbf{x}) = max(0, \mathbf{w}\cdot\mathbf{x}+b)$\\
-$v(y,u) = y - u$\\
-$C(v) = \frac{1}{N} \sum_{i=1}^N v^2$
+\\[
+\begin{eqnarray*}
+u(\mathbf{w},b,\mathbf{x}) &=& max(0, \mathbf{w}\cdot\mathbf{x}+b)\\
+v(y,u) &=& y - u\\
+C(v) &=& \frac{1}{N} \sum_{i=1}^N v^2\\
+\end{eqnarray*}
+\\]
 
 We computed the partial with respect to the bias for equation $u(\mathbf{w},b,\mathbf{x})$ previously:
 
