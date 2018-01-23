@@ -305,7 +305,7 @@ That gives us $\frac{\partial (\mathbf{w+x})}{\partial \mathbf{w}} = \frac{\part
 
 Given the simplicity of this special case, $f_i(\mathbf{w})$ reducing to $f_i(w_i)$, you should be able to derive the Jacobians for the common element-wise binary operations on vectors:
 
-\\[\begin{array}{lllll}
+\\[\begin{eqnarray*}
 \text{Op} & \text{Partial with respect to } \mathbf{w} & \text{Partial with respect to }\mathbf{x}\\
 \hline\\
 
@@ -317,7 +317,7 @@ Given the simplicity of this special case, $f_i(\mathbf{w})$ reducing to $f_i(w_
 
 \oslash & \frac{\partial (\mathbf{w \oslash x})}{\partial \mathbf{w}}  =  diag(\ldots\frac{\partial (w_i / x_i)}{\partial w_i}\ldots)  =  diag(\ldots \frac{1}{x_i} \ldots) & \frac{\partial (\mathbf{w \oslash x})}{\partial \mathbf{x}}  =  diag(\ldots \frac{-w_i}{x_i^2} \ldots)\\
 
-\end{array}\\]
+\end{eqnarray*}\\]
 
 The $\otimes$ and $\oslash$ operators are element-wise multiplication and division; $\otimes$ is sometimes called the *Hadamard product*. There isn't a standard notation for element-wise multiplication and division so where using an approach consistent with our general binary operation notation.
 
@@ -590,14 +590,13 @@ We can achieve that by simply introducing a new temporary variable as an alias f
 
 This chain rule that takes into consideration the total derivative degenerates to the single-variable chain rule when all intermediate variables are functions of a single variable.   Consequently, you can remember this more general formula to cover both cases.  As a bit of dramatic foreshadowing, notice that the summation sure looks like a vector dot product, $\frac{\partial f}{\partial \mathbf{u}} \cdot \frac{\partial \mathbf{u}}{\partial x}$, or  a vector multiply $\frac{\partial f}{\partial \mathbf{u}} \frac{\partial \mathbf{u}}{\partial x}$. 
  
-Before we move on, a word of caution about terminology on the web. Unfortunately, the chain rule given in this section, based upon the total derivative, is universally called ``multivariable chain rule'' in calculus discussions, which is highly misleading! Only the intermediate variables are multivariate functions. The overall function, say, $f(x) = x + x^2$, is a scalar function that accepts a single parameter $x$. The derivative and parameter are scalars, not vectors, as one would expect with a so-called multivariate chain rule.  (Within the context of a non-matrix calculus class, ``multivariate chain rule'' is likely unambiguous.) To reduce confusion, we use ``single-variable total-derivative chain rule'' to spell out the distinguishing feature between the simple single-variable chain rule, $\frac{dy}{dx} = \frac{dy}{du}\frac{du}{dx}$, and this one. 
+Before we move on, a word of caution about terminology on the web. Unfortunately, the chain rule given in this section, based upon the total derivative, is universally called "multivariable chain rule" in calculus discussions, which is highly misleading! Only the intermediate variables are multivariate functions. The overall function, say, $f(x) = x + x^2$, is a scalar function that accepts a single parameter $x$. The derivative and parameter are scalars, not vectors, as one would expect with a so-called multivariate chain rule.  (Within the context of a non-matrix calculus class, "multivariate chain rule" is likely unambiguous.) To reduce confusion, we use "single-variable total-derivative chain rule" to spell out the distinguishing feature between the simple single-variable chain rule, $\frac{dy}{dx} = \frac{dy}{du}\frac{du}{dx}$, and this one. 
 
 \subsubsection{Vector chain rule}
 
 Now that we've got a good handle on the total-derivative chain rule, we're ready to tackle the chain rule for vectors of functions and vector variables. Surprisingly, this more general chain rule is just as simple looking as the single-variable chain rule for scalars. Rather than just presenting the vector chain rule, let's rediscover it ourselves so we get a firm grip on it. We can start by computing the derivative of a sample vector function with respect to a scalar, $\mathbf{y} = \mathbf{f}(x)$, to see if we can abstract a general formula.   
 
-$
-\begin{bmatrix}
+\\[\begin{bmatrix}
 	y_1(x)\\
 	y_2(x)\\
 \end{bmatrix} =
@@ -609,34 +608,31 @@ $
 	ln(x^2)\\
 	sin(3x)
 \end{bmatrix}
-$
+\\]
 
 Let's introduce two intermediate variables, $g_1$ and $g_2$, one for each $f_i$ so that $y$ looks more like $\mathbf{y} = \mathbf{f}(\mathbf{g}(x))$:
 
-$
-\begin{bmatrix}
+\\[ \begin{bmatrix}
 	g_1(x)\\
 	g_2(x)\\
 \end{bmatrix} = \begin{bmatrix}
 	x^2\\
 	3x\\
 \end{bmatrix}
-$
+\\]
 
-$
-\begin{bmatrix}
+\\[ \begin{bmatrix}
 	f_1(\mathbf{g})\\
 	f_2(\mathbf{g})\\
 \end{bmatrix} = \begin{bmatrix}
 	ln(g_1)\\
 	sin(g_2)\\
-\end{bmatrix}
-$
+\end{bmatrix}\\]
 
 
 The derivative of vector $\mathbf{y}$ with respect to scalar $x$ is a vertical vector with elements computed using the single-variable total-derivative chain rule:
 
-$\frac{\partial \mathbf{y}}{\partial x}  =
+\\[ \frac{\partial \mathbf{y}}{\partial x}  =
 \begin{bmatrix}
 	\frac{\partial f_1(\mathbf{g})}{\partial x}\\
 	\frac{\partial f_2(\mathbf{g})}{\partial x}\\
@@ -652,21 +648,18 @@ $\frac{\partial \mathbf{y}}{\partial x}  =
 \end{bmatrix} = \begin{bmatrix}
 	\frac{2}{x}\\
 	3cos(3x)\\
-\end{bmatrix}
-$
+\end{bmatrix}\\]
 
 Ok, so now we have the answer using just the scalar rules, albeit with the derivatives grouped into a vector. Let's try to abstract from that result what it looks like in vector form.  The goal is to convert the following vector of scalar operations to a vector operation. 
 
-$
-\begin{bmatrix}
+\\[ \begin{bmatrix}
 	\frac{\partial f_1}{\partial g_1}\frac{\partial g_1}{\partial x} + \frac{\partial f_1}{\partial g_2}\frac{\partial g_2}{\partial x}\\
 	\frac{\partial f_2}{\partial g_1}\frac{\partial g_1}{\partial x} + \frac{\partial f_2}{\partial g_2}\frac{\partial g_2}{\partial x}\\
-\end{bmatrix}
-$
+\end{bmatrix} \\]
 
 If we split the $\frac{\partial f_i}{\partial g_j}\frac{\partial g_j}{\partial x}$ terms, isolating the $\frac{\partial g_j}{\partial x}$ terms into a vector, we get a matrix by vector multiplication:
 
-$
+\\[
 \begin{bmatrix}
 	\frac{\partial f_1}{\partial g_1} & \frac{\partial f_1}{\partial g_2}\\
 	\frac{\partial f_2}{\partial g_1} & \frac{\partial f_2}{\partial g_2}\\
@@ -674,11 +667,11 @@ $
 \frac{\partial g_1}{\partial x}\\
 \frac{\partial g_2}{\partial x}\\
 \end{bmatrix} = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial \mathbf{g}}{\partial x}
-$
+\\]
 
 That means that the Jacobian is the multiplication of two other Jacobians, which is kinda cool.  Let's check our results:
 
-$
+\\[
 \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial \mathbf{g}}{\partial x} = \begin{bmatrix}
 	\frac{1}g_1 & 0\\
 	0 & cos(g_2)\\
@@ -692,7 +685,7 @@ $
 	\frac{2}{x}\\
 	3cos(3x)\\
 \end{bmatrix}
-$
+\\]
 
 Whew!  We get the same answer as the scalar approach. This vector chain rule for vectors of functions and a single parameter appears to be correct and, indeed, mirrors the single-variable chain rule. Compare the vector rule:
 
@@ -708,7 +701,7 @@ $\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = \frac
 
 The beauty of the vector formula over the single-variable chain rule is that it automatically takes into consideration the total derivative while maintaining the same notational simplicity.  The Jacobian contains all possible combinations of $f_i$ with respect to $g_j$ and $g_i$ with respect to $x_j$. For completeness, here are the two Jacobian components in their full glory:
 
-$
+\\[
 \frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = \begin{bmatrix}
 	\frac{\partial f_1}{\partial g_1} & \frac{\partial f_1}{\partial g_2} & \ldots & \frac{\partial f_1}{\partial g_k}\\
 	\frac{\partial f_2}{\partial g_1} & \frac{\partial f_2}{\partial g_2} & \ldots & 	
@@ -722,7 +715,7 @@ $
 	& &\ldots\\
 	\frac{\partial g_k}{\partial x_1} & \frac{\partial g_k}{\partial x_2} & \ldots & \frac{\partial g_k}{\partial x_n}\\
 \end{bmatrix}
-$
+\\]
 
 where $m=|f|$, $n=|x|$, and $k=|g|$. The resulting Jacobian is $m \times n$ (an $m \times k$ matrix multiplied by a $k \times n$ matrix). 
 
@@ -1133,25 +1126,26 @@ Vector dot product $y = \mathbf{f(w)} \cdot \mathbf{g(x)} = \Sigma_i^n (w_i x_i)
 \frac{dy}{d\mathbf{u}} = \frac{d}{d\mathbf{u}} sum(\mathbf{u}) = \vec{1}^T\\\\
 \frac{dy}{d\mathbf{x}} = \frac{dy}{d\mathbf{u}} \times \frac{d\mathbf{u}}{d\mathbf{x}} = \vec{1}^T \times diag(\mathbf{w}) = \mathbf{w}^T
 \end{array}
-\\\]
+\\]
 
 Similarly, $\frac{dy}{d\mathbf{w}} = \mathbf{x}^T$.
-
 
 ## Chain rules
 
 The *vector chain rule* is the general form as it degenerates to the others. When $f$ is a function of a single variable $x$ and all intermediate variables $u$ are functions of a single variable, the single-variable chain rule applies. When some or all of the intermediate variables are functions of multiple variables, the single-variable total-derivative chain rule applies. In all other cases, the vector chain rule applies.
 
-\begin{tabular}{ccc}
-\bf{Single-variable rule} & \bf{Single-variable total-derivative rule} & \bf{Vector  rule}\\\\
+<table>
+<tr>
+<th>Single-variable rule</th><th>Single-variable total-derivative rule</th><th>Vector  rule</th>
+</tr>
+<tr>
+<td>$\frac{df}{dx} = \frac{df}{du}\frac{du}{dx}$</td>
 
-$\frac{df}{dx} = \frac{df}{du}\frac{du}{dx}$ &
+<td>$\frac{\partial f(u_1,\ldots,u_n)}{\partial x} = \frac{\partial f}{\partial \mathbf{u}} \frac{\partial \mathbf{u}}{\partial x}$</td>
 
-$\frac{\partial f(u_1,\ldots,u_n)}{\partial x} = \frac{\partial f}{\partial \mathbf{u}} \frac{\partial \mathbf{u}}{\partial x}$ &
-
-$\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$
-\end{tabular}
-
+<td>$\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$</td>
+</tr>
+</table>
 
 # Resources
 
