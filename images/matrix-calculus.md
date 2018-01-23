@@ -10,7 +10,7 @@ title: The Matrix Calculus You Need For Deep Learning
 
 Most of us last saw calculus in school, but derivatives are a critical part of machine learning, particularly deep neural networks, which are trained by optimizing a loss function. Pick up a machine learning paper or the documentation of a library such as [PyTorch](link) and calculus comes screeching back into your life like distant relatives around the holidays.  And it's not just any old scalar calculus that pops up---we need differential *matrix calculus*, the shotgun wedding of [linear algebra](https://en.wikipedia.org/wiki/Linear_algebra) and [multivariate calculus](https://en.wikipedia.org/wiki/Multivariable_calculus).
 
-For example, the activation of a single computation unit in a neural network is typically calculated using the dot product (from linear algebra) of an edge weight vector $\mathbf{w}$ with an input vector $\mathbf{x}$ plus a scalar bias (threshold): $z(\mathbf{x}) = \Sigma_i^n w_i x_i + b = \mathbf{w} \cdot \mathbf{x} + b$. Function $z(\mathbf{x})$ is called the unit's *affine function* and is followed by a [rectified linear unit](link), which clips negative values to zero: $max(0, z(\mathbf{x}))$. Such a computational unit is sometimes referred to as an ``artificial neuron'' and looks like:
+For example, the activation of a single computation unit in a neural network is typically calculated using the dot product (from linear algebra) of an edge weight vector $\mathbf{w}$ with an input vector $\mathbf{x}$ plus a scalar bias (threshold): $z(\mathbf{x}) = \Sigma_i^n w_i x_i + b = \mathbf{w} \cdot \mathbf{x} + b$. Function $z(\mathbf{x})$ is called the unit's *affine function* and is followed by a [rectified linear unit](link), which clips negative values to zero: $max(0, z(\mathbf{x}))$. Such a computational unit is sometimes referred to as an "artificial neuron" and looks like:
 
 <img src="neuron.png" alt=neuron.png width=50%>
 
@@ -185,7 +185,7 @@ So we have $m=n$ functions and parameters, in this case. Generally speaking, tho
 
 where each $\frac{\partial}{\partial \mathbf{x}} f_i(\mathbf{x})$ is a horizontal $n$-vector because the partial derivative is with respect to a vector, $\mathbf{x}$, whose length is $n = |\mathbf{x}|$.  The width of the Jacobian is $n$ if we're taking the partial derivative with respect to $\mathbf{x}$ because there are $n$ parameters we can wiggle, each potentially changing the function's value. Therefore, the Jacobian is always $m$ rows for $m$ equations.  It helps to think about the possible Jacobian shapes visually:
 
-<img src="shape.png" width="40%">
+<img src="shape.png" width="30%">
 
 The Jacobian of the identity function $\mathbf{f(x)} = \mathbf{x}$, with $f_i(\mathbf{x}) = x_i$, has $n$ functions and each function has $n$ parameters held in a single vector $\mathbf{x}$. The Jacobian is, therefore, a square matrix since $m=n$:
 
@@ -220,7 +220,7 @@ The Jacobian of the identity function $\mathbf{f(x)} = \mathbf{x}$, with $f_i(\m
 & & \ddots\\
 0 & 0 & \ldots &1 \\
 \end{bmatrix}\\\\
-& = & I ~~~~(I \text{ is the identity matrix with ones down the diagonal})\\
+& = & I &&&(I \text{ is the identity matrix with ones down the diagonal})\\
 \end{eqnarray*}
 \\]
 
@@ -278,12 +278,12 @@ Under this condition, the elements along the diagonal of the Jacobian are $\frac
 
 \\[\frac{\partial \mathbf{y}}{\partial \mathbf{w}}  = \begin{bmatrix}
 \frac{\partial}{\partial w_1} ( f_{1}(w_1) \bigcirc g_{1}(x_1) )\\
-& \frac{\partial}{\partial w_2} (f_{2}(w_2) \bigcirc g_{2}(x_2) ) & &\text{\huge0}\\
+& \frac{\partial}{\partial w_2} (f_{2}(w_2) \bigcirc g_{2}(x_2) ) & &\huge0\\
 & & \ldots \\
-\text{\huge0}& & & \frac{\partial}{\partial w_n} (f_{n}(w_n) \bigcirc g_{n}(x_n) )
+\huge0& & & \frac{\partial}{\partial w_n} (f_{n}(w_n) \bigcirc g_{n}(x_n) )
 \end{bmatrix}\\]
 
-(The large ``0''s are a shorthand indicating all of the off-diagonal are 0.)
+(The large "0"s are a shorthand indicating all of the off-diagonal are 0.)
 
 More succinctly, we can write:
 
@@ -306,26 +306,23 @@ That gives us $\frac{\partial (\mathbf{w+x})}{\partial \mathbf{w}} = \frac{\part
 Given the simplicity of this special case, $f_i(\mathbf{w})$ reducing to $f_i(w_i)$, you should be able to derive the Jacobians for the common element-wise binary operations on vectors:
 
 \\[\begin{eqnarray*}
-\text{Op} & \text{Partial with respect to } \mathbf{w} & \text{Partial with respect to }\mathbf{x}\\
+\text{Op} & ~~ & \text{Partial with respect to } \mathbf{w} & ~~ &  \text{Partial with respect to }\mathbf{x}\\
 \hline\\
 
-+ & \frac{\partial (\mathbf{w+x})}{\partial \mathbf{w}} = diag(\ldots \frac{\partial (w_i + x_i)}{\partial w_i} \ldots) = diag(\vec{1}) = I & \frac{\partial (\mathbf{w+x})}{\partial \mathbf{x}} =  I\\\\
++ & ~~ & \frac{\partial (\mathbf{w+x})}{\partial \mathbf{w}} = diag(\ldots \frac{\partial (w_i + x_i)}{\partial w_i} \ldots) = diag(\vec{1}) = I & ~~ & \frac{\partial (\mathbf{w+x})}{\partial \mathbf{x}} =  I\\\\
 
-- & \frac{\partial (\mathbf{w-x})}{\partial \mathbf{w}}  =  diag(\ldots\frac{\partial (w_i - x_i)}{\partial w_i}\ldots) =  diag(\vec{1})  =  I & \frac{\partial (\mathbf{w-x})}{\partial \mathbf{x}}  =  diag(\ldots\frac{\partial (w_i - x_i)}{\partial x_i}\ldots)  =  diag(-\vec{1})  =  -I \\\\
+- & ~~ & \frac{\partial (\mathbf{w-x})}{\partial \mathbf{w}}  =  diag(\ldots\frac{\partial (w_i - x_i)}{\partial w_i}\ldots) =  diag(\vec{1})  =  I & ~~ & \frac{\partial (\mathbf{w-x})}{\partial \mathbf{x}}  =  diag(\ldots\frac{\partial (w_i - x_i)}{\partial x_i}\ldots)  =  diag(-\vec{1})  =  -I \\\\
 
-\otimes & \frac{\partial (\mathbf{w \otimes x})}{\partial \mathbf{w}}  =  diag(\ldots\frac{\partial (w_i \times x_i)}{\partial w_i} \ldots)  =  diag(\mathbf{x}) & \frac{\partial (\mathbf{w \otimes x})}{\partial \mathbf{x}}  =  diag(\mathbf{w})\\\\
+\otimes & ~~ & \frac{\partial (\mathbf{w \otimes x})}{\partial \mathbf{w}}  =  diag(\ldots\frac{\partial (w_i \times x_i)}{\partial w_i} \ldots)  =  diag(\mathbf{x}) & ~~ & \frac{\partial (\mathbf{w \otimes x})}{\partial \mathbf{x}}  =  diag(\mathbf{w})\\\\
 
-\oslash & \frac{\partial (\mathbf{w \oslash x})}{\partial \mathbf{w}}  =  diag(\ldots\frac{\partial (w_i / x_i)}{\partial w_i}\ldots)  =  diag(\ldots \frac{1}{x_i} \ldots) & \frac{\partial (\mathbf{w \oslash x})}{\partial \mathbf{x}}  =  diag(\ldots \frac{-w_i}{x_i^2} \ldots)\\
-
+\oslash & ~~ & \frac{\partial (\mathbf{w \oslash x})}{\partial \mathbf{w}}  =  diag(\ldots\frac{\partial (w_i / x_i)}{\partial w_i}\ldots)  =  diag(\ldots \frac{1}{x_i} \ldots) & ~~ & \frac{\partial (\mathbf{w \oslash x})}{\partial \mathbf{x}}  =  diag(\ldots \frac{-w_i}{x_i^2} \ldots)\\
 \end{eqnarray*}\\]
 
 The $\otimes$ and $\oslash$ operators are element-wise multiplication and division; $\otimes$ is sometimes called the *Hadamard product*. There isn't a standard notation for element-wise multiplication and division so where using an approach consistent with our general binary operation notation.
 
 ## Derivatives involving scalar expansion
 
-When we multiply or add scalars to vectors, we're implicitly expanding the scalar to a vector and then performing an element-wise binary operation. For example, adding scalar $z$  to vector $\mathbf{x}$, $\mathbf{y} = \mathbf{x} + z$,
-is really
-$\mathbf{y} = \mathbf{f(x)} + \mathbf{g}(z)$ where $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(z) = \vec{1} z$. Notation $\vec{1}$ represents a vector of ones of appropriate length.  $z$ is any scalar that doesn't depend on $\mathbf{x}$, which is useful because then $\frac{\partial z}{\partial x_i} = 0$ for any $x_i$ and that will simplify our partial derivative computations. (It's okay to think of variable $z$ as a constant for our discussion here.)  Similarly, multiplying by a scalar, $\mathbf{y} = \mathbf{x} z$, is really $\mathbf{y} = \mathbf{f(x)} \otimes \mathbf{g}(z) = \mathbf{x} \otimes \vec{1}z$ where $\otimes$ is the element-wise  multiplication (Hadamard product) of the two vectors.
+When we multiply or add scalars to vectors, we're implicitly expanding the scalar to a vector and then performing an element-wise binary operation. For example, adding scalar $z$  to vector $\mathbf{x}$, $\mathbf{y} = \mathbf{x} + z$, is really $\mathbf{y} = \mathbf{f(x)} + \mathbf{g}(z)$ where $\mathbf{f(x)} = \mathbf{x}$ and $\mathbf{g}(z) = \vec{1} z$. Notation $\vec{1}$ represents a vector of ones of appropriate length.  $z$ is any scalar that doesn't depend on $\mathbf{x}$, which is useful because then $\frac{\partial z}{\partial x_i} = 0$ for any $x_i$ and that will simplify our partial derivative computations. (It's okay to think of variable $z$ as a constant for our discussion here.)  Similarly, multiplying by a scalar, $\mathbf{y} = \mathbf{x} z$, is really $\mathbf{y} = \mathbf{f(x)} \otimes \mathbf{g}(z) = \mathbf{x} \otimes \vec{1}z$ where $\otimes$ is the element-wise  multiplication (Hadamard product) of the two vectors.
 
 The partial derivatives of vector-scalar addition and multiplication with respect to vector $\mathbf{x}$ use our element-wise rule:
 
@@ -402,15 +399,15 @@ The derivative with respect to scalar variable $z$ is $1 \times 1$:
 
 ## The Chain Rules
 
-We can't compute partial derivatives of very complicated functions using just the basic matrix calculus rules we've seen so far.  For example, we can't take the derivative of nested expressions like $sum(\mathbf{w}+\mathbf{x})$ directly without reducing it to its scalar equivalent. We need to be able to combine our basic vector rules using what we can call the *vector chain rule*.   Unfortunately, there are a number of rules for differentiation that fall under the name ``chain rule'' so we have to be careful which chain rule we're talking about. Part of our goal here is to clearly define and name three different chain rules and indicate in which situation they are appropriate. To get warmed up, we'll start with what we'll call the *single-variable chain rule*, where we want the derivative of a scalar function with respect to a scalar. Then we'll move on to an important concept called the *total derivative* and use it to define what we'll pedantically call the *single-variable total-derivative chain rule*. Then, we'll be ready for the vector chain rule in its full glory as needed for neural networks.
+We can't compute partial derivatives of very complicated functions using just the basic matrix calculus rules we've seen so far.  For example, we can't take the derivative of nested expressions like $sum(\mathbf{w}+\mathbf{x})$ directly without reducing it to its scalar equivalent. We need to be able to combine our basic vector rules using what we can call the *vector chain rule*.   Unfortunately, there are a number of rules for differentiation that fall under the name "chain rule" so we have to be careful which chain rule we're talking about. Part of our goal here is to clearly define and name three different chain rules and indicate in which situation they are appropriate. To get warmed up, we'll start with what we'll call the *single-variable chain rule*, where we want the derivative of a scalar function with respect to a scalar. Then we'll move on to an important concept called the *total derivative* and use it to define what we'll pedantically call the *single-variable total-derivative chain rule*. Then, we'll be ready for the vector chain rule in its full glory as needed for neural networks.
 
 The chain rule is conceptually a divide and conquer strategy (like Quicksort) that breaks complicated expressions into subexpressions whose derivatives are easier to compute.  Its power derives from the fact that we can process each simple subexpression in isolation yet still combine the  intermediate results to get the correct overall result.
 
 The chain rule comes into play when we need the derivative of an expression composed of nested subexpressions. For example, we need the chain rule when confronted with expressions like $\frac{d}{dx} sin(x^2)$.  The outermost expression takes the $sin$ of an intermediate result, a nested subexpression that squares $x$. Specifically, we need the single-variable chain rule, so let's start by digging into that in more detail.
 
-\subsubsection{Single-variable chain rule}
+### Single-variable chain rule
 
-Let's start with the solution to the derivative of our nested expression: $\frac{d}{dx} sin(x^2) = 2xcos(x^2)$.  It doesn't take a mathematical genius to recognize components of the solution that smack of scalar differentiation rules, $\frac{d}{dx}x^2 = 2x$ and $\frac{d}{du} sin(u) = cos(u)$. It looks like the solution is to multiply the derivative of the outer expression by the derivative of the inner expression or ``chain the pieces together,'' which is exactly right. In this section, we'll explore the general principle at work and provide a process that works for highly-nested expressions of a single variable.
+Let's start with the solution to the derivative of our nested expression: $\frac{d}{dx} sin(x^2) = 2xcos(x^2)$.  It doesn't take a mathematical genius to recognize components of the solution that smack of scalar differentiation rules, $\frac{d}{dx}x^2 = 2x$ and $\frac{d}{du} sin(u) = cos(u)$. It looks like the solution is to multiply the derivative of the outer expression by the derivative of the inner expression or "chain the pieces together," which is exactly right. In this section, we'll explore the general principle at work and provide a process that works for highly-nested expressions of a single variable.
 
 Chain rules are typically defined in terms of nested functions, such as $y = f(g(x))$ for single-variable chain rules. (You will also see the chain rule defined using function composition $(f \circ g)(x)$, which is the same thing.)  Some sources write the derivative using shorthand notation $y' = f'(g(x))g'(x)$, but that hides the fact that we are introducing an intermediate variable: $u = g(x)$, which we'll see shortly. It's better to define the [single-variable chain rule](http://m.wolframalpha.com/input/?i=chain+rule) of $f(g(x))$ explicitly so we never take the derivative with respect to the wrong variable. Here is the formulation of the single-variable chain rule we recommend:
 
@@ -418,24 +415,23 @@ Chain rules are typically defined in terms of nested functions, such as $y = f(g
 
 To deploy the single-variable chain rule, follow these steps:
 
-\begin{enumerate}
-	\item  Introduce intermediate variables for nested subexpressions and subexpressions for both binary and unary operators; e.g., $\times$ is binary, $sin(x)$ and other trigonometric functions are usually unary because there is a single operand. This step normalizes all equations to single operators or function applications.
-	\item Compute derivatives of the intermediate variables with respect to their parameters.
-	\item Combine all derivatives of intermediate variables by multiplying them together to get the overall result.
-	\item Substitute intermediate variables back in if any are referenced in the derivative equation.
-\end{enumerate}
+1. Introduce intermediate variables for nested subexpressions and subexpressions for both binary and unary operators; e.g., $\times$ is binary, $sin(x)$ and other trigonometric functions are usually unary because there is a single operand. This step normalizes all equations to single operators or function applications.
+1. Compute derivatives of the intermediate variables with respect to their parameters.
+1. Combine all derivatives of intermediate variables by multiplying them together to get the overall result.
+1. Substitute intermediate variables back in if any are referenced in the derivative equation.
 
-The third step puts the ``chain'' in ``chain rule'' because it chains together intermediate results. Multiplying the intermediate derivatives together is the common theme among all variations of the chain rule.
+
+The third step puts the "chain" in "chain rule" because it chains together intermediate results. Multiplying the intermediate derivatives together is the common theme among all variations of the chain rule.
 
 Let's try  this process on $y = f(g(x)) = sin(x^2)$:
 
 1. Introduce intermediate variables. Let $u = x^2$ represent subexpression $x^2$ (shorthand for $u(x) = x^2$). This gives us:
-	$u = x^2$ ~~~~~~~~~~~~~~~~~~~~~~~~~~~(relative to definition $f(g(x))$, $g(x) = x^2$)
-	$y = sin(u)$ ~~~~~~~~~~~~~~~~~~~~~~($y = f(u) = sin(u)$)
+	$u = x^2$ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(relative to definition $f(g(x))$, $g(x) = x^2$)
+	$y = sin(u)$ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;($y = f(u) = sin(u)$)
 The order of these subexpressions does not affect the answer, but we recommend working in the reverse order of operations dictated by the nesting (innermost to outermost). That way, expressions and derivatives are always functions of previously-computed elements. 
 1.	Compute derivatives.
-	$\frac{du}{dx} = 2x$ ~~~~~~~~~~~~~~~~~~~~~~~~~ (Take derivative with respect to $x$)
-	$\frac{dy}{du} = cos(u)$  ~~~~~~~~~~~~~~~~~~~~ (Take derivative with respect to $u$ not $x$)
+	$\frac{du}{dx} = 2x$ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Take derivative with respect to $x$)
+	$\frac{dy}{du} = cos(u)$  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Take derivative with respect to $u$ not $x$)
 1. Combine.
 	$\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx} = cos(u)2x$
 1. Subtitute.
@@ -447,73 +443,81 @@ You can think of the combining step of the chain rule in terms of units cancelin
 
 Another way to to think about the single-variable chain rule is to visualize the overall expression as a dataflow diagram or chain of operations (or [abstract syntax tree](link) for compiler people):
 
-<img src="sin-square.png" alt=sin-square.png width=30%>
+<img src="sin-square.png" alt=sin-square.png width=15%>
 
-Changes to function parameter $x$ bubble up through a squaring operation then through a $sin$ operation to change result $y$. You can think of $\frac{du}{dx}$ as ``getting changes from $x$ to $u$ and $\frac{dy}{du}$ as ``getting changes from $u$ to $y$.'' Getting from $x$ to $y$ requires an intermediate hop. The chain rule is, by convention, usually written from the output variable down to the parameter(s), $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$. But, the $x$-to-$y$ perspective would be more clear if we reversed the flow and used the equivalent $\frac{dy}{dx} = \frac{du}{dx}\frac{dy}{du}$.
+Changes to function parameter $x$ bubble up through a squaring operation then through a $sin$ operation to change result $y$. You can think of $\frac{du}{dx}$ as "getting changes from $x$ to $u$ and $\frac{dy}{du}$ as "getting changes from $u$ to $y$." Getting from $x$ to $y$ requires an intermediate hop. The chain rule is, by convention, usually written from the output variable down to the parameter(s), $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$. But, the $x$-to-$y$ perspective would be more clear if we reversed the flow and used the equivalent $\frac{dy}{dx} = \frac{du}{dx}\frac{dy}{du}$.
 
 **Conditions under which the single-variable chain rule applies**. Notice that there is a single dataflow path from $x$ to the root $y$.  Changes in $x$ can influence output $y$ in only one way.  That is the condition under which we can apply the single-variable chain rule. An easier condition to remember, though one that's a bit looser, is that none of the intermediate subexpression functions, $u(x)$ and $y(u)$, have more than one parameter.  Consider $y(x) = x+x^2$, which would become $y(x,u) = x+u$ after introducing intermediate variable $u$.  As we'll see in the next section, $y(x,u)$ has multiple paths from $x$ to $y$. To handle that situation, we'll deploy the single-variable total-derivative chain rule.
 	
-<div style="border:1px;border-style:solid; padding=5">As an aside for those interested in automatic differentiation, papers and library documentation use terminology *forward differentiation* and *backward differentiation* (for use in the [back-propagation algorithm](link)). From a dataflow perspective, we are computing a forward differentiation because it follows the normal data flow direction.  Backward differentiation, naturally, goes the other direction and we're asking how a change in the output would affect function parameter $x$. Because backward differentiation can determine changes in all function parameters at once, it turns out to be much more efficient for computing the derivative of functions with lots of parameters. Forward differentiation, on the other hand, must consider how a change in each parameter, in turn, affects the function output $y$.</div>
+<div style="border:1px;border-style:solid; padding=5">As an aside for those interested in automatic differentiation, papers and library documentation use terminology *forward differentiation* and *backward differentiation* (for use in the [back-propagation algorithm](link)). From a dataflow perspective, we are computing a forward differentiation because it follows the normal data flow direction.  Backward differentiation, naturally, goes the other direction and we're asking how a change in the output would affect function parameter $x$. Because backward differentiation can determine changes in all function parameters at once, it turns out to be much more efficient for computing the derivative of functions with lots of parameters. Forward differentiation, on the other hand, must consider how a change in each parameter, in turn, affects the function output $y$.
 
-
-Forward differentiation from $x$ to $y$ | Backward differentiation from $y$ to $x$
-\frac{dy}{dx} = \frac{du}{dx}\frac{dy}{du}$ | $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$
+<table>
+<tr><th>Forward differentiation from $x$ to $y$</th><th>Backward differentiation from $y$ to $x$</th></tr>
+<tr><td>$\frac{dy}{dx} = \frac{du}{dx}\frac{dy}{du}$</td><td>$\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$</td></tr>
+</table>
 
 Automatic differentiation is beyond the scope of this article, but we're setting the stage for a future article.
-}}
+</div>
 
 Many readers can solve $\frac{d}{dx}sin(x^2)$ in their heads, but our goal is a process that will work even for  very complicated expressions. This process is also how [automatic differentiation](link) works in libraries like PyTorch. So, by solving derivatives manually  in this way, you're also learning how to define functions for custom neural networks in PyTorch.
 
 With deeply nested expressions, it helps to think about deploying the chain rule the way a compiler unravels nested function calls like $f_4(f_3(f_2(f_1(x))))$ into a sequence (chain) of calls. The result of calling function $f_i$ is saved to a temporary variable called a register, which is then passed as a parameter to $f_{i+1}$.  Let's see how that looks in practice by using our process on a highly-nested equation like $y = f(x) = ln(sin(x^3)^2)$:
 
-\begin{enumerate}
-	\item Introduce intermediate variables.\\
-$u_1 = f_1(x) = x^3$\\
-$u_2 = f_2(u_1) = sin(u_1)$\\
-$u_3 = f_3(u_2) = u_2^2$\\
-$u_4 = f_4(u_3) = ln(u_3)$ ~~~~~~($y = u_4$)
-	\item Compute derivatives.\\
-$\begin{array}{lllll}
-\vspace{1mm}
+<ol>
+	<li>Introduce intermediate variables.
+	$\begin{eqnarray*}
+u_1 &=& f_1(x) &= x^3\\
+u_2 &= &f_2(u_1) &= sin(u_1)\\
+u_3 &= &f_3(u_2) &= u_2^2\\
+u_4 &=& f_4(u_3) &= ln(u_3) ~~~~~~(y = u_4)
+\end{eqnarray*}$
+	<li> Compute derivatives.
+$\begin{eqnarray*}
 \frac{d}{u_x} u_1 & = & \frac{d}{x} x^3 & = & 3x^2\\
-\vspace{1mm}
 \frac{d}{u_1} u_2 & = & \frac{d}{u_1} sin(u_1) & = & cos(u_1) \\
 \frac{d}{u_2} u_3 & = & \frac{d}{u_2} u_2^2 & =& 2u_2\\
 \frac{d}{u_3} u_4 & = & \frac{d}{u_3} ln(u_3) & =& \frac{1}{u_3}\\
-\end{array}$
-	\item Combine four intermediate values.\\
+\end{eqnarray*}$
+	<li> Combine four intermediate values.
 $\frac{dy}{dx} = \frac{d u_4}{dx} = \frac{d u_4}{du_3}\frac{du_3}{d u_2} \frac{du_2}{du_1} \frac{du_1}{dx} = \frac{1}{u_3}  2u_2  cos(u_1)  3x^2 = \frac{6u_2x^2cos(u_1)}{u_3}$
-	\item Subtitute.\\
+	<li> Subtitute.
 $\frac{dy}{dx} = \frac{6sin(u_1)x^2cos(x^3)}{u_2^2} = \frac{6sin(x^3)x^2cos(x^3)}{sin(u_1)^2} = \frac{6sin(x^3)x^2cos(x^3)}{sin(x^3)^2} = \frac{6x^2cos(x^3)}{sin(x^3)}$
-\end{enumerate}
-
+</ol>
 
 Here is a visualization of the data flow through the chain of operations from $x$ to $y$:
 
-<img src="chain-tree.png" alt=chain-tree.png width=30%>
+<img src="chain-tree.png" alt=chain-tree.png width=20%>
 
 At this point, we can handle derivatives of nested expressions of a single variable, $x$, using the chain rule but only if $x$ can affect $y$ through a single data flow path. To handle more complicated expressions, we need to extend our technique, which we'll do next.
 
-\subsubsection{Single-variable total-derivative chain rule}
+### Single-variable total-derivative chain rule
 
 Our single-variable chain rule has limited applicability because all intermediate variables must be functions of single variables. But, it demonstrates the core mechanism of the chain rule, that of multiplying out all derivatives of intermediate subexpressions. To handle more general expressions such as $y = f(x) = x+x^2$, however, we need to augment that basic chain rule.
 
 Of course, we immediately see $\frac{dy}{dx} = \frac{d}{dx}x + \frac{d}{dx}x^2 = 1 + 2x$, but that is using the scalar  addition derivative rule, not the chain rule.  If we tried to apply the single-variable chain rule, we'd get the wrong answer. In fact, the previous chain rule is meaningless in this case because derivative operator $\frac{d}{dx}$ does not apply to multivariate functions, such as $u_2$ among our intermediate variables:
 
-$u_1(x) = x^2$\\
-$u_2(x,u_1) = x + u_1$ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ($y = f(x) = u_2(x,u_1)$)
+\\[
+\begin{eqnarray*}
+u_1(x) &=& x^2\\
+u_2(x,u_1) &=& x + u_1 & & & (y = f(x) = u_2(x,u_1))
+\end{eqnarray*}
+\\]
 
 Let's try it anyway to see what happens. If we pretend that $\frac{du_2}{du_1} = 0 + 1 = 1$ and $\frac{du_1}{dx} = 2x$, then $\frac{dy}{dx} = \frac{du_2}{dx} = \frac{du_2}{du_1} \frac{du_1}{dx} = 2x$ instead of the right answer $1 + 2x$.  
 
 Because $u_2(x,u) = x + u_1$ has multiple parameters, partial derivatives come into play. Let's blindly apply the partial derivative operator to all of our equations and see what we get:
 
-$\frac{\partial u_1(x)}{\partial x} = 2x$ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(same as $\frac{du_1(x)}{dx}$)\\
-$\frac{\partial u_2(x,u_1)}{\partial u_1} = \frac{\partial }{\partial u_1}(x + u_1) = 0 + 1 = 1$\\
-$\frac{\partial u_2(x,u_1)}{\partial x} = \frac{\partial }{\partial x}(x + u_1) = 1 + 0 = 1$ ~~~~~~~~~~(something's not quite right here!)\\
+\\[
+\begin{eqnarray*}
+\frac{\partial u_1(x)}{\partial x} &=& 2x &&&(\text{same as }\frac{du_1(x)}{dx})\\
+\frac{\partial u_2(x,u_1)}{\partial u_1} &=& \frac{\partial }{\partial u_1}(x + u_1) = 0 + 1 = 1\\
+\frac{\partial u_2(x,u_1)}{\partial x} &=& \frac{\partial }{\partial x}(x + u_1) = 1 + 0 = 1 & & &(\text{something's not quite right here!})\\
+\end{eqnarray*}
+\\]
 
 Ooops! The partial $\frac{\partial u_2(x,u_1)}{\partial x}$ is wrong because it violates a key assumption for partial derivatives. When taking the partial derivative with respect to $x$, the other variables must not vary as $x$ varies. Otherwise, we could not act as if the other variables were constants. Clearly, though, $u_1(x)=x^2$ is a function of $x$ and therefore varies with $x$. $\frac{\partial u_2(x,u_1)}{\partial x} \neq 1 + 0$ because $\frac{\partial u_1(x)}{\partial x} \neq 0$. A quick look at the data flow diagram for $y=u_2(x,u_1)$ shows multiple paths from $x$ to $y$, thus, making it clear we need to consider direct and indirect (through $u_1(x)$) dependencies on $x$:
 
-<img src="plus-square.png" alt=plus-square.png width=30%>
+<img src="plus-square.png" alt=plus-square.png width=20%>
 
 A change in $x$ effects $y$ both as an operand of the addition and as the operand of the square operator. Here's an equation that describes how tweaks to $x$ affect the output:
 
@@ -523,7 +527,7 @@ Then, $\Delta y = \hat y - y$.
 
 If we let $x=1$, then $y=1+1^2=2$. If we bump $x$ by 1, $\Delta x=1$, then $\hat y = (1+1) + (1+1)^2 = 2 + 4 = 6$. The change in $y$ is not $1$, as $\partial u_2 / u_1$ would lead us to believe, but $6-2 = 4$!
 
-Enter the ``law'' of [*total derivatives*](https://en.wikipedia.org/wiki/Total_derivative), which basically says that to compute $\frac{dy}{dx}$, we need to sum up all possible contributions from changes in $x$ to the change in $y$. The total derivative with respect to $x$ assumes all variables, such as $u_1$ in this case, are functions of $x$ and potentially vary as $x$ varies.   The total derivative of $f(x) = u_2(x,u_1)$ that depends on $x$ directly and indirectly via intermediate variable $u_1(x)$ is given by:
+Enter the "law" of [*total derivatives*](https://en.wikipedia.org/wiki/Total_derivative), which basically says that to compute $\frac{dy}{dx}$, we need to sum up all possible contributions from changes in $x$ to the change in $y$. The total derivative with respect to $x$ assumes all variables, such as $u_1$ in this case, are functions of $x$ and potentially vary as $x$ varies.   The total derivative of $f(x) = u_2(x,u_1)$ that depends on $x$ directly and indirectly via intermediate variable $u_1(x)$ is given by:
 
 $\frac{dy}{dx} = \frac{\partial f(x)}{\partial x} = \frac{\partial u_2(x,u_1)}{\partial x} = \frac{\partial u_2}{\partial x}\frac{\partial x}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{\partial u_1}{\partial x} = \frac{\partial u_2}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{\partial u_1}{\partial x}$
 
@@ -547,26 +551,38 @@ In practice, just keep in mind that when you take the total derivative with resp
 
 Let's look at a nested subexpression, such as $f(x) = sin(x + x^2)$.  We introduce three intermediate variables:
 
-$u_1(x) = x^2$\\
-$u_2(x,u_1) = x + u_1$\\
-$u_3(u_2) = sin(u_2)$ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ($y = f(x) = u_3(u_2)$)
+\\[
+\begin{eqnarray*}
+u_1(x) &=& x^2\\
+u_2(x,u_1) &=& x + u_1\\
+u_3(u_2) &=& sin(u_2) &&&(y = f(x) = u_3(u_2))
+\end{eqnarray*}
+\\]
 
 and partials:
 
-$\frac{\partial u_1}{\partial x} = 2x$\\
-$\frac{\partial u_2}{\partial x} = \frac{\partial x}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{\partial u_1}{\partial x} = 1 + 1 \times 2x = 1+2x$\\
-$\frac{\partial f(x)}{\partial x} = \frac{\partial u_3}{\partial x} + \frac{\partial u_3}{\partial u_2}\frac{\partial u_2}{\partial x} = 0 + cos(u_2)\frac{\partial u_2}{\partial x} = cos(x+x^2)(1+2x)$
+\\[
+\begin{eqnarray*}
+\frac{\partial u_1}{\partial x} &=& 2x\\
+\frac{\partial u_2}{\partial x} &=& \frac{\partial x}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{\partial u_1}{\partial x} &=& 1 + 1 \times 2x &=& 1+2x\\
+\frac{\partial f(x)}{\partial x} &=& \frac{\partial u_3}{\partial x} + \frac{\partial u_3}{\partial u_2}\frac{\partial u_2}{\partial x} &=& 0 + cos(u_2)\frac{\partial u_2}{\partial x} &=& cos(x+x^2)(1+2x)
+\end{eqnarray*}
+\\]
 
 where both $\frac{\partial u_2}{\partial x}$ and $\frac{\partial f(x)}{\partial x}$ have $\frac{\partial u_i}{\partial x}$ terms that take into account the total derivative.
 
 Also notice that the total derivative formula always {\bf sums} versus, say, multiplies terms $\frac{\partial f}{\partial u_i}\frac{\partial  u_i}{\partial  x}$.  It's tempting to think that summing up terms in the derivative makes sense because, for example, $y = x+x^2$ adds two terms. Nope. The total derivative is adding terms because it represents a weighted sum of all $x$ contributions to the change in $y$. For example, given $y = x \times x^2$ instead of $y = x + x^2$, the total-derivative chain rule formula still adds partial derivative terms. ($x \times x^2$  simplifies to $x^3$ but for this demonstration, let's not combine the terms.) Here are the intermediate variables and partial derivatives:
 
-$u_1(x) = x^2$\\
-$u_2(x,u_1) = x u_1$ ~~~\,~~~~~~~~~ ($y = f(x) = u_2(x,u_1)$)
-
-$\frac{\partial u_1}{\partial x} = 2x$\\
-$\frac{\partial u_2}{\partial x} = u_1$ ~~~~~~~~~~~~~~~~~~~~~~~~~~(for $u_2 = x + u_1$, $\frac{\partial u_2}{\partial x} = 1$)\\
-$\frac{\partial u_2}{\partial u_1} = x$ \,~~~~~~~~~~~~~~~~~~~~~~~~~~~(for $u_2 = x + u_1$, $\frac{\partial u_2}{\partial u_1} = 1$)
+\\[
+\begin{eqnarray*}
+u_1(x) &=& x^2\\
+u_2(x,u_1) &=& x u_1 &&& (y = f(x) = u_2(x,u_1))\\
+\\
+\frac{\partial u_1}{\partial x} &=& 2x\\
+\frac{\partial u_2}{\partial x} &=& u_1 &&&(\text{for } u_2 = x + u_1, \frac{\partial u_2}{\partial x} = 1)\\
+\frac{\partial u_2}{\partial u_1} &=& x &&&(\text{for }  u_2 = x + u_1, \frac{\partial u_2}{\partial u_1} = 1)
+\end{eqnarray*}
+\\]
 
 The form of the total derivative remains the same, however:
 
@@ -592,7 +608,7 @@ This chain rule that takes into consideration the total derivative degenerates t
  
 Before we move on, a word of caution about terminology on the web. Unfortunately, the chain rule given in this section, based upon the total derivative, is universally called "multivariable chain rule" in calculus discussions, which is highly misleading! Only the intermediate variables are multivariate functions. The overall function, say, $f(x) = x + x^2$, is a scalar function that accepts a single parameter $x$. The derivative and parameter are scalars, not vectors, as one would expect with a so-called multivariate chain rule.  (Within the context of a non-matrix calculus class, "multivariate chain rule" is likely unambiguous.) To reduce confusion, we use "single-variable total-derivative chain rule" to spell out the distinguishing feature between the simple single-variable chain rule, $\frac{dy}{dx} = \frac{dy}{du}\frac{du}{dx}$, and this one. 
 
-\subsubsection{Vector chain rule}
+### Vector chain rule
 
 Now that we've got a good handle on the total-derivative chain rule, we're ready to tackle the chain rule for vectors of functions and vector variables. Surprisingly, this more general chain rule is just as simple looking as the single-variable chain rule for scalars. Rather than just presenting the vector chain rule, let's rediscover it ourselves so we get a firm grip on it. We can start by computing the derivative of a sample vector function with respect to a scalar, $\mathbf{y} = \mathbf{f}(x)$, to see if we can abstract a general formula.   
 
@@ -697,7 +713,7 @@ $\frac{d}{dx} f(g(x)) = \frac{df}{dg}\frac{dg}{dx}$
 
 To make this formula work for multiple parameters or vector $\mathbf{x}$, we just have to change $x$ to vector $\mathbf{x}$ in the equation.  The effect is  that $\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ and the resulting Jacobian,  $\frac{\partial \mathbf{f}}{\partial \mathbf{x}}$, are now matrices instead of  vertical vectors. Our complete *vector chain rule* is:
 
-$\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ ~~~~~~~~~~~~~~~~~~~~~(Note: matrix multiply doesn't commute; order of $\frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ matters)
+$\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Note: matrix multiply doesn't commute; order of $\frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$ matters)
 
 The beauty of the vector formula over the single-variable chain rule is that it automatically takes into consideration the total derivative while maintaining the same notational simplicity.  The Jacobian contains all possible combinations of $f_i$ with respect to $g_j$ and $g_i$ with respect to $x_j$. For completeness, here are the two Jacobian components in their full glory:
 
@@ -734,7 +750,7 @@ Therefore, the Jacobian reduces to a diagonal matrix whose elements are the sing
 
 After slogging through all of that mathematics, here's the payoff. All you need is the vector chain rule because the single-variable formulas are special cases of the vector chain rule. The following table summarizes the appropriate components to multiply in order to get the Jacobian.
 
-<img src="chain-shape.png" alt="chain-shape.png" width="80%">
+<img src="chain-shape.png" alt="chain-shape.png" width="65%">
 
 # The gradient of the neuron activation function
 
@@ -812,7 +828,8 @@ For the derivative of the broadcast version then, we get a vector of zeros and o
 
 To get the derivative of the $activation(\mathbf{x})$ function, we need the chain rule because of the nested subexpression, $\mathbf{w} \cdot \mathbf{x} + b$. Following our process, let's introduce intermediate scalar variable $z$ to represent the affine function giving:
 
-$z(\mathbf{w},b,\mathbf{x}) = \mathbf{w} \cdot \mathbf{x} + b$\\
+$z(\mathbf{w},b,\mathbf{x}) = \mathbf{w} \cdot \mathbf{x} + b$
+
 $activation(z) = max(0,z)$
 
 The vector chain rule tells us:
@@ -846,17 +863,21 @@ Let's use these partial derivatives now to handle the entire loss function.
 
 # The gradient of the neural network loss function
 
-Training a neuron requires that we take the derivative of our loss  or ``cost'' function with respect to the parameters of our model, $\mathbf{w}$ and $b$. Because we train with multiple inputs and targets, we need some more notation. Let $X = [\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_N]^T$, $N=|X|$, and $\mathbf{y} = [target(\mathbf{x}_1), target(\mathbf{x}_2), \ldots, target(\mathbf{x}_N)]^T$ where $y_i$ is a scalar. Then the cost equation becomes:
+Training a neuron requires that we take the derivative of our loss  or "cost" function with respect to the parameters of our model, $\mathbf{w}$ and $b$. Because we train with multiple inputs and targets, we need some more notation. Let $X = [\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_N]^T$, $N=|X|$, and $\mathbf{y} = [target(\mathbf{x}_1), target(\mathbf{x}_2), \ldots, target(\mathbf{x}_N)]^T$ where $y_i$ is a scalar. Then the cost equation becomes:
 
 \\[
 C(\mathbf{w},b,X,\mathbf{y}) = \frac{1}{N} \sum_{i=1}^{N} (y_i - activation(\mathbf{x}_i))^2 = \frac{1}{N} \sum_{i=1}^{N} (y_i - max(0, \mathbf{w}\cdot\mathbf{x}_i+b))^2
 \\]
 
 Following our chain rule process introduces these intermediate variables:
- 
-$u(\mathbf{w},b,\mathbf{x}) = max(0, \mathbf{w}\cdot\mathbf{x}+b)$\\
-$v(y,u) = y - u$\\
-$C(v) = \frac{1}{N} \sum_{i=1}^N v^2$
+
+\\[
+\begin{eqnarray*} 
+u(\mathbf{w},b,\mathbf{x}) &=& max(0, \mathbf{w}\cdot\mathbf{x}+b)\\
+v(y,u) &=& y - u\\
+C(v) &=& \frac{1}{N} \sum_{i=1}^N v^2\\
+\end{eqnarray*}
+\\]
 
 Let's compute the gradient with respect to $\mathbf{w}$ first.
 
@@ -1104,19 +1125,19 @@ Scalar multiplication yields:
 The partial derivative of a vector sum with respect to one of the vectors is:
 
 \\[
-\begin{array}{lcl}
+\nabla_{\mathbf{x}} y = \begin{array}{lcl}
 \frac{\partial y}{\partial \mathbf{x}} & = & \begin{bmatrix} \frac{\partial y}{\partial x_1}, \frac{\partial y}{\partial x_2}, \ldots, \frac{\partial y}{\partial x_n} \end{bmatrix} = \begin{bmatrix} \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_1},~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_2},~ \ldots,~ \Sigma_i \frac{\partial f_i(\mathbf{x})}{\partial x_n}  \end{bmatrix}\\\\
 \end{array}
 \\]
 
 For $y = sum(\mathbf{x})$:
 
-\\[\nabla y_\mathbf{x} = \vec{1}^T\\]
+\\[\nabla_\mathbf{x} y = \vec{1}^T\\]
 
 For $y = sum(\mathbf{x}z)$ and $n = |x|$, we get:
 
-\\[\nabla y_\mathbf{x} = [z, z, \ldots, z]\\]
-\\[\nabla y_z = n \\]
+\\[\nabla_\mathbf{x} y = [z, z, \ldots, z]\\]
+\\[\nabla_z y = n \\]
 
 Vector dot product $y = \mathbf{f(w)} \cdot \mathbf{g(x)} = \Sigma_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$.  Substituting $\mathbf{u} = \mathbf{w} \otimes \mathbf{x}$ and using the vector chain rule, we get:
 
@@ -1149,13 +1170,13 @@ The *vector chain rule* is the general form as it degenerates to the others. Whe
 
 # Resources
 
-When looking for resources on the web, search for ``matrix calculus'' not ``vector calculus.''  Here are some comments on the top links that come up from a [Google search](https://www.google.com/search?q=matrix+calculus\&oq=matrix+calculus):
+When looking for resources on the web, search for "matrix calculus" not "vector calculus."  Here are some comments on the top links that come up from a [Google search](https://www.google.com/search?q=matrix+calculus\&oq=matrix+calculus):
 
 https://en.wikipedia.org/wiki/Matrix_calculus The Wikipedia entry is actually quite good and they have a good description of the different layout conventions. Recall that we use the numerator layout where the variables go horizontally and the functions go vertically in the Jacobian. Wikipedia also has a good description of [total derivatives](https://en.wikipedia.org/wiki/Total_derivative), but be careful that they use slightly different notation than we do. We always use the $\partial x$ notation not $dx$.
 
 http://www.ee.ic.ac.uk/hp/staff/dmb/matrix/calculus.html This page has a section on matrix differentiation with some useful identities; this person uses numerator layout. This might be a good place to start after reading this article to learn about matrix versus vector differentiation.
 
-https://www.colorado.edu/engineering/CAS/courses.d/IFEM.d/IFEM.AppC.d/IFEM.AppC.pdf This is part of the course notes for ``Introduction to Finite Element Methods'' I believe by [Carlos A. Felippa](https://www.colorado.edu/engineering/CAS/courses.d/IFEM.d).  His Jacobians are transposed from our notation because he uses denominator layout.
+https://www.colorado.edu/engineering/CAS/courses.d/IFEM.d/IFEM.AppC.d/IFEM.AppC.pdf This is part of the course notes for "Introduction to Finite Element Methods" I believe by [Carlos A. Felippa](https://www.colorado.edu/engineering/CAS/courses.d/IFEM.d).  His Jacobians are transposed from our notation because he uses denominator layout.
 
 http://www.ee.ic.ac.uk/hp/staff/dmb/matrix/calculus.html  This page has a huge number of useful derivatives computed for a variety of vectors and matrices. A great cheat sheet. There is no discussion to speak of, just a set of rules.
 
@@ -1166,5 +1187,3 @@ Further down in the list, you'll run into a useful set of slides:  https://www.c
 To learn more about neural networks and the mathematics behind optimization and back propagation, we highly recommend Michael Nielsen's book http://neuralnetworksanddeeplearning.com/chap1.html
 
 We reference the law of [total derivative](https://en.wikipedia.org/wiki/Total_derivative), which is an important concept that just means derivatives with respect to $x$ must take into consideration the derivative with respect $x$ of all variables that are a function of $x$.
-
-\end{document}
