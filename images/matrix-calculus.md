@@ -1086,13 +1086,13 @@ Define generic *element-wise operations* on vectors $\mathbf{w}$ and $\mathbf{x}
 
 The Jacobian with respect to $\mathbf{w}$ (similar for $\mathbf{x}$) is:
 
-\\[J_\mathbf{w} = 
+\\[ J_\mathbf{w} = 
 \frac{\partial \mathbf{y}}{\partial \mathbf{w}}  = \begin{bmatrix}
 \frac{\partial}{\partial w_1} ( f_{1}(\mathbf{w}) \bigcirc g_{1}(\mathbf{x}) ) & \frac{\partial}{\partial w_2} ( f_{1}(\mathbf{w}) \bigcirc g_{1}(\mathbf{x}) ) & \ldots & \frac{\partial}{\partial w_n} ( f_{1}(\mathbf{w}) \bigcirc g_{1}(\mathbf{x}) )\\
 \frac{\partial}{\partial w_1} ( f_{2}(\mathbf{w}) \bigcirc g_{2}(\mathbf{x}) ) & \frac{\partial}{\partial w_2} ( f_{2}(\mathbf{w}) \bigcirc g_{2}(\mathbf{x}) ) & \ldots & \frac{\partial}{\partial w_n} ( f_{2}(\mathbf{w}) \bigcirc g_{2}(\mathbf{x}) )\\
 & \ldots\\
 \frac{\partial}{\partial w_1} ( f_{n}(\mathbf{w}) \bigcirc g_{n}(\mathbf{x}) ) & \frac{\partial}{\partial w_2} ( f_{n}(\mathbf{w}) \bigcirc g_{n}(\mathbf{x}) ) & \ldots & \frac{\partial}{\partial w_n} ( f_{n}(\mathbf{w}) \bigcirc g_{n}(\mathbf{x}) )\\
-\end{bmatrix}\\]
+\end{bmatrix} \\]
 
 Given the constraint (*element-wise diagonal condition*) that $f_i(\mathbf{w})$ and $g_i(\mathbf{x})$ access at most $w_i$ and $x_i$, respectively, the Jacobian simplifies to a diagonal matrix:
 
