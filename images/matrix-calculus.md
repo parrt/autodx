@@ -1,10 +1,5 @@
 # The matrix calculus you need for deep learning
 
-<!-- WOW! Need space on left edge of each row in block equation array environment for katex!!! -->
-<!-- WOW! need space after/before \\[ and \\] for equations. no hline for katex -->
-<!-- ugh. apparently $...$ works but not \\[ inside <ol> list in ghost.io. also no markup in html -->
-<!--TOC-->
-
 [Terence Parr](http://parrt.cs.usfca.edu) and [Jeremy Howard](http://www.fast.ai/about/#jeremy)
 
 (We teach in University of San Francisco's [MS in Data Science program](https://www.usfca.edu/arts-sciences/graduate-programs/data-science) and have other nefarious projects underway. See Jeremy's [fast.ai courses](http://course.fast.ai) and University of San Francisco's Data Institute [in-person version of deep learning course](https://www.usfca.edu/data-institute/certificates/deep-learning-part-one) and [fast.ai](http://www.fast.ai/]) for more educational material.)
@@ -15,15 +10,7 @@ Most of us last saw calculus in school, but derivatives are a critical part of m
 
 For example, the activation of a single computation unit in a neural network is typically calculated using the dot product (from linear algebra) of an edge weight vector $\mathbf{w}$ with an input vector $\mathbf{x}$ plus a scalar bias (threshold): $z(\mathbf{x}) = \Sigma_i^n w_i x_i + b = \mathbf{w} \cdot \mathbf{x} + b$. Function $z(\mathbf{x})$ is called the unit's *affine function* and is followed by a [rectified linear unit](link), which clips negative values to zero: $max(0, z(\mathbf{x}))$. Such a computational unit is sometimes referred to as an "artificial neuron" and looks like:
 
-<img src="neuron.png" alt=neuron.png width=50%> <!-- /content/images/2018/01/neuron.png at ghost.io -->
-
-<!--
-![](/content/images/2018/01/sin-square.png)
-![](/content/images/2018/01/shape.png)
-![](/content/images/2018/01/chain-shape.png)
-![](/content/images/2018/01/chain-tree.png)
-![](/content/images/2018/01/plus-square.png)
--->
+<img src="neuron.png" alt=neuron.png width="250">
 
 Neural networks consist of many of these units, organized into multiple collections of neurons called *layers*. The activation of one layer's units become the input to the next layer's units. The activation of the unit or units in the final layer is called the network output.
 
@@ -50,10 +37,10 @@ Hopefully you remember some of these main scalar derivative rules. If your memor
 <th>Rule </th><th> $f(x)$</th> <th>Scalar derivative notation with respect to $x$</th><th> Example</th>
 </tr>
 <tr>
-<td>Constant </td><td> c</td><td> 0 </td><td> $\frac{d}{dx}99 = 0$</td>
+<td>Constant </td><td> $c$</td><td>$0$</td><td> $\frac{d}{dx}99 = 0$</td>
 </tr>
 <tr>
-<td>Multiplication by constant} </td><td>	cf	</td><td>$c \frac{df}{dx}$</td><td>$\frac{d}{dx}3x = 3$</td>
+<td>Multiplication by constant</td><td>	$cf$	</td><td>$c \frac{df}{dx}$</td><td>$\frac{d}{dx}3x = 3$</td>
 </tr>
 <tr>
 <td>Power Rule</td><td>$x^n$	</td><td>$nx^{n-1}$</td><td>$\frac{d}{dx}x^3 = 3x^2$</td>
@@ -199,7 +186,7 @@ So we have $m=n$ functions and parameters, in this case. Generally speaking, tho
 
 where each $\frac{\partial}{\partial \mathbf{x}} f_i(\mathbf{x})$ is a horizontal $n$-vector because the partial derivative is with respect to a vector, $\mathbf{x}$, whose length is $n = |\mathbf{x}|$.  The width of the Jacobian is $n$ if we're taking the partial derivative with respect to $\mathbf{x}$ because there are $n$ parameters we can wiggle, each potentially changing the function's value. Therefore, the Jacobian is always $m$ rows for $m$ equations.  It helps to think about the possible Jacobian shapes visually:
 
-<img src="shape.png" width="40%">
+<img src="shape.png" width="250">
 
 The Jacobian of the identity function $\mathbf{f(x)} = \mathbf{x}$, with $f_i(\mathbf{x}) = x_i$, has $n$ functions and each function has $n$ parameters held in a single vector $\mathbf{x}$. The Jacobian is, therefore, a square matrix since $m=n$:
 
@@ -424,39 +411,43 @@ Chain rules are typically defined in terms of nested functions, such as $y = f(g
 
 To deploy the single-variable chain rule, follow these steps:
 
-1. Introduce intermediate variables for nested subexpressions and subexpressions for both binary and unary operators; e.g., $\times$ is binary, $sin(x)$ and other trigonometric functions are usually unary because there is a single operand. This step normalizes all equations to single operators or function applications.
-1. Compute derivatives of the intermediate variables with respect to their parameters.
-1. Combine all derivatives of intermediate variables by multiplying them together to get the overall result.
-1. Substitute intermediate variables back in if any are referenced in the derivative equation.
+<ol>
+<li>Introduce intermediate variables for nested subexpressions and subexpressions for both binary and unary operators; e.g., $\times$ is binary, $sin(x)$ and other trigonometric functions are usually unary because there is a single operand. This step normalizes all equations to single operators or function applications.
+<li>Compute derivatives of the intermediate variables with respect to their parameters.
+<li>Combine all derivatives of intermediate variables by multiplying them together to get the overall result.
+<li>Substitute intermediate variables back in if any are referenced in the derivative equation.
+</ol>
 
 
 The third step puts the "chain" in "chain rule" because it chains together intermediate results. Multiplying the intermediate derivatives together is the common theme among all variations of the chain rule.
 
 Let's try  this process on $y = f(g(x)) = sin(x^2)$:
 
-1. Introduce intermediate variables. Let $u = x^2$ represent subexpression $x^2$ (shorthand for $u(x) = x^2$). This gives us:
+<ol>
+<li>Introduce intermediate variables. Let $u = x^2$ represent subexpression $x^2$ (shorthand for $u(x) = x^2$). This gives us:
    \\[ \begin{array}{lllll}
   u &=& x^2 &&(\text{relative to definition }f(g(x)), g(x) = x^2)\\
 	y &=& sin(u) && (y = f(u) = sin(u))
 \end{array} \\]
 The order of these subexpressions does not affect the answer, but we recommend working in the reverse order of operations dictated by the nesting (innermost to outermost). That way, expressions and derivatives are always functions of previously-computed elements. 
-1.	Compute derivatives.
+<li>Compute derivatives.
 	\\[ \begin{array}{lllll}
  \frac{du}{dx} &=& 2x && (\text{Take derivative with respect to }x)\\
 	 \frac{dy}{du} &=& cos(u) && (\text{Take derivative with respect to }u \text{ not }x)
   \end{array} \\]
-1. Combine.
+<li>Combine.
 	$\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx} = cos(u)2x$
-1. Subtitute.
+<li>Subtitute.
 	$\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx} = cos(x^2)2x = 2xcos(x^2)$
-	
+</ol>
+
 Notice how easy it is to compute the derivatives of the intermediate variables in isolation! The chain rule says it's legal to do that and tells us how to combine the intermediate results to get $2xcos(x^2)$.
 
 You can think of the combining step of the chain rule in terms of units canceling. If we let $y$ be gallons of gas, $x$ be the gallons in a gas tank, and $u$ as miles we can interpret $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$ as $\frac{miles}{tank} = \frac{miles}{gallon} \frac{gallon}{tank}$. The $gallon$ denominator and numerator cancel. This is a convenient way to remember the chain rule but the analogy only goes so far; don't treat $dy$ and $dx$ has separate variables since they are two components in the name of a single derivative operator.
 
 Another way to to think about the single-variable chain rule is to visualize the overall expression as a dataflow diagram or chain of operations (or [abstract syntax tree](link) for compiler people):
 
-<img src="sin-square.png" alt=sin-square.png width=25%>
+<img src="sin-square.png" alt=sin-square.png width="150">
 
 Changes to function parameter $x$ bubble up through a squaring operation then through a $sin$ operation to change result $y$. You can think of $\frac{du}{dx}$ as "getting changes from $x$ to $u$ and $\frac{dy}{du}$ as "getting changes from $u$ to $y$." Getting from $x$ to $y$ requires an intermediate hop. The chain rule is, by convention, usually written from the output variable down to the parameter(s), $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$. But, the $x$-to-$y$ perspective would be more clear if we reversed the flow and used the equivalent $\frac{dy}{dx} = \frac{du}{dx}\frac{dy}{du}$.
 
@@ -478,28 +469,28 @@ With deeply nested expressions, it helps to think about deploying the chain rule
 
 <ol>
 	<li>Introduce intermediate variables.
-	$\begin{array}{lllllllll}
+	\\[\begin{array}{lllllllll}
  u_1 &=& f_1(x) &= x^3\\
  u_2 &= &f_2(u_1) &= sin(u_1)\\
  u_3 &= &f_3(u_2) &= u_2^2\\
  u_4 &=& f_4(u_3) &= ln(u_3) (y = u_4)
-\end{array}$
+\end{array}\\]
 	<li> Compute derivatives.
-$\begin{array}{lllllllll}
+\\[\begin{array}{lllllllll}
  \frac{d}{u_x} u_1 & = & \frac{d}{x} x^3 & = & 3x^2\\
  \frac{d}{u_1} u_2 & = & \frac{d}{u_1} sin(u_1) & = & cos(u_1) \\
  \frac{d}{u_2} u_3 & = & \frac{d}{u_2} u_2^2 & =& 2u_2\\
  \frac{d}{u_3} u_4 & = & \frac{d}{u_3} ln(u_3) & =& \frac{1}{u_3}\\
- \end{array}$
+ \end{array}\\]
 	<li> Combine four intermediate values.
-$\frac{dy}{dx} = \frac{d u_4}{dx} = \frac{d u_4}{du_3}\frac{du_3}{d u_2} \frac{du_2}{du_1} \frac{du_1}{dx} = \frac{1}{u_3}  2u_2  cos(u_1)  3x^2 = \frac{6u_2x^2cos(u_1)}{u_3}$
+\\[\frac{dy}{dx} = \frac{d u_4}{dx} = \frac{d u_4}{du_3}\frac{du_3}{d u_2} \frac{du_2}{du_1} \frac{du_1}{dx} = \frac{1}{u_3}  2u_2  cos(u_1)  3x^2 = \frac{6u_2x^2cos(u_1)}{u_3}$\\]
 	<li> Subtitute.
-$\frac{dy}{dx} = \frac{6sin(u_1)x^2cos(x^3)}{u_2^2} = \frac{6sin(x^3)x^2cos(x^3)}{sin(u_1)^2} = \frac{6sin(x^3)x^2cos(x^3)}{sin(x^3)^2} = \frac{6x^2cos(x^3)}{sin(x^3)}$
+\\[\frac{dy}{dx} = \frac{6sin(u_1)x^2cos(x^3)}{u_2^2} = \frac{6sin(x^3)x^2cos(x^3)}{sin(u_1)^2} = \frac{6sin(x^3)x^2cos(x^3)}{sin(x^3)^2} = \frac{6x^2cos(x^3)}{sin(x^3)}\\]
 </ol>
 
 Here is a visualization of the data flow through the chain of operations from $x$ to $y$:
 
-<img src="chain-tree.png" alt=chain-tree.png width=30%>
+<img src="chain-tree.png" alt=chain-tree.png width="150">
 
 At this point, we can handle derivatives of nested expressions of a single variable, $x$, using the chain rule but only if $x$ can affect $y$ through a single data flow path. To handle more complicated expressions, we need to extend our technique, which we'll do next.
 
@@ -530,7 +521,7 @@ Because $u_2(x,u) = x + u_1$ has multiple parameters, partial derivatives come i
 
 Ooops! The partial $\frac{\partial u_2(x,u_1)}{\partial x}$ is wrong because it violates a key assumption for partial derivatives. When taking the partial derivative with respect to $x$, the other variables must not vary as $x$ varies. Otherwise, we could not act as if the other variables were constants. Clearly, though, $u_1(x)=x^2$ is a function of $x$ and therefore varies with $x$. $\frac{\partial u_2(x,u_1)}{\partial x} \neq 1 + 0$ because $\frac{\partial u_1(x)}{\partial x} \neq 0$. A quick look at the data flow diagram for $y=u_2(x,u_1)$ shows multiple paths from $x$ to $y$, thus, making it clear we need to consider direct and indirect (through $u_1(x)$) dependencies on $x$:
 
-<img src="plus-square.png" alt=plus-square.png width=30%>
+<img src="plus-square.png" alt=plus-square.png width="150">
 
 A change in $x$ effects $y$ both as an operand of the addition and as the operand of the square operator. Here's an equation that describes how tweaks to $x$ affect the output:
 
@@ -540,7 +531,7 @@ Then, $\Delta y = \hat y - y$.
 
 If we let $x=1$, then $y=1+1^2=2$. If we bump $x$ by 1, $\Delta x=1$, then $\hat y = (1+1) + (1+1)^2 = 2 + 4 = 6$. The change in $y$ is not $1$, as $\partial u_2 / u_1$ would lead us to believe, but $6-2 = 4$!
 
-Enter the "law" of [*total derivatives*](https://en.wikipedia.org/wiki/Total_derivative), which basically says that to compute $\frac{dy}{dx}$, we need to sum up all possible contributions from changes in $x$ to the change in $y$. The total derivative with respect to $x$ assumes all variables, such as $u_1$ in this case, are functions of $x$ and potentially vary as $x$ varies.   The total derivative of $f(x) = u_2(x,u_1)$ that depends on $x$ directly and indirectly via intermediate variable $u_1(x)$ is given by:
+Enter the "law" of [total derivatives](https://en.wikipedia.org/wiki/Total_derivative), which basically says that to compute $\frac{dy}{dx}$, we need to sum up all possible contributions from changes in $x$ to the change in $y$. The total derivative with respect to $x$ assumes all variables, such as $u_1$ in this case, are functions of $x$ and potentially vary as $x$ varies.   The total derivative of $f(x) = u_2(x,u_1)$ that depends on $x$ directly and indirectly via intermediate variable $u_1(x)$ is given by:
 
 \\[\frac{dy}{dx} = \frac{\partial f(x)}{\partial x} = \frac{\partial u_2(x,u_1)}{\partial x} = \frac{\partial u_2}{\partial x}\frac{\partial x}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{\partial u_1}{\partial x} = \frac{\partial u_2}{\partial x} + \frac{\partial u_2}{\partial u_1}\frac{\partial u_1}{\partial x}\\]
 
@@ -765,7 +756,7 @@ Therefore, the Jacobian reduces to a diagonal matrix whose elements are the sing
 
 After slogging through all of that mathematics, here's the payoff. All you need is the vector chain rule because the single-variable formulas are special cases of the vector chain rule. The following table summarizes the appropriate components to multiply in order to get the Jacobian.
 
-<img src="chain-shape.png" alt="chain-shape.png" width="80%">
+<img src="chain-shape.png" alt="chain-shape.png" width="450">
 
 ## The gradient of the neuron activation function
 
@@ -840,19 +831,20 @@ $max(0,\mathbf{x}) = \begin{bmatrix}
 
 For the derivative of the broadcast version then, we get a vector of zeros and ones where:<br><br>
 
-$\frac{\partial}{\partial x_i}max(0,x_i) =
+\\[
+\frac{\partial}{\partial x_i}max(0,x_i) =
 	\begin{cases}
 	0 & x_i \leq 0\\
 	\frac{dx_i}{dx_i}=1 & x_i > 0\\
-\end{cases}$<br><br>
+\end{cases}\\]
 
-$\frac{\partial}{\partial \mathbf{x}}max(0,\mathbf{x}) =
+\\[\frac{\partial}{\partial \mathbf{x}}max(0,\mathbf{x}) =
 \begin{bmatrix}
 	\frac{\partial}{\partial x_1}max(0,x_1)\\
 	\frac{\partial}{\partial x_2}max(0,x_2)\\
 	\ldots\\
     \frac{\partial}{\partial x_n}max(0,x_n)
-\end{bmatrix}$
+\end{bmatrix}\\]
 </div>
 
 
