@@ -34,8 +34,10 @@ Hopefully you remember some of these main scalar derivative rules. If your memor
 
 <table>
 <tr>
-<th>Rule <th> $f(x)$ <th>Scalar derivative notation with respect to $x$<th> Example
-
+	<th>Rule
+	<th>$f(x)$
+	<th>Scalar derivative notation with respect to $x$
+	<th>Example
 <tr>
 <td>Constant<td> $c$<td>$0$<td> $\frac{d}{dx}99 = 0$
 <tr>
@@ -304,13 +306,25 @@ That gives us $\frac{\partial (\mathbf{w+x})}{\partial \mathbf{w}} = \frac{\part
 
 Given the simplicity of this special case, $f_i(\mathbf{w})$ reducing to $f_i(w_i)$, you should be able to derive the Jacobians for the common element-wise binary operations on vectors:
 
-\\[\begin{array}{lllllllll}
-	\mathbf{\text{Op}} &  & \mathbf{\text{Partial with respect to }} \mathbf{w} &  &  \mathbf{\text{Partial with respect to }}\mathbf{x}\\
-	+ &  & \frac{\partial (\mathbf{w+x})}{\partial \mathbf{w}} = diag(\ldots \frac{\partial (w_i + x_i)}{\partial w_i} \ldots) = diag(\vec{1}) = I &  & \frac{\partial (\mathbf{w+x})}{\partial \mathbf{x}} =  I\\\\
-	- &  & \frac{\partial (\mathbf{w-x})}{\partial \mathbf{w}}  =  diag(\ldots\frac{\partial (w_i - x_i)}{\partial w_i}\ldots) =  diag(\vec{1})  =  I &  & \frac{\partial (\mathbf{w-x})}{\partial \mathbf{x}}  =  diag(\ldots\frac{\partial (w_i - x_i)}{\partial x_i}\ldots)  =  diag(-\vec{1})  =  -I \\\\
-	\otimes &  & \frac{\partial (\mathbf{w \otimes x})}{\partial \mathbf{w}}  =  diag(\ldots\frac{\partial (w_i \times x_i)}{\partial w_i} \ldots)  =  diag(\mathbf{x}) &  & \frac{\partial (\mathbf{w \otimes x})}{\partial \mathbf{x}}  =  diag(\mathbf{w})\\\\
-	\oslash &  & \frac{\partial (\mathbf{w \oslash x})}{\partial \mathbf{w}}  =  diag(\ldots\frac{\partial (w_i / x_i)}{\partial w_i}\ldots)  =  diag(\ldots \frac{1}{x_i} \ldots) &  & \frac{\partial (\mathbf{w \oslash x})}{\partial \mathbf{x}}  =  diag(\ldots \frac{-w_i}{x_i^2} \ldots)\\
-\end{array}\\]
+\\[
+\begin{array}{lllllllll}
+        \text{\bf{Op}} &  & {\text{\bf Partial with respect to }} \mathbf{w} \\
+        + &  & \frac{\partial (\mathbf{w+x})}{\partial \mathbf{w}} = diag(\ldots \frac{\partial (w_i + x_i)}{\partial w_i} \ldots) = diag(\vec{1}) = I \\\\
+        - &  & \frac{\partial (\mathbf{w-x})}{\partial \mathbf{w}}  =  diag(\ldots\frac{\partial (w_i - x_i)}{\partial w_i}\ldots) =  diag(\vec{1})  =  I \\\\
+        \otimes &  & \frac{\partial (\mathbf{w \otimes x})}{\partial \mathbf{w}}  =  diag(\ldots\frac{\partial (w_i \times x_i)}{\partial w_i} \ldots)  =  diag(\mathbf{x}) \\\\
+        \oslash &  & \frac{\partial (\mathbf{w \oslash x})}{\partial \mathbf{w}}  =  diag(\ldots\frac{\partial (w_i / x_i)}{\partial w_i}\ldots)  =  diag(\ldots \frac{1}{x_i} \ldots) \\\\
+\end{array}
+\\]
+
+\\[
+\begin{array}{lllllllll}
+        \text{\bf{Op}} &  &  {\text{\bf Partial with respect to }}\mathbf{x}\\
+        + &  & \frac{\partial (\mathbf{w+x})}{\partial \mathbf{x}} =  I\\\\
+        - &  & \frac{\partial (\mathbf{w-x})}{\partial \mathbf{x}}  =  diag(\ldots\frac{\partial (w_i - x_i)}{\partial x_i}\ldots)  =  diag(-\vec{1})  =  -I \\\\
+        \otimes &  &  \frac{\partial (\mathbf{w \otimes x})}{\partial \mathbf{x}}  =  diag(\mathbf{w})\\\\
+        \oslash &  &  \frac{\partial (\mathbf{w \oslash x})}{\partial \mathbf{x}}  =  diag(\ldots \frac{-w_i}{x_i^2} \ldots)\\
+\end{array}
+\\]
 
 The $\otimes$ and $\oslash$ operators are element-wise multiplication and division; $\otimes$ is sometimes called the *Hadamard product*. There isn't a standard notation for element-wise multiplication and division so where using an approach consistent with our general binary operation notation.
 
@@ -447,7 +461,7 @@ You can think of the combining step of the chain rule in terms of units cancelin
 
 Another way to to think about the single-variable chain rule is to visualize the overall expression as a dataflow diagram or chain of operations (or [abstract syntax tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) for compiler people):
 
-<img src="images/sin-square.png" alt="sin-square.png" width="150">
+<img src="images/sin-square.png" alt="sin-square.png" width="130">
 
 Changes to function parameter $x$ bubble up through a squaring operation then through a $sin$ operation to change result $y$. You can think of $\frac{du}{dx}$ as "getting changes from $x$ to $u$" and $\frac{dy}{du}$ as "getting changes from $u$ to $y$." Getting from $x$ to $y$ requires an intermediate hop. The chain rule is, by convention, usually written from the output variable down to the parameter(s), $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$. But, the $x$-to-$y$ perspective would be more clear if we reversed the flow and used the equivalent $\frac{dy}{dx} = \frac{du}{dx}\frac{dy}{du}$.
 
@@ -693,7 +707,7 @@ That means that the Jacobian is the multiplication of two other Jacobians, which
 
 \\[
 \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial \mathbf{g}}{\partial x} = \begin{bmatrix}
-	\frac{1}g_1 & 0\\
+	\frac{1}{g_1} & 0\\
 	0 & cos(g_2)\\
 \end{bmatrix}\begin{bmatrix}
  2x\\
@@ -756,7 +770,7 @@ Therefore, the Jacobian reduces to a diagonal matrix whose elements are the sing
 
 After slogging through all of that mathematics, here's the payoff. All you need is the vector chain rule because the single-variable formulas are special cases of the vector chain rule. The following table summarizes the appropriate components to multiply in order to get the Jacobian.
 
-<img src="images/chain-shape.png" alt="chain-shape.png" width="450">
+<img src="images/chain-shape.png" alt="chain-shape.png" width="470">
 
 ## The gradient of neuron activation
 
