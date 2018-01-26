@@ -2,19 +2,19 @@
 
 [Terence Parr](http://parrt.cs.usfca.edu) and [Jeremy Howard](http://www.fast.ai/about/#jeremy)
 
-(We teach in University of San Francisco's [MS in Data Science program](https://www.usfca.edu/arts-sciences/graduate-programs/data-science) and have other nefarious projects underway. See Jeremy's [fast.ai courses](http://course.fast.ai) and University of San Francisco's Data Institute [in-person version of deep learning course](https://www.usfca.edu/data-institute/certificates/deep-learning-part-one) and [fast.ai](http://www.fast.ai/]) for more educational material.)
+(We teach in University of San Francisco's [MS in Data Science program](https://www.usfca.edu/arts-sciences/graduate-programs/data-science) and have other nefarious projects underway. See Jeremy's [fast.ai courses](http://course.fast.ai), University of San Francisco's Data Institute [in-person version of the deep learning course](https://www.usfca.edu/data-institute/certificates/deep-learning-part-one), and [fast.ai](http://www.fast.ai/]) for more educational material.)
 
 ## Introduction
 
-Most of us last saw calculus in school, but derivatives are a critical part of machine learning, particularly deep neural networks, which are trained by optimizing a loss function. Pick up a machine learning paper or the documentation of a library such as [PyTorch](link) and calculus comes screeching back into your life like distant relatives around the holidays.  And it's not just any old scalar calculus that pops up---we need differential *matrix calculus*, the shotgun wedding of [linear algebra](https://en.wikipedia.org/wiki/Linear_algebra) and [multivariate calculus](https://en.wikipedia.org/wiki/Multivariable_calculus).
+Most of us last saw calculus in school, but derivatives are a critical part of machine learning, particularly deep neural networks, which are trained by optimizing a loss function. Pick up a machine learning paper or the documentation of a library such as [PyTorch](http://pytorch.org) and calculus comes screeching back into your life like distant relatives around the holidays.  And it's not just any old scalar calculus that pops up---you need differential *matrix calculus*, the shotgun wedding of [linear algebra](https://en.wikipedia.org/wiki/Linear_algebra) and [multivariate calculus](https://en.wikipedia.org/wiki/Multivariable_calculus).
 
-For example, the activation of a single computation unit in a neural network is typically calculated using the dot product (from linear algebra) of an edge weight vector $\mathbf{w}$ with an input vector $\mathbf{x}$ plus a scalar bias (threshold): $z(\mathbf{x}) = \Sigma_i^n w_i x_i + b = \mathbf{w} \cdot \mathbf{x} + b$. Function $z(\mathbf{x})$ is called the unit's *affine function* and is followed by a [rectified linear unit](link), which clips negative values to zero: $max(0, z(\mathbf{x}))$. Such a computational unit is sometimes referred to as an "artificial neuron" and looks like:
+For example, the activation of a single computation unit in a neural network is typically calculated using the dot product (from linear algebra) of an edge weight vector $\mathbf{w}$ with an input vector $\mathbf{x}$ plus a scalar bias (threshold): $z(\mathbf{x}) = \Sigma_i^n w_i x_i + b = \mathbf{w} \cdot \mathbf{x} + b$. Function $z(\mathbf{x})$ is called the unit's *affine function* and is followed by a [rectified linear unit](https://goo.gl/7BXceK), which clips negative values to zero: $max(0, z(\mathbf{x}))$. Such a computational unit is sometimes referred to as an "artificial neuron" and looks like:
 
-<img src="neuron.png" alt=neuron.png width="250">
+<img src="images/neuron.png" alt="neuron.png" width="250">
 
 Neural networks consist of many of these units, organized into multiple collections of neurons called *layers*. The activation of one layer's units become the input to the next layer's units. The activation of the unit or units in the final layer is called the network output.
 
-*Training* this neuron means choosing weights $\mathbf{w}$ and bias $b$ so that we get the desired output for all $N$ inputs $\mathbf{x}$.  To do that, we minimize a *loss function* that compares the network's final $activation({\mathbf{x}})$ with the $target(\mathbf{x})$ (desired output of $\mathbf{x}$) for all input $\mathbf{x}$ vectors. To minimize the loss, we use some variation on gradient descent, such as plain [stochastic gradient descent](link) (SGD), SGD with momentum, or [Adam](link).   All of those require the partial derivative (the gradient) of $activation({\mathbf{x}})$ with respect to the model parameters $\mathbf{w}$ and $b$. Our goal is to gradually tweak $\mathbf{w}$ and $b$ so that the overall loss function keeps getting smaller across all $\mathbf{x}$ inputs.
+*Training* this neuron means choosing weights $\mathbf{w}$ and bias $b$ so that we get the desired output for all $N$ inputs $\mathbf{x}$.  To do that, we minimize a *loss function* that compares the network's final $activation({\mathbf{x}})$ with the $target(\mathbf{x})$ (desired output of $\mathbf{x}$) for all input $\mathbf{x}$ vectors. To minimize the loss, we use some variation on gradient descent, such as plain [stochastic gradient descent](https://en.wikipedia.org/wiki/Stochastic_gradient_descent) (SGD), SGD with momentum, or [Adam](https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam).   All of those require the partial derivative (the gradient) of $activation({\mathbf{x}})$ with respect to the model parameters $\mathbf{w}$ and $b$. Our goal is to gradually tweak $\mathbf{w}$ and $b$ so that the overall loss function keeps getting smaller across all $\mathbf{x}$ inputs.
 
 If we're careful, we can derive the gradient by differentiating the scalar version of a common loss function (mean squared error):
 
@@ -34,32 +34,30 @@ Hopefully you remember some of these main scalar derivative rules. If your memor
 
 <table>
 <tr>
-<th>Rule </th><th> $f(x)$</th> <th>Scalar derivative notation with respect to $x$</th><th> Example</th>
-</tr>
+<th>Rule <th> $f(x)$ <th>Scalar derivative notation with respect to $x$<th> Example
+
 <tr>
-<td>Constant </td><td> $c$</td><td>$0$</td><td> $\frac{d}{dx}99 = 0$</td>
-</tr>
+<td>Constant<td> $c$<td>$0$<td> $\frac{d}{dx}99 = 0$
 <tr>
-<td>Multiplication by constant</td><td>	$cf$	</td><td>$c \frac{df}{dx}$</td><td>$\frac{d}{dx}3x = 3$</td>
-</tr>
+<td>Multiplication by constant<td>	$cf$	<td>$c \frac{df}{dx}$<td>$\frac{d}{dx}3x = 3$
 <tr>
-<td>Power Rule</td><td>$x^n$	</td><td>$nx^{n-1}$</td><td>$\frac{d}{dx}x^3 = 3x^2$</td>
-</tr>
+<td>Power Rule<td>$x^n$	<td>$nx^{n-1}$<td>$\frac{d}{dx}x^3 = 3x^2$
+
 <tr>
-<td>Sum Rule</td><td>$f + g$</td><td>$\frac{df}{dx} + \frac{dg}{dx}$</td><td>$\frac{d}{dx} (x^2 + 3x) = 2x + 3$</td>
-</tr>
+<td>Sum Rule<td>$f + g$<td>$\frac{df}{dx} + \frac{dg}{dx}$<td>$\frac{d}{dx} (x^2 + 3x) = 2x + 3$
+
 <tr>
-<td>Difference Rule</td><td>$f - g$</td><td>$\frac{df}{dx} - \frac{dg}{dx}$</td><td>$\frac{d}{dx}(x^2 - 3x) = 2x - 3$</td>
-</tr>
+<td>Difference Rule<td>$f - g$<td>$\frac{df}{dx} - \frac{dg}{dx}$<td>$\frac{d}{dx}(x^2 - 3x) = 2x - 3$
+
 <tr>
-<td>Product Rule</td><td>$fg$</td><td>$f \frac{dg}{dx} + \frac{df}{dx} g$</td><td>$\frac{d}{dx}x^2x = x^2 + x2x = 3x^2$</td>
-</tr>
+<td>Product Rule<td>$fg$<td>$f \frac{dg}{dx} + \frac{df}{dx} g$<td>$\frac{d}{dx}x^2x = x^2 + x2x = 3x^2$
+
 <tr>
-<td>Quotient Rule</td><td>$\frac{f}{g} = fg^{-1}$</td><td>$f \frac{dg}{dx}^{-1} + \frac{df}{dx} g^{-1}$</td><td>$\frac{d}{dx}x^2 / 3x = x^2/3 + 2x / 3x$</td>
-</tr>
+<td>Quotient Rule<td>$\frac{f}{g} = fg^{-1}$<td>$f \frac{dg}{dx}^{-1} + \frac{df}{dx} g^{-1}$<td>$\frac{d}{dx}x^2 / 3x = x^2/3 + 2x / 3x$
+
 <tr>
-<td>Chain Rule</td><td>$f(g(x))$</td><td>$\frac{df(u)}{du}\frac{du}{dx}$,  let $u=g(x)$</td><td>$\frac{d}{dx} ln(x^2) = \frac{1}{x^2}2x = \frac{2}{x}$</td>
-</tr>
+<td>Chain Rule<td>$f(g(x))$<td>$\frac{df(u)}{du}\frac{du}{dx}$,  let $u=g(x)$<td>$\frac{d}{dx} ln(x^2) = \frac{1}{x^2}2x = \frac{2}{x}$
+
 </table>
 
 
@@ -149,7 +147,7 @@ For instance, we'd represent $f(x,y) = 3x^2y$ and $g(x,y) = 2x + y^8$ from the l
 
 \\[
 \begin{array}{lllllllll}
- y_1 = f_1(\mathbf{x}) = 3x_1^2x_2  &&&(\text{substituting }x_1 \text{for }x, x_2 \text{for }y)\\
+ y_1 = f_1(\mathbf{x}) = 3x_1^2x_2  &&&(\text{substituting }x_1 \text{ for }x, x_2 \text{ for }y)\\
  y_2 = f_2(\mathbf{x}) = 2x_1 + x_2^8
 \end{array}
 \\]
@@ -186,7 +184,7 @@ So we have $m=n$ functions and parameters, in this case. Generally speaking, tho
 
 where each $\frac{\partial}{\partial \mathbf{x}} f_i(\mathbf{x})$ is a horizontal $n$-vector because the partial derivative is with respect to a vector, $\mathbf{x}$, whose length is $n = |\mathbf{x}|$.  The width of the Jacobian is $n$ if we're taking the partial derivative with respect to $\mathbf{x}$ because there are $n$ parameters we can wiggle, each potentially changing the function's value. Therefore, the Jacobian is always $m$ rows for $m$ equations.  It helps to think about the possible Jacobian shapes visually:
 
-<img src="shape.png" width="250">
+<img src="images/shape.png" width="250">
 
 The Jacobian of the identity function $\mathbf{f(x)} = \mathbf{x}$, with $f_i(\mathbf{x}) = x_i$, has $n$ functions and each function has $n$ parameters held in a single vector $\mathbf{x}$. The Jacobian is, therefore, a square matrix since $m=n$:
 
@@ -425,45 +423,47 @@ Let's try  this process on $y = f(g(x)) = sin(x^2)$:
 
 <ol>
 <li>Introduce intermediate variables. Let $u = x^2$ represent subexpression $x^2$ (shorthand for $u(x) = x^2$). This gives us:
+
    \\[ \begin{array}{lllll}
   u &=& x^2 &&(\text{relative to definition }f(g(x)), g(x) = x^2)\\
 	y &=& sin(u) && (y = f(u) = sin(u))
 \end{array} \\]
+
 The order of these subexpressions does not affect the answer, but we recommend working in the reverse order of operations dictated by the nesting (innermost to outermost). That way, expressions and derivatives are always functions of previously-computed elements. 
 <li>Compute derivatives.
-	\\[ \begin{array}{lllll}
+\\[ \begin{array}{lllll}
  \frac{du}{dx} &=& 2x && (\text{Take derivative with respect to }x)\\
 	 \frac{dy}{du} &=& cos(u) && (\text{Take derivative with respect to }u \text{ not }x)
   \end{array} \\]
 <li>Combine.
-	$\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx} = cos(u)2x$
+	\\[\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx} = cos(u)2x\\]
 <li>Subtitute.
-	$\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx} = cos(x^2)2x = 2xcos(x^2)$
+	\\[\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx} = cos(x^2)2x = 2xcos(x^2)\\]
 </ol>
 
 Notice how easy it is to compute the derivatives of the intermediate variables in isolation! The chain rule says it's legal to do that and tells us how to combine the intermediate results to get $2xcos(x^2)$.
 
-You can think of the combining step of the chain rule in terms of units canceling. If we let $y$ be gallons of gas, $x$ be the gallons in a gas tank, and $u$ as miles we can interpret $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$ as $\frac{miles}{tank} = \frac{miles}{gallon} \frac{gallon}{tank}$. The $gallon$ denominator and numerator cancel. This is a convenient way to remember the chain rule but the analogy only goes so far; don't treat $dy$ and $dx$ has separate variables since they are two components in the name of a single derivative operator.
+You can think of the combining step of the chain rule in terms of units canceling. If we let $y$ be gallons of gas, $x$ be the gallons in a gas tank, and $u$ as miles we can interpret $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$ as $\frac{miles}{tank} = \frac{miles}{gallon} \frac{gallon}{tank}$. The $gallon$ denominator and numerator cancel.
 
-Another way to to think about the single-variable chain rule is to visualize the overall expression as a dataflow diagram or chain of operations (or [abstract syntax tree](link) for compiler people):
+Another way to to think about the single-variable chain rule is to visualize the overall expression as a dataflow diagram or chain of operations (or [abstract syntax tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) for compiler people):
 
-<img src="sin-square.png" alt=sin-square.png width="150">
+<img src="images/sin-square.png" alt="sin-square.png" width="150">
 
-Changes to function parameter $x$ bubble up through a squaring operation then through a $sin$ operation to change result $y$. You can think of $\frac{du}{dx}$ as "getting changes from $x$ to $u$ and $\frac{dy}{du}$ as "getting changes from $u$ to $y$." Getting from $x$ to $y$ requires an intermediate hop. The chain rule is, by convention, usually written from the output variable down to the parameter(s), $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$. But, the $x$-to-$y$ perspective would be more clear if we reversed the flow and used the equivalent $\frac{dy}{dx} = \frac{du}{dx}\frac{dy}{du}$.
+Changes to function parameter $x$ bubble up through a squaring operation then through a $sin$ operation to change result $y$. You can think of $\frac{du}{dx}$ as "getting changes from $x$ to $u$" and $\frac{dy}{du}$ as "getting changes from $u$ to $y$." Getting from $x$ to $y$ requires an intermediate hop. The chain rule is, by convention, usually written from the output variable down to the parameter(s), $\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$. But, the $x$-to-$y$ perspective would be more clear if we reversed the flow and used the equivalent $\frac{dy}{dx} = \frac{du}{dx}\frac{dy}{du}$.
 
 **Conditions under which the single-variable chain rule applies**. Notice that there is a single dataflow path from $x$ to the root $y$.  Changes in $x$ can influence output $y$ in only one way.  That is the condition under which we can apply the single-variable chain rule. An easier condition to remember, though one that's a bit looser, is that none of the intermediate subexpression functions, $u(x)$ and $y(u)$, have more than one parameter.  Consider $y(x) = x+x^2$, which would become $y(x,u) = x+u$ after introducing intermediate variable $u$.  As we'll see in the next section, $y(x,u)$ has multiple paths from $x$ to $y$. To handle that situation, we'll deploy the single-variable total-derivative chain rule.
 	
-<div style="border:1px;border-style:solid; padding=5">As an aside for those interested in automatic differentiation, papers and library documentation use terminology <em>forward differentiation</em> and <em>backward differentiation</em> (for use in the back-propagation algorithm). From a dataflow perspective, we are computing a forward differentiation because it follows the normal data flow direction.  Backward differentiation, naturally, goes the other direction and we're asking how a change in the output would affect function parameter $x$. Because backward differentiation can determine changes in all function parameters at once, it turns out to be much more efficient for computing the derivative of functions with lots of parameters. Forward differentiation, on the other hand, must consider how a change in each parameter, in turn, affects the function output $y$.
+<div style="border:1px;border-style:solid; padding=5">As an aside for those interested in automatic differentiation, papers and library documentation use terminology *forward differentiation* and *backward differentiation* (for use in the back-propagation algorithm). From a dataflow perspective, we are computing a forward differentiation because it follows the normal data flow direction.  Backward differentiation, naturally, goes the other direction and we're asking how a change in the output would affect function parameter $x$. Because backward differentiation can determine changes in all function parameters at once, it turns out to be much more efficient for computing the derivative of functions with lots of parameters. Forward differentiation, on the other hand, must consider how a change in each parameter, in turn, affects the function output $y$.
 
 <table>
-<tr><th>Forward differentiation from $x$ to $y$</th><th>Backward differentiation from $y$ to $x$</th></tr>
-<tr><td>$\frac{dy}{dx} = \frac{du}{dx}\frac{dy}{du}$</td><td>$\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$</td></tr>
+<tr><th>Forward differentiation from $x$ to $y$<th>Backward differentiation from $y$ to $x$
+<tr><td>$\frac{dy}{dx} = \frac{du}{dx}\frac{dy}{du}$<td>$\frac{dy}{dx} = \frac{dy}{du} \frac{du}{dx}$
 </table>
 
 Automatic differentiation is beyond the scope of this article, but we're setting the stage for a future article.
 </div>
 
-Many readers can solve $\frac{d}{dx}sin(x^2)$ in their heads, but our goal is a process that will work even for  very complicated expressions. This process is also how [automatic differentiation](link) works in libraries like PyTorch. So, by solving derivatives manually  in this way, you're also learning how to define functions for custom neural networks in PyTorch.
+Many readers can solve $\frac{d}{dx}sin(x^2)$ in their heads, but our goal is a process that will work even for  very complicated expressions. This process is also how [automatic differentiation](https://en.wikipedia.org/wiki/Automatic_differentiation) works in libraries like PyTorch. So, by solving derivatives manually  in this way, you're also learning how to define functions for custom neural networks in PyTorch.
 
 With deeply nested expressions, it helps to think about deploying the chain rule the way a compiler unravels nested function calls like $f_4(f_3(f_2(f_1(x))))$ into a sequence (chain) of calls. The result of calling function $f_i$ is saved to a temporary variable called a register, which is then passed as a parameter to $f_{i+1}$.  Let's see how that looks in practice by using our process on a highly-nested equation like $y = f(x) = ln(sin(x^3)^2)$:
 
@@ -483,14 +483,14 @@ With deeply nested expressions, it helps to think about deploying the chain rule
  \frac{d}{u_3} u_4 & = & \frac{d}{u_3} ln(u_3) & =& \frac{1}{u_3}\\
  \end{array}\\]
 	<li> Combine four intermediate values.
-\\[\frac{dy}{dx} = \frac{d u_4}{dx} = \frac{d u_4}{du_3}\frac{du_3}{d u_2} \frac{du_2}{du_1} \frac{du_1}{dx} = \frac{1}{u_3}  2u_2  cos(u_1)  3x^2 = \frac{6u_2x^2cos(u_1)}{u_3}$\\]
+\\[\frac{dy}{dx} = \frac{d u_4}{dx} = \frac{d u_4}{du_3}\frac{du_3}{d u_2} \frac{du_2}{du_1} \frac{du_1}{dx} = \frac{1}{u_3}  2u_2  cos(u_1)  3x^2 = \frac{6u_2x^2cos(u_1)}{u_3}\\]
 	<li> Subtitute.
 \\[\frac{dy}{dx} = \frac{6sin(u_1)x^2cos(x^3)}{u_2^2} = \frac{6sin(x^3)x^2cos(x^3)}{sin(u_1)^2} = \frac{6sin(x^3)x^2cos(x^3)}{sin(x^3)^2} = \frac{6x^2cos(x^3)}{sin(x^3)}\\]
 </ol>
 
 Here is a visualization of the data flow through the chain of operations from $x$ to $y$:
 
-<img src="chain-tree.png" alt=chain-tree.png width="150">
+<img src="images/chain-tree.png" alt="chain-tree.png" width="150">
 
 At this point, we can handle derivatives of nested expressions of a single variable, $x$, using the chain rule but only if $x$ can affect $y$ through a single data flow path. To handle more complicated expressions, we need to extend our technique, which we'll do next.
 
@@ -515,13 +515,13 @@ Because $u_2(x,u) = x + u_1$ has multiple parameters, partial derivatives come i
 \begin{array}{lllllllll}
 	\frac{\partial u_1(x)}{\partial x} &=& 2x &&&(\text{same as }\frac{du_1(x)}{dx})\\
 	\frac{\partial u_2(x,u_1)}{\partial u_1} &=& \frac{\partial }{\partial u_1}(x + u_1) = 0 + 1 = 1\\
-	\frac{\partial u_2(x,u_1)}{\partial x} &=& \frac{\partial }{\partial x}(x + u_1) = 1 + 0 = 1 & & &(\text{something's not quite right here!})\\
+	\frac{\partial u_2(x,u_1)}{\partial x} &\includegraphics[scale=.012]{images/not-equal-icon.png}& \frac{\partial }{\partial x}(x + u_1) = 1 + 0 = 1 & & &(\text{something's not quite right here!})\\
 \end{array}
 \\]
 
 Ooops! The partial $\frac{\partial u_2(x,u_1)}{\partial x}$ is wrong because it violates a key assumption for partial derivatives. When taking the partial derivative with respect to $x$, the other variables must not vary as $x$ varies. Otherwise, we could not act as if the other variables were constants. Clearly, though, $u_1(x)=x^2$ is a function of $x$ and therefore varies with $x$. $\frac{\partial u_2(x,u_1)}{\partial x} \neq 1 + 0$ because $\frac{\partial u_1(x)}{\partial x} \neq 0$. A quick look at the data flow diagram for $y=u_2(x,u_1)$ shows multiple paths from $x$ to $y$, thus, making it clear we need to consider direct and indirect (through $u_1(x)$) dependencies on $x$:
 
-<img src="plus-square.png" alt=plus-square.png width="150">
+<img src="images/plus-square.png" alt="plus-square.png" width="150">
 
 A change in $x$ effects $y$ both as an operand of the addition and as the operand of the square operator. Here's an equation that describes how tweaks to $x$ affect the output:
 
@@ -719,7 +719,7 @@ To make this formula work for multiple parameters or vector $\mathbf{x}$, we jus
 
 \\[
 \begin{array}{lllllllll}
- \frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}} &&&(\text{Note: matrix multiply doesn't commute; order of }\frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}} \text{matters})\\
+ \frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}} &(\text{Note: matrix multiply doesn't commute; order of }\frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}} \text{ matters})\\
 \end{array}
 \\]
 
@@ -756,17 +756,17 @@ Therefore, the Jacobian reduces to a diagonal matrix whose elements are the sing
 
 After slogging through all of that mathematics, here's the payoff. All you need is the vector chain rule because the single-variable formulas are special cases of the vector chain rule. The following table summarizes the appropriate components to multiply in order to get the Jacobian.
 
-<img src="chain-shape.png" alt="chain-shape.png" width="450">
+<img src="images/chain-shape.png" alt="chain-shape.png" width="450">
 
-## The gradient of the neuron activation function
+## The gradient of neuron activation
 
-We now have all of the pieces needed to compute the derivative of a typical activation function for a single neural network computation unit with respect to the model parameters, $\mathbf{w}$ and $b$:
+We now have all of the pieces needed to compute the derivative of a typical neuron activation for a single neural network computation unit with respect to the model parameters, $\mathbf{w}$ and $b$:
 
 \\[ activation(\mathbf{x}) = max(0, \mathbf{w} \cdot \mathbf{x} + b) \\]
 
 Let's worry about $max$ later and focus on computing $\frac{\partial}{\partial \mathbf{w}} (\mathbf{w} \cdot \mathbf{x} + b)$ and $\frac{\partial}{\partial b} (\mathbf{w} \cdot \mathbf{x} + b)$. (Recall that neural networks learn through optimization of their weights and biases.)  We haven't discussed the derivative of the dot product yet, $y = \mathbf{f(w)} \cdot \mathbf{g(x)}$, but we can use the chain rule to avoid having to memorize yet another rule. (Note notation $y$ not $\mathbf{y}$ as the result is a scalar not a vector.) 
 
-The dot product $\mathbf{w} \cdot \mathbf{x}$ is just the summation of the element-wise multiplication of the elements: $\Sigma_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$. (You might also find it useful to remember the linear algebra notation $\mathbf{w} \cdot \mathbf{x} = \mathbf{w}^{T} \mathbf{x}$.) To use the chain rule for $y = sum(\mathbf{w} \otimes \mathbf{x})$, we introduce an intermediate vector variable $\mathbf{u}$ just as we did using the single-variable chain rule:
+The dot product $\mathbf{w} \cdot \mathbf{x}$ is just the summation of the element-wise multiplication of the elements: $\Sigma_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$. (You might also find it useful to remember the linear algebra notation $\mathbf{w} \cdot \mathbf{x} = \mathbf{w}^{T} \mathbf{x}$.) We know how to compute the partial derivatives of $sum(\mathbf{x})$ and $\mathbf{w} \otimes \mathbf{x}$ but haven't looked at partial derivatives for $sum(\mathbf{w} \otimes \mathbf{x})$. We need the chain rule for that and so we can introduce an intermediate vector variable $\mathbf{u}$ just as we did using the single-variable chain rule:
 
 \\[
 \begin{array}{lllllllll}
@@ -801,9 +801,9 @@ Then:
 
 \\[\frac{\partial y}{\partial \mathbf{w}} = [ x_1, \ldots, x_n ] = \mathbf{x}^T\\]
 
-Hooray! Our results match. 
+Hooray! Our scalar results match the vector chain rule results. 
 
-Now, let $y = \mathbf{w} \cdot \mathbf{x} + b$, the full expression within the $max$ activation function call. We have two different partials to compute but don't need the chain rule:
+Now, let $y = \mathbf{w} \cdot \mathbf{x} + b$, the full expression within the $max$ activation function call. We have two different partials to compute, but we don't need the chain rule:
 
 \\[
 \begin{array}{lllllllll}
@@ -812,7 +812,7 @@ Now, let $y = \mathbf{w} \cdot \mathbf{x} + b$, the full expression within the $
 \end{array}
 \\]
 
-Let's tackle the partials of the activation function output, $max(0, \mathbf{w} \cdot \mathbf{x} + b)$. The use of the $max(0,z)$ function call on scalar $z$ just says to treat all negative $z$ values as 0.  The derivative of the max function is a piecewise function. When $z \leq 0$, the derivative is 0 because $z$ is a constant. When $z > 0$, the derivative of the max function is just the derivative of $z$, which is $1$:
+Let's tackle the partials of the neuron activation, $max(0, \mathbf{w} \cdot \mathbf{x} + b)$. The use of the $max(0,z)$ function call on scalar $z$ just says to treat all negative $z$ values as 0.  The derivative of the max function is a piecewise function. When $z \leq 0$, the derivative is 0 because $z$ is a constant. When $z > 0$, the derivative of the max function is just the derivative of $z$, which is $1$:
 
 \\[ \frac{\partial}{\partial z}max(0,z) =
 	\begin{cases}
@@ -820,16 +820,18 @@ Let's tackle the partials of the activation function output, $max(0, \mathbf{w} 
 	\frac{dz}{dz}=1 & z > 0\\
 \end{cases} \\]
 
-<div style="border:1px;border-style:solid; padding=5">An aside on broadcasting functions across scalars. When one or both of the $max$ arguments are vectors, such as $max(0,\mathbf{x})$, we broadcast the single-variable function $max$ across the elements. This is an example of an element-wise unary operator.  Just to be clear:<br><br>
+<div style="border:1px;border-style:solid; padding=5">An aside on broadcasting functions across scalars. When one or both of the $max$ arguments are vectors, such as $max(0,\mathbf{x})$, we broadcast the single-variable function $max$ across the elements. This is an example of an element-wise unary operator.  Just to be clear:
 
-$max(0,\mathbf{x}) = \begin{bmatrix}
+\\[
+max(0,\mathbf{x}) = \begin{bmatrix}
  max(0,x_1)\\
  max(0,x_2)\\
  \ldots\\
  max(0,x_n)\\
-\end{bmatrix}$
+\end{bmatrix}
+\\]
 
-For the derivative of the broadcast version then, we get a vector of zeros and ones where:<br><br>
+For the derivative of the broadcast version then, we get a vector of zeros and ones where:
 
 \\[
 \frac{\partial}{\partial x_i}max(0,x_i) =
@@ -846,7 +848,6 @@ For the derivative of the broadcast version then, we get a vector of zeros and o
     \frac{\partial}{\partial x_n}max(0,x_n)
 \end{bmatrix}\\]
 </div>
-
 
 To get the derivative of the $activation(\mathbf{x})$ function, we need the chain rule because of the nested subexpression, $\mathbf{w} \cdot \mathbf{x} + b$. Following our process, let's introduce intermediate scalar variable $z$ to represent the affine function giving:
 
@@ -874,7 +875,7 @@ and then substitute $z = \mathbf{w} \cdot \mathbf{x} + b$ back in:
 
 That equation matches our intuition.  When the activation function clips affine function output $z$ to 0, the derivative is zero with respect to any weight $w_i$. When $z > 0$, it's as if the $max$ function disappears and we get just the derivative of $z$ with respect to the weights. 
 
-Turning now to the derivative of the activation function with respect to $b$, we get:
+Turning now to the derivative of the neuron activation with respect to $b$, we get:
  
 \\[\frac{\partial activation}{\partial b} = \begin{cases}
 	0\frac{\partial z}{\partial b} = 0 & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
@@ -885,13 +886,13 @@ Let's use these partial derivatives now to handle the entire loss function.
 
 ## The gradient of the neural network loss function
 
-Training a neuron requires that we take the derivative of our loss  or "cost" function with respect to the parameters of our model, $\mathbf{w}$ and $b$. Because we train with multiple inputs and targets, we need some more notation. Let 
+Training a neuron requires that we take the derivative of our loss  or "cost" function with respect to the parameters of our model, $\mathbf{w}$ and $b$. Because we train with multiple vector inputs (e.g., multiple images) and scalar targets (e.g., one classification per image), we need some more notation. Let 
 
 \\[ X = [\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_N]^T \\]
 
 where $N=|X|$, and then let 
 
-\\[ $\mathbf{y} = [target(\mathbf{x}_1), target(\mathbf{x}_2), \ldots, target(\mathbf{x}_N)]^T \\]
+\\[ \mathbf{y} = [target(\mathbf{x}_1), target(\mathbf{x}_2), \ldots, target(\mathbf{x}_N)]^T \\]
 
 where $y_i$ is a scalar. Then the cost equation becomes:
 
@@ -968,7 +969,7 @@ To interpret that equation, we can substitute an error term $e_i = \mathbf{w}\cd
 
 From there, notice that this computation is a weighted average across all $\mathbf{x}_i$ in $X$. The weights are the error terms, the difference between the target output and the actual neuron output for each $\mathbf{x}_i$ input. The resulting gradient will, on average, point in the direction of higher cost or loss because large $e_i$ emphasize their associated $\mathbf{x}_i$. Imagine we only had one input vector, $N=|X|=1$, then the gradient is just $2e_1\mathbf{x}_1^T$.  If the error is 0, then the gradient is zero and we have arrived at the minimum loss. If $e_1$ is some small positive difference, the gradient is a small step in the direction of $\mathbf{x}_1$. If $e_1$ is large, the gradient is a large step in that direction. If $e_1$ is negative, the gradient is reversed, meaning the highest cost is in the negative direction.
 
-Of course, we want to reduce not increase the loss, which is why the [gradient descent](link) recurrence relation takes the negative of the gradient to update the current position (for scalar learning rate  $\eta$):
+Of course, we want to reduce not increase the loss, which is why the [gradient descent](https://en.wikipedia.org/wiki/Gradient_descent) recurrence relation takes the negative of the gradient to update the current position (for scalar learning rate  $\eta$):
 
 \\[ \mathbf{x}_{t+1} = \mathbf{x}_{t} - \eta \frac{\partial C}{\partial \mathbf{w}} \\]
 
@@ -1180,39 +1181,47 @@ The *vector chain rule* is the general form as it degenerates to the others. Whe
 
 <table>
 <tr>
-<th>Single-variable rule</th><th>Single-variable total-derivative rule</th><th>Vector  rule</th>
-</tr>
+<th>Single-variable rule<th>Single-variable total-derivative rule<th>Vector  rule
+
 <tr>
-<td>$\frac{df}{dx} = \frac{df}{du}\frac{du}{dx}$</td>
+<td>$\frac{df}{dx} = \frac{df}{du}\frac{du}{dx}$
 
-<td>$\frac{\partial f(u_1,\ldots,u_n)}{\partial x} = \frac{\partial f}{\partial \mathbf{u}} \frac{\partial \mathbf{u}}{\partial x}$</td>
+<td>$\frac{\partial f(u_1,\ldots,u_n)}{\partial x} = \frac{\partial f}{\partial \mathbf{u}} \frac{\partial \mathbf{u}}{\partial x}$
 
-<td>$\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$</td>
-</tr>
+<td>$\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x})) = \frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$
+
 </table>
 
 ## Resources
 
-When looking for resources on the web, search for "matrix calculus" not "vector calculus."  Here are some comments on the top links that come up from a [Google search](https://www.google.com/search?q=matrix+calculus\&oq=matrix+calculus):
+When looking for resources on the web, search for "matrix calculus" not "vector calculus."  Here are some comments on the top links that come up from a [Google search](https://www.google.com/search?q=matrix+calculus&oq=matrix+calculus):
 
-https://en.wikipedia.org/wiki/Matrix_calculus
+<ul>
+<li>[https://en.wikipedia.org/wiki/Matrix_calculus](https://en.wikipedia.org/wiki/Matrix_calculus)
+
 The Wikipedia entry is actually quite good and they have a good description of the different layout conventions. Recall that we use the numerator layout where the variables go horizontally and the functions go vertically in the Jacobian. Wikipedia also has a good description of [total derivatives](https://en.wikipedia.org/wiki/Total_derivative), but be careful that they use slightly different notation than we do. We always use the $\partial x$ notation not $dx$.
 
-http://www.ee.ic.ac.uk/hp/staff/dmb/matrix/calculus.html
+<li>[http://www.ee.ic.ac.uk/hp/staff/dmb/matrix/calculus.html](http://www.ee.ic.ac.uk/hp/staff/dmb/matrix/calculus.html)
+
 This page has a section on matrix differentiation with some useful identities; this person uses numerator layout. This might be a good place to start after reading this article to learn about matrix versus vector differentiation.
 
-https://www.colorado.edu/engineering/CAS/courses.d/IFEM.d/IFEM.AppC.d/IFEM.AppC.pdf
+<li>[http://www.ee.ic.ac.uk/hp/staff/dmb/matrix/calculus.htmlhttps://www.colorado.edu/engineering/CAS/courses.d/IFEM.d/IFEM.AppC.d/IFEM.AppC.pdf](http://www.ee.ic.ac.uk/hp/staff/dmb/matrix/calculus.htmlhttps://www.colorado.edu/engineering/CAS/courses.d/IFEM.d/IFEM.AppC.d/IFEM.AppC.pdf)
+
 This is part of the course notes for "Introduction to Finite Element Methods" I believe by [Carlos A. Felippa](https://www.colorado.edu/engineering/CAS/courses.d/IFEM.d).  His Jacobians are transposed from our notation because he uses denominator layout.
 
-http://www.ee.ic.ac.uk/hp/staff/dmb/matrix/calculus.html
+<li>[http://www.ee.ic.ac.uk/hp/staff/dmb/matrix/calculus.html](http://www.ee.ic.ac.uk/hp/staff/dmb/matrix/calculus.html)
+
 This page has a huge number of useful derivatives computed for a variety of vectors and matrices. A great cheat sheet. There is no discussion to speak of, just a set of rules.
 
-https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf
+<li>[https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf](https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf)
+
 Another cheat sheet that focuses on matrix operations in general with more discussion than the previous item.
 
-https://www.comp.nus.edu.sg/~cs5240/lecture/matrix-differentiation.pdf
-A useful set of slides.
+<li>[https://www.comp.nus.edu.sg/~cs5240/lecture/matrix-differentiation.pdf](https://www.comp.nus.edu.sg/~cs5240/lecture/matrix-differentiation.pdf)
 
-To learn more about neural networks and the mathematics behind optimization and back propagation, we highly recommend [Michael Nielsen's book](http://neuralnetworksanddeeplearning.com/chap1.html)
+A useful set of slides.
+</ul>
+
+To learn more about neural networks and the mathematics behind optimization and back propagation, we highly recommend [Michael Nielsen's book](http://neuralnetworksanddeeplearning.com/chap1.html).
 
 We reference the law of [total derivative](https://en.wikipedia.org/wiki/Total_derivative), which is an important concept that just means derivatives with respect to $x$ must take into consideration the derivative with respect $x$ of all variables that are a function of $x$.
