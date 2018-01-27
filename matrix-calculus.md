@@ -1,4 +1,4 @@
-# The matrix calculus you need for deep learning
+# The Matrix Calculus You Need For Deep Learning
 
 [author]
 
