@@ -191,7 +191,27 @@ So we have $m=n$ functions and parameters, in this case. Generally speaking, tho
 
 where each $\frac{\partial}{\partial \mathbf{x}} f_i(\mathbf{x})$ is a horizontal $n$-vector because the partial derivative is with respect to a vector, $\mathbf{x}$, whose length is $n = |\mathbf{x}|$.  The width of the Jacobian is $n$ if we're taking the partial derivative with respect to $\mathbf{x}$ because there are $n$ parameters we can wiggle, each potentially changing the function's value. Therefore, the Jacobian is always $m$ rows for $m$ equations.  It helps to think about the possible Jacobian shapes visually:
 
-<img src="images/shape.png" width="250">
+\latex{{
+\begin{tabular}{c|ccl}
+  & \begin{tabular}[t]{c}
+  scalar\\
+  \framebox(18,18){$x$}\\
+  \end{tabular} & \begin{tabular}{c}
+  vector\\
+  \framebox(18,40){$\mathbf{x}$}
+  \end{tabular}\\
+\hline
+\\[\dimexpr-\normalbaselineskip+5pt]
+\begin{tabular}[b]{c}
+  scalar\\
+  \framebox(18,18){$f$}\\
+  \end{tabular} &\framebox(18,18){$\frac{\partial f}{\partial {x}}$} & \framebox(40,18){$\frac{\partial f}{\partial {\mathbf{x}}}$}&\\
+\begin{tabular}[b]{c}
+  vector\\
+  \framebox(18,40){$\mathbf{f}$}\\
+  \end{tabular} & \framebox(18,40){$\frac{\partial \mathbf{f}}{\partial {x}}$} & \framebox(40,40){$\frac{\partial \mathbf{f}}{\partial \mathbf{x}}$}\\
+\end{tabular}
+}}
 
 The Jacobian of the identity function $\mathbf{f(x)} = \mathbf{x}$, with $f_i(\mathbf{x}) = x_i$, has $n$ functions and each function has $n$ parameters held in a single vector $\mathbf{x}$. The Jacobian is, therefore, a square matrix since $m=n$:
 
@@ -775,7 +795,48 @@ Therefore, the Jacobian reduces to a diagonal matrix whose elements are the sing
 
 After slogging through all of that mathematics, here's the payoff. All you need is the vector chain rule because the single-variable formulas are special cases of the vector chain rule. The following table summarizes the appropriate components to multiply in order to get the Jacobian.
 
-<img src="images/chain-shape.png" alt="chain-shape.png" width="470">
+\latex{{
+\begin{tabular}[t]{c|cccc}
+  & 
+\multicolumn{2}{c}{
+  \begin{tabular}[t]{c}
+  scalar\\
+  \framebox(18,18){$x$}\\
+  \end{tabular}} & &\begin{tabular}{c}
+  vector\\
+  \framebox(18,40){$\mathbf{x}$}\\
+  \end{tabular} \\
+  
+  \begin{tabular}{c}$\frac{\partial}{\partial \mathbf{x}} \mathbf{f}(\mathbf{g}(\mathbf{x}))$
+	   = $\frac{\partial \mathbf{f}}{\partial \mathbf{g}}\frac{\partial\mathbf{g}}{\partial \mathbf{x}}$
+		\\
+		\end{tabular} & \begin{tabular}[t]{c}
+  scalar\\
+  \framebox(18,18){$u$}\\
+  \end{tabular} & \begin{tabular}{c}
+  vector\\
+  \framebox(18,40){$\mathbf{u}$}
+  \end{tabular}& & \begin{tabular}{c}
+  vector\\
+  \framebox(18,40){$\mathbf{u}$}\\
+  \end{tabular} \\
+\hline
+\\[\dimexpr-\normalbaselineskip+5pt]
+
+\begin{tabular}[b]{c}
+  scalar\\
+  \framebox(18,18){$f$}\\
+  \end{tabular} &\framebox(18,18){$\frac{\partial f}{\partial {u}}$} \framebox(18,18){$\frac{\partial u}{\partial {x}}$} ~~~& \raisebox{22pt}{\framebox(40,18){$\frac{\partial f}{\partial {\mathbf{u}}}$}} \framebox(18,40){$\frac{\partial \mathbf{u}}{\partial x}$} & ~~~&
+\raisebox{22pt}{\framebox(40,18){$\frac{\partial f}{\partial {\mathbf{u}}}$}} \framebox(40,40){$\frac{\partial \mathbf{u}}{\partial \mathbf{x}}$}
+\\
+  
+\begin{tabular}[b]{c}
+  vector\\
+  \framebox(18,40){$\mathbf{f}$}\\
+  \end{tabular} & \framebox(18,40){$\frac{\partial \mathbf{f}}{\partial {u}}$} \raisebox{22pt}{\framebox(18,18){$\frac{\partial u}{\partial {x}}$}} & \framebox(40,40){$\frac{\partial \mathbf{f}}{\partial \mathbf{u}}$} \framebox(18,40){$\frac{\partial \mathbf{u}}{\partial x}$} & & \framebox(40,40){$\frac{\partial \mathbf{f}}{\partial \mathbf{u}}$} \framebox(40,40){$\frac{\partial \mathbf{u}}{\partial \mathbf{x}}$}\\
+  
+\end{tabular}
+}}
 
 ## The gradient of neuron activation
 
@@ -947,8 +1008,8 @@ and
 
 Then, for the overall gradient, we get:
 
-\\[
-\begin{array}{lllllllll}
+\latex{{
+\begin{eqnarray*}
  \frac{\partial C(v)}{\partial \mathbf{w}} & = & \frac{\partial }{\partial \mathbf{w}}\frac{1}{N} \sum_{i=1}^N v^2\\\\
  & = & \frac{1}{N} \sum_{i=1}^N \frac{\partial}{\partial \mathbf{w}} v^2\\\\
  & = & \frac{1}{N} \sum_{i=1}^N \frac{\partial v^2}{\partial v} \frac{\partial v}{\partial \mathbf{w}} \\\\
@@ -977,8 +1038,8 @@ Then, for the overall gradient, we get:
 	\vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
 	\frac{2}{N} \sum_{i=1}^N (\mathbf{w}\cdot\mathbf{x}_i+b-y_i)\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
 \end{cases}
-\end{array}
-\\]
+\end{eqnarray*}
+}}
 
 To interpret that equation, we can substitute an error term $e_i = \mathbf{w}\cdot\mathbf{x}_i+b-y_i$ yielding:
 
@@ -1022,8 +1083,8 @@ For $v$, the partial is:
 
 And for the partial of the cost function itself we get:
 
-\\[
-\begin{array}{lllllllll}
+\latex{{
+\begin{eqnarray*}
  \frac{\partial C(v)}{\partial b} & = & \frac{\partial }{\partial b}\frac{1}{N} \sum_{i=1}^N v^2\\\\
  & = & \frac{1}{N} \sum_{i=1}^N \frac{\partial}{\partial b} v^2\\\\
  & = & \frac{1}{N} \sum_{i=1}^N \frac{\partial v^2}{\partial v} \frac{\partial v}{\partial b} \\\\
@@ -1044,8 +1105,8 @@ And for the partial of the cost function itself we get:
 	0 & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
 	\frac{2}{N} \sum_{i=1}^N (\mathbf{w}\cdot\mathbf{x}_i+b-y_i) & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
  \end{cases}
-\end{array}
-\\]
+\end{eqnarray*}
+}}
 
 As before, we can substitute an error term:
 
