@@ -1,10 +1,15 @@
 # The matrix calculus you need for deep learning
 
+[author]
+
 [Terence Parr](http://parrt.cs.usfca.edu) and [Jeremy Howard](http://www.fast.ai/about/#jeremy)
 
-(We teach in University of San Francisco's [MS in Data Science program](https://www.usfca.edu/arts-sciences/graduate-programs/data-science) and have other nefarious projects underway. See Jeremy's [fast.ai courses](http://course.fast.ai), University of San Francisco's Data Institute [in-person version of the deep learning course](https://www.usfca.edu/data-institute/certificates/deep-learning-part-one), and [fast.ai](http://www.fast.ai/]) for more educational material.)
+[abstract]
 
-## Introduction
+(We teach in University of San Francisco's [MS in Data Science program](https://www.usfca.edu/arts-sciences/graduate-programs/data-science) and have other nefarious projects underway. You might know Terence as the creator of the [ANTLR parser generator](http://www.antlr.org). For more material, see Jeremy's [fast.ai courses](http://course.fast.ai) and University of San Francisco's Data Institute [in-person version of the deep learning course](https://www.usfca.edu/data-institute/certificates/deep-learning-part-one).)
+
+
+## Introduction (intro)
 
 Most of us last saw calculus in school, but derivatives are a critical part of machine learning, particularly deep neural networks, which are trained by optimizing a loss function. Pick up a machine learning paper or the documentation of a library such as [PyTorch](http://pytorch.org) and calculus comes screeching back into your life like distant relatives around the holidays.  And it's not just any old scalar calculus that pops up---you need differential *matrix calculus*, the shotgun wedding of [linear algebra](https://en.wikipedia.org/wiki/Linear_algebra) and [multivariate calculus](https://en.wikipedia.org/wiki/Multivariable_calculus).
 
@@ -279,9 +284,9 @@ Under this condition, the elements along the diagonal of the Jacobian are $\frac
 
 \\[\frac{\partial \mathbf{y}}{\partial \mathbf{w}}  = \begin{bmatrix}
 \frac{\partial}{\partial w_1} ( f_{1}(w_1) \bigcirc g_{1}(x_1) )\\
-& \frac{\partial}{\partial w_2} (f_{2}(w_2) \bigcirc g_{2}(x_2) ) & &\huge0\\
+& \frac{\partial}{\partial w_2} (f_{2}(w_2) \bigcirc g_{2}(x_2) ) & & \text{\huge0}\\
 & & \ldots \\
-\huge0& & & \frac{\partial}{\partial w_n} (f_{n}(w_n) \bigcirc g_{n}(x_n) )
+\text{\huge0}& & & \frac{\partial}{\partial w_n} (f_{n}(w_n) \bigcirc g_{n}(x_n) )
 \end{bmatrix}\\]
 
 (The large "0"s are a shorthand indicating all of the off-diagonal are 0.)
@@ -1134,7 +1139,7 @@ Here are some sample element-wise  operators:
 
 \\[
 \begin{array}{lll}
- \text{Op} & \text{Partial with respect to } \mathbf{w} & \text{Partial with respect to }\mathbf{x}\\
+ \text{\bf Op} & \text{\bf Partial with respect to } \mathbf{w} & \text{\bf Partial with respect to }\mathbf{x}\\
  + & \frac{\partial (\mathbf{w+x})}{\partial \mathbf{w}} = I & \frac{\partial (\mathbf{w+x})}{\partial \mathbf{x}} =  I\\
  - & \frac{\partial (\mathbf{w-x})}{\partial \mathbf{w}}  = I & \frac{\partial (\mathbf{w-x})}{\partial \mathbf{x}}  = -I \\
  \otimes & \frac{\partial (\mathbf{w \otimes x})}{\partial \mathbf{w}}  =  diag(\mathbf{x}) & \frac{\partial (\mathbf{w \otimes x})}{\partial \mathbf{x}}  =  diag(\mathbf{w})\\
