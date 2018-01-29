@@ -1288,6 +1288,46 @@ The *vector chain rule* is the general form as it degenerates to the others. Whe
 
 ## Notation (notation)
 
+Lowercase letters in bold font such as $\mathbf{x}$ are vectors and those in italics font like $x$ are scalars. $x_i$ is the $i^{th}$ element of vector $\mathbf{x}$ and is in italics because a single vector element is a scalar.
+
+The $T$ exponent of $\mathbf{x}^T$ represents the transpose of the indicated vector.
+
+$\sum_{i=a}^b$ is just a `for` loop that goes from $a$ to $b$, such as the following in Python:
+
+`for i in range(a,b+1)`
+
+Notation $f(x)$ refers to a function called $f$ with an argument of $x$, which is just `def f(x)` in Python.
+
+$I$ represents the square "identity matrix" of appropriate dimensions that is zero everywhere but the diagonal, which contains all ones.
+
+$diag(\mathbf{x})$  constructs a matrix whose diagonal elements are taken from vector $\mathbf{x}$: $diag(\mathbf{x}) = \mathbf{x}^T I$.
+
+The dot product $\mathbf{w} \cdot \mathbf{x}$ is the summation of the element-wise multiplication of the elements: $\sum_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$. Or, you can look at it  as $w^T x$.
+
+Differentiation $\frac{d}{dx}$ is an operator that maps a function of one parameter to another function.  That means that $\frac{d}{dx} f(x)$ maps $f(x)$ to its derivative with respect to $x$, which is the same thing as $\frac{df(x)}{dx}$. Also, if $y = f(x)$, then $\frac{dy}{dx} = \frac{df(x)}{dx} = \frac{d}{dx}f(x)$.
+
+The partial derivative of the function with respect to $x$, $\frac{\partial}{\partial x} f(x)$, performs the usual scalar derivative holding all other variables constant.
+
+The gradient of $f$ with respect to vector $\mathbf{x}$, $\nabla f(\mathbf{x})$, organizes all of the partial derivatives for a specific scalar function.
+
+The Jacobian organizes the gradients of multiple functions into a matrix by stacking them:
+
+\\[    
+J = \begin{bmatrix} 
+	\nabla f_1(\mathbf{x})\\
+	\nabla f_2(\mathbf{x})
+\end{bmatrix}
+\\]
+
+The following notation means that $y$ has the value $a$ upon $condition_1$ and value $b$ upon $condition_2$.
+ 
+\\[     
+y = \begin{cases} 
+	a & condition_1\\
+	b & condition_2\\
+\end{cases}
+\\]
+
 ## Resources
 
 When looking for resources on the web, search for "matrix calculus" not "vector calculus."  Here are some comments on the top links that come up from a [Google search](https://www.google.com/search?q=matrix+calculus&oq=matrix+calculus):
