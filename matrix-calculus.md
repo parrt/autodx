@@ -109,7 +109,7 @@ and
 
 \\[\frac{\partial g(x,y)}{\partial y} = \frac{\partial 2x}{\partial y} + \frac{\partial y^8}{\partial y} = 0 + 8y^7 = 8y^7\\]
 
-giving us gradient $\nabla g(x,y) = [1, 8y^7]$.
+giving us gradient $\nabla g(x,y) = [2, 8y^7]$.
 
 Gradient vectors organize all of the partial derivatives for a specific scalar function. If we have two functions, we can also organize their gradients into a matrix by stacking the gradients. When we do so, we get the *Jacobian matrix* (or just the *Jacobian*) where the gradients are rows:
 
@@ -122,7 +122,7 @@ Gradient vectors organize all of the partial derivatives for a specific scalar f
  \frac{\partial g(x,y)}{\partial x} & \frac{\partial g(x,y)}{\partial y}\\
 \end{bmatrix} = \begin{bmatrix}
 	6yx & 3x^2\\
-	1 & 8y^7
+	2 & 8y^7
 \end{bmatrix}\\]
 
 Welcome to matrix calculus!
@@ -131,7 +131,7 @@ Welcome to matrix calculus!
 
 \\[
 \begin{bmatrix}
-	6yx & 1\\
+	6yx & 2\\
 	3x^2 & 8y^7
 \end{bmatrix}
 \\]
