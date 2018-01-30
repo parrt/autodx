@@ -35,7 +35,7 @@ If we're careful, we can derive the gradient by differentiating the scalar versi
 \frac{1}{N} \sum_{\mathbf{x}} (target(\mathbf{x}) - activation(\mathbf{x}))^2 = \frac{1}{N} \sum_{\mathbf{x}} (target(\mathbf{x}) - max(0, \sum_i^{|x|} w_i x_i + b))^2
 \\]
 
-But this is just one neuron, and neural networks must train the weights and biases of all neurons in all layers simultaneously.  The really cool part about partial derivatives is that they let us optimize all of these network parameters at once. Because there are multiple inputs and (potentially) multiple network outputs, we really need general rules for the derivative of a function with respect to a vector and even rules for the derivative of a vector-valued function with respect to a vector.
+But this is just one neuron, and neural networks must train the weights and biases of all neurons in all layers simultaneously.  Because there are multiple inputs and (potentially) multiple network outputs, we really need general rules for the derivative of a function with respect to a vector and even rules for the derivative of a vector-valued function with respect to a vector.
 
 This article walks through the derivation of some important rules for computing partial derivatives with respect to vectors, particularly those useful for training neural networks. This field is known as *matrix calculus*, and the good news is, we only need a small subset of that field, which we introduce here.  While there is a lot of online material on multivariate calculus and linear algebra, they are typically taught as two separate undergraduate courses so most material treats them in isolation.  The pages that do discuss matrix calculus often are really just lists of rules with minimal explanation or are just pieces of the story. They also tend to be quite obscure to all but a narrow audience of mathematicians, thanks to their use of dense notation and minimal discussion of foundational concepts. (See the annotated list of resources at the end.)
 
@@ -225,7 +225,8 @@ where each $\frac{\partial}{\partial \mathbf{x}} f_i(\mathbf{x})$ is a horizonta
 
 The Jacobian of the identity function $\mathbf{f(x)} = \mathbf{x}$, with $f_i(\mathbf{x}) = x_i$, has $n$ functions and each function has $n$ parameters held in a single vector $\mathbf{x}$. The Jacobian is, therefore, a square matrix since $m=n$:
 
-\\[\begin{array}{lllllllll}
+\latex{{
+\begin{eqnarray*}
 	\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = \begin{bmatrix}
 	\frac{\partial}{\partial {x}} f_1(\mathbf{x}) \\
 	\frac{\partial}{\partial {x}} f_2(\mathbf{x})\\
@@ -257,8 +258,8 @@ The Jacobian of the identity function $\mathbf{f(x)} = \mathbf{x}$, with $f_i(\m
 	0 & 0 & \ldots &1 \\
 	\end{bmatrix}\\\\
 	& = & I ~~~(I \text{ is the identity matrix with ones down the diagonal})\\
-	\end{array}
-\\]
+	\end{eqnarray*}
+}}
 
 Make sure that you can derive each step above before moving on. If you get stuck, just consider each element of the matrix in isolation and apply the usual scalar derivative rules.   That is a generally useful trick: Reduce vector expressions down to a set of scalar expressions and then take all of the partials, combining the results appropriately into vectors and matrices at the end.
  
@@ -1288,15 +1289,13 @@ The *vector chain rule* is the general form as it degenerates to the others. Whe
 
 ## Notation (notation)
 
-Lowercase letters in bold font such as $\mathbf{x}$ are vectors and those in italics font like $x$ are scalars. $x_i$ is the $i^{th}$ element of vector $\mathbf{x}$ and is in italics because a single vector element is a scalar.
+Lowercase letters in bold font such as $\mathbf{x}$ are vectors and those in italics font like $x$ are scalars. $x_i$ is the $i^{th}$ element of vector $\mathbf{x}$ and is in italics because a single vector element is a scalar. $|\mathbf{x}|$ means "length of vector $\mathbf{x}$."
 
 The $T$ exponent of $\mathbf{x}^T$ represents the transpose of the indicated vector.
 
-$\sum_{i=a}^b$ is just a `for` loop that goes from $a$ to $b$, such as the following in Python:
+$\sum_{i=a}^b x_i$ is just a for-loop that iterates $i$ from $a$ to $b$, summing all the $x_i$.
 
-`for i in range(a,b+1)`
-
-Notation $f(x)$ refers to a function called $f$ with an argument of $x$, which is just `def f(x)` in Python.
+Notation $f(x)$ refers to a function called $f$ with an argument of $x$.
 
 $I$ represents the square "identity matrix" of appropriate dimensions that is zero everywhere but the diagonal, which contains all ones.
 
