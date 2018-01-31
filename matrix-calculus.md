@@ -1136,7 +1136,7 @@ This finishes off the optimization of the neural network loss function because w
 
 Hopefully you've made it all the way through to this point.  You're well on your way to understanding matrix calculus!  We've included a reference that summarizes all of the rules from this article in the next section. Also check out the annotated resource link below.
 
-Your next step would be to learn about the partial derivatives of matrices not just vectors. For example, you can take a look at the matrix differentiation section of [Matrix calculus](https://atmos.washington.edu/~dennis/MatrixCalculus.pdf). 
+Your next step would be to learn about the partial derivatives of matrices not just vectors. For example, you can take a look at the matrix differentiation section of [Matrix calculus](https://atmos.washington.edu/~dennis/MatrixCalculus.pdf).  
 
 **Acknowledgements**. We thank [Yannet Interian](https://www.usfca.edu/faculty/yannet-interian) (Faculty in MS data science program at University of San Francisco) and [David Uminsky](http://www.cs.usfca.edu/~duminsky/) (Faculty/director of MS data science) for their help with the notation presented here.
 
@@ -1326,6 +1326,8 @@ y = \begin{cases}
 
 ## Resources
 
+[Wolfram Alpha](http://www.wolframalpha.com/input/?i=D%5B%7Bx%5E2,+x%5E3%7D.%7B%7B1,2%7D,%7B3,4%7D%7D.%7Bx%5E2,+x%5E3%7D,+x%5D) can do symbolic matrix algebra and there is also a cool dedicated [matrix calculus differentiator](http://www.matrixcalculus.org/).
+
 When looking for resources on the web, search for "matrix calculus" not "vector calculus."  Here are some comments on the top links that come up from a [Google search](https://www.google.com/search?q=matrix+calculus&oq=matrix+calculus):
 
 <ul>
@@ -1355,5 +1357,7 @@ A useful set of slides.
 </ul>
 
 To learn more about neural networks and the mathematics behind optimization and back propagation, we highly recommend [Michael Nielsen's book](http://neuralnetworksanddeeplearning.com/chap1.html).
+
+For those interested specifically in convolutional neural networks, check out [A guide to convolution arithmetic for deep learning](https://arxiv.org/pdf/1603.07285.pdf).
 
 We reference the law of [total derivative](https://en.wikipedia.org/wiki/Total_derivative), which is an important concept that just means derivatives with respect to $x$ must take into consideration the derivative with respect $x$ of all variables that are a function of $x$.
