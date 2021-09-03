@@ -20,7 +20,7 @@ def pytorch_eval(f, X):
 
     y.backward()
 
-    return y.data[0], X_.grad.data.numpy().tolist()
+    return y.item(), X_.grad.data.numpy().tolist()
 
 
 def autodx_eval_backward_ast(f, X):
