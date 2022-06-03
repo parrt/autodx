@@ -17,7 +17,7 @@ def pytorch_eval(f, *args):
 
     y.backward()
 
-    return y.data[0], np.array([x.grad.data.numpy() if x.grad is not None else None for x in X_])
+    return y.item(), np.array([x.grad.data.numpy() if x.grad is not None else None for x in X_])
 
 
 def autodx_eval_forward_vec_ast(f, *args):
